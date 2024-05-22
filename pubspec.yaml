@@ -30,6 +30,9 @@ environment:
 dependencies:
   http: ^0.13.6
   android_id: ^0.3.6
+  intl: ^0.18.0
+  barcode_scan2: ^4.3.0
+  blue_thermal_printer: ^1.2.3
   flutter:
     sdk: flutter
 

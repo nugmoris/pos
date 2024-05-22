@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'jual.dart';
 import 'login.dart';
 
 void main() {
@@ -19,8 +20,17 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => HomePage(),
+        '/': (context) => LoginPage(),
         '/login': (context) => LoginPage(),
+        '/jual': (context) => JualPage(),
+
+        // '/jual': (context) {
+        //   final args = ModalRoute.of(context)?.settings.arguments
+        //       as Map<String, String>?;
+        //   final bagian = args?['bagian'];
+
+        //   return JualPage(bagian!);
+        // },
       },
     );
   }
@@ -29,6 +39,7 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print("Building HomePage");
     return Container(
       child: Scaffold(
         backgroundColor: Colors.transparent,

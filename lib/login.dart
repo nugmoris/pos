@@ -12,65 +12,22 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   String _error = '';
-  String alamatmac = '';
-  String nmdevice = '';
-
-  //static const _androidIdPlugin = AndroidId();
-
-  void initState() {
-    super.initState();
-  }
 
   Future<void> login() async {
     final username = _usernameController.text;
     final password = _passwordController.text;
 
     try {
-      final response = await ApiService.login(username, password);
-      if (response.isNotEmpty) {
-        final jabatan = response[0]['jabatan'];
-        final varpbuser = response[0]['user'];
-        final varidagen1 = response[0]['idagen'];
-        final varidsubagen1 = response[0]['idsubagen'];
-        final versiapp = response[0]['versiapp'];
-        final varhutagen = response[0]['hutagen'];
-        final varhutSA = response[0]['hutang'];
-        final maxhutang = response[0]['maxhutang'];
-        final batashutlogin = response[0]['batashutlogin'];
-        //print(versiapp);
-        if (versiapp != 'ver09') {
-          setState(() {
-            _error = 'Login gagal.Anda harus update versi terbaru';
-          });
-        } else if (jabatan == 'Agen') {
-          Navigator.pushReplacementNamed(context, '/pengumuman', arguments: [
-            varpbuser,
-            jabatan,
-            varhutSA,
-            varhutagen,
-            varidagen1,
-            varidsubagen1,
-            maxhutang,
-            batashutlogin
-          ]);
-        } else if (jabatan == 'SubAgen') {
-          Navigator.pushReplacementNamed(context, '/pengumuman', arguments: [
-            varpbuser,
-            jabatan,
-            varhutSA,
-            varhutagen,
-            varidagen1,
-            varidsubagen1,
-            maxhutang,
-            batashutlogin
-          ]);
-        } else if (jabatan == 'Error') {
+      final bagian = await ApiService.login(username, password);
+      //print('wooii..1');
+      //print(bagian); // Cetak bagian untuk memastikan nilai yang diterima
+
+      if (bagian.isNotEmpty) {
+        if (bagian == 'sales') {
+          Navigator.pushNamed(context, '/jual');
+        } else if (bagian == 'Error') {
           setState(() {
             _error = 'Login gagal..User/password salah/tidak aktif';
-          });
-        } else if (jabatan == 'HPBEDA') {
-          setState(() {
-            _error = 'Login gagal..Device Berbeda dari Biasanya';
           });
         }
       } else {
@@ -93,15 +50,11 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Image.asset(
-            //   'utils/logo_foreground.png',
-            //   width: 100,
-            //   height: 100,
-            // ),
-
-            SizedBox(height: 20),
-
-            //wellcomback you've been missed
+            Icon(
+              Icons.lock_outline_rounded,
+              size: 62.0,
+            ),
+            SizedBox(height: 10),
             Text(
               "Silahkan Login ! (ver 1.0.1)",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
