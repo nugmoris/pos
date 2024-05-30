@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'jual.dart';
+import 'laporan.dart';
 import 'login.dart';
 
 void main() {
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => LoginPage(),
         '/login': (context) => LoginPage(),
         '/jual': (context) => JualPage(),
+        '/lapjual': (context) => LapPage(),
 
         // '/jual': (context) {
         //   final args = ModalRoute.of(context)?.settings.arguments

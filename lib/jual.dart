@@ -29,7 +29,7 @@ class _JualPageState extends State<JualPage> {
   void initState() {
     super.initState();
     jumlahController.addListener(_updateSubtotalAndTotal);
-    notransController.text = 'fdsfddaf';
+    notransController.text = 'notrans';
     // Inisialisasi printer Bluetooth
   }
 
@@ -158,6 +158,55 @@ class _JualPageState extends State<JualPage> {
     }
   }
 
+  void searchTransactions() async {
+    try {
+      // Ambil tanggal hari ini
+      String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      // Panggil API untuk mengambil laporan penjualan
+      List<Map<String, dynamic>> result =
+          await ApiService.lapjual(today, today, "1");
+
+      // Tampilkan hasil dalam bentuk dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Hasil Pencarian'),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: DataTable(
+                  columns: const [
+                    DataColumn(label: Text('No Transaksi')),
+                    DataColumn(label: Text('Total')),
+                  ],
+                  rows: result.map((data) {
+                    return DataRow(cells: [
+                      DataCell(Text(data['notrans'])),
+                      DataCell(Text(data['tot'])),
+                    ]);
+                  }).toList(),
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Tutup'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Tutup dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      print('Error fetching transaction data: $e');
+    }
+  }
+
   Future<void> fetchProductDetails() async {
     try {
       var details = await ApiService.crbarang("username", barcodeResult);
@@ -258,7 +307,10 @@ class _JualPageState extends State<JualPage> {
                 Text('No Transaksi: ${notransController.text}'),
                 Text(
                     'Tanggal: ${DateFormat('dd-MM-yyyy').format(DateTime.now())}'),
-                Text('Grand Total: $grandTotal'),
+                Text(
+                  'Grand Total: $grandTotal',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
                 TextField(
                   controller: paymentController,
                   decoration: InputDecoration(
@@ -325,6 +377,7 @@ class _JualPageState extends State<JualPage> {
               ),
               controller: notransController,
             ),
+            SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
@@ -455,23 +508,46 @@ class _JualPageState extends State<JualPage> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                    'Grand Total: ${calculateGrandTotal()}'), // Memanggil fungsi yang sudah diformat
-                IconButton(
-                  icon: Icon(Icons.payment),
-                  onPressed: !transaksiData.any((item) => item['llunas'] == '1')
-                      ? showPaymentDialog
-                      : null,
+                // Bagian A
+                Expanded(
+                  child: Text(
+                    'Grand Total: ${calculateGrandTotal()}',
+                    textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.print),
-                  onPressed: printData, // Tambahkan fungsi print
-                ),
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () {}, // Tambahkan fungsi cari
+
+                // Bagian B
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.payment),
+                        onPressed:
+                            !transaksiData.any((item) => item['llunas'] == '1')
+                                ? showPaymentDialog
+                                : null,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.print),
+                        onPressed: printData,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed:
+                            searchTransactions, // Panggil fungsi pencarian
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.report_off_rounded),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/lapjual');
+                        }, // Tambahkan fungsi
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

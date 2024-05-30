@@ -80,7 +80,7 @@ class _ReportPageState extends State<ReportPage> {
                 child: Column(
                   children: <Widget>[
                     Text(currentDate),
-                    Text(widget.varpbuser + ':' + widget.varnotrans),
+                    Text(widget.varnotrans),
                     ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
@@ -89,9 +89,9 @@ class _ReportPageState extends State<ReportPage> {
                         final numberFormat =
                             NumberFormat.decimalPattern('id_ID');
                         final nrp = numberFormat
-                            .parse(widget.reportData[index]['nrp'] ?? '0');
+                            .parse(widget.reportData[index]['subtotal'] ?? '0');
                         final nqty = numberFormat
-                            .parse(widget.reportData[index]['nqty'] ?? '0');
+                            .parse(widget.reportData[index]['jumlah'] ?? '0');
 
                         return ListTile(
                           title: Text(widget.reportData[index]['nama']),

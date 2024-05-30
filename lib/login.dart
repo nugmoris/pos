@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
 
     try {
-      final bagian = await ApiService.login(username, password);
+      final bagian = await ApiService.login2(username, password);
       //print('wooii..1');
       //print(bagian); // Cetak bagian untuk memastikan nilai yang diterima
 
