@@ -130,6 +130,44 @@ class ApiService {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> inputtrans2(
+      String kdbarang,
+      String nqty,
+      String nrp,
+      String user,
+      String kdcust,
+      String ntop,
+      String keth,
+      String kdsales,
+      String notrans) async {
+    final url = '$root/api.php?action=INPUTJL2';
+    //&lks1=01&kdbarang1=$kdbarang&nqty1=$nqty&nrp1=$nrp&user1=$user&kdcust1=$kdcust&ntop1=$ntop&keth1=$keth&kdsales1=$kdsales&notrans1=$notrans
+    final Map<String, String> jsonData = {
+      'lks1': '01',
+      'kdbarang1': kdbarang,
+      'nqty1': nqty,
+      'nrp1': nrp,
+      'user1': user,
+      'kdcust1': kdcust,
+      'ntop1': ntop,
+      'keth1': keth,
+      'kdsales1': kdsales,
+      'notrans1': notrans,
+    };
+    print(url);
+    print(jsonData);
+    var response = await http.post(Uri.parse(url),
+        body: jsonEncode(jsonData),
+        headers: {'Content-Type': 'application/json'});
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+      print(jsonData);
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
   static Future<List<Map<String, dynamic>>> bayarjual(
     String nojual1,
     String nrp1,

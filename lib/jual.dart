@@ -98,7 +98,7 @@ class _JualPageState extends State<JualPage> {
           jumlahController.text.isNotEmpty &&
           hargaController.text.isNotEmpty &&
           notransController.text.isNotEmpty) {
-        var result = await ApiService.inputtrans(
+        var result = await ApiService.inputtrans2(
           barcodeController.text,
           jumlahController.text,
           hargaController.text
