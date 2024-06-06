@@ -54,9 +54,9 @@ class _LoginPageState extends State<LoginPage> {
               Icons.lock_outline_rounded,
               size: 62.0,
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 8),
             Text(
-              "silahkan Login! (ver 1.0.1)",
+              "Silahkan Loginnn ! (ver 1.0.2)",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
             SizedBox(height: 20),

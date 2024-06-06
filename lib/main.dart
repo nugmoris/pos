@@ -1,13 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:ota_update/ota_update.dart';
 
 import 'jual.dart';
 import 'laporan.dart';
 import 'login.dart';
+import 'service.dart';
+
+// Define myversion variable
+String myversion = 'POS2';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
+  tryOtaUpdateIfNeeded();
   runApp(MyApp());
+}
+
+Future<String> getCurrentVersion() async {
+  final result1 = await ApiService.cekversi();
+  // print(result1.toString());
+  final version = result1['versiku']; // Access the 'versiku' key directly
+
+  return version;
+}
+
+Future<String> getserverupdate() async {
+  final result2 = await ApiService.serverupdate();
+  final serverupdate = result2['serverupdate'];
+  //print('serverupdate : $serverupdate');
+  return serverupdate
+      .toString(); // Convert serverupdate to a String before returning
+}
+
+void tryOtaUpdateIfNeeded() async {
+  final currentVersion = await getCurrentVersion();
+  if (currentVersion != myversion) {
+    final serverUpdateUrlx = await getserverupdate();
+    final serverupdateUrl = '$serverUpdateUrlx/$currentVersion.apk';
+    //print('ini lokasi update');
+    // print(serverupdateUrl); // Mendapatkan nilai serverupdate
+    tryOtaUpdate(
+        serverupdateUrl); // Memanggil tryOtaUpdate() dengan serverUpdateUrl
+    //print('update');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -41,7 +75,7 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print("Building HomePage");
+    // print("Building HomePage");
     return Container(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -71,5 +105,26 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+void tryOtaUpdate(String serverUpdateUrl) async {
+  try {
+    // print('ABI Platform: ${await OtaUpdate().getAbi()}');
+    // print('bla..bla..bla  ');
+    final lokupdateku = '$serverUpdateUrl';
+    //  print(lokupdateku);
+    OtaUpdate()
+        .execute(
+      lokupdateku, // Menggunakan serverUpdateUrl sebagai URL
+      destinationFilename: 'pos1.apk',
+    )
+        .listen((OtaEvent event) {
+      // Handle OTA update events here
+    });
+    // print(myversion);
+    // print('menjalankan otaupdate');
+  } catch (e) {
+    print('Failed to make OTA update. Details: $e');
   }
 }

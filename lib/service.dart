@@ -75,6 +75,61 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> cekversi() async {
+    final url = '$root/api.php?action=CEKVERSI';
+    // print(url);
+    final response =
+        await http.get(Uri.parse(url)); // Fetch the response from the API
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is List && jsonResponse.isNotEmpty) {
+          final versiku =
+              jsonResponse[0]; // Access the first element in the list
+          final varversi = versiku['cketerangan2']; // Corrected variable name
+
+          return {'versiku': varversi};
+        } else {
+          throw Exception('Format JSON tidak valid');
+        }
+      } catch (e) {
+        throw Exception('Error parsing JSON');
+      }
+    } else {
+      return {'ket': 'Tidak ketemu'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> serverupdate() async {
+    final url = '$root/api.php?action=SERVERUPDATE';
+
+    final response =
+        await http.get(Uri.parse(url)); // Fetch the response from the API
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is List && jsonResponse.isNotEmpty) {
+          final serverupdate =
+              jsonResponse[0]; // Access the first element in the list
+          final varserverupdate =
+              serverupdate['cketerangan2']; // Corrected variable name
+
+          return {'serverupdate': varserverupdate};
+        } else {
+          throw Exception('Format JSON tidak valid');
+        }
+      } catch (e) {
+        throw Exception('Error parsing JSON');
+      }
+    } else {
+      return {'ket': 'Tidak ketemu'};
+    }
+  }
+
   static Future<Map<String, dynamic>> crbarang(
       String username, String cari1) async {
     final url = '$root/api.php?action=CRBARANG&user1=$username&cari1=$cari1';
