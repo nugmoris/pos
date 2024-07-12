@@ -364,7 +364,7 @@ class _JualPageState extends State<JualPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Penjualan"),
+          title: const Text("Penjualan...."),
         ),
         body: SafeArea(
             child: SingleChildScrollView(

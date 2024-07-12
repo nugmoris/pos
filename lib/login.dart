@@ -1,3 +1,4 @@
+import 'package:android_id/android_id.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/utils/textisi.dart';
 
@@ -12,20 +13,38 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   String _error = '';
+  String alamatmac = '';
+  String nmdevice = '';
+
+  void getDeviceInfo() async {}
+  static const _androidIdPlugin = AndroidId();
+  String? _androidId = 'Unknown';
+
+  @override
+  void initState() {
+    super.initState();
+    _initAndroidId();
+    getDeviceInfo();
+  }
+
+  Future<void> _initAndroidId() async {
+    final String? androidId = await _androidIdPlugin.getId();
+    setState(() => _androidId = androidId);
+  }
 
   Future<void> login() async {
-    final username = _usernameController.text;
+    final varpbuser = _usernameController.text;
     final password = _passwordController.text;
-
+    alamatmac = _androidId ?? 'Unknown';
     try {
-      final bagian = await ApiService.login2(username, password);
-      //print('wooii..1');
-      //print(bagian); // Cetak bagian untuk memastikan nilai yang diterima
+      final result = await ApiService.login2(varpbuser, password, alamatmac);
 
-      if (bagian.isNotEmpty) {
-        if (bagian == 'sales') {
-          Navigator.pushNamed(context, '/jual');
-        } else if (bagian == 'Error') {
+      if (result.isNotEmpty) {
+        final varbagian = result['bagian'];
+        final varlks = result['lks'];
+        if (varbagian == 'sales') {
+          Navigator.pushNamed(context, '/home', arguments: [varpbuser, varbagian, varlks]);
+        } else if (varbagian == 'Error') {
           setState(() {
             _error = 'Login gagal..User/password salah/tidak aktif';
           });
@@ -56,21 +75,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 8),
             Text(
-              "Silahkan Loginnn ! (ver 1.0.2)",
+              "Silahkan Login ! (ver 1.0.2)",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
             SizedBox(height: 20),
-            TextIsi(
-                controller: _usernameController,
-                hintText: 'Username',
-                labeltextku: 'Username',
-                obsecuretext: false),
+            TextIsi(controller: _usernameController, hintText: 'Username', labeltextku: 'Username', obsecuretext: false),
             SizedBox(height: 20),
-            TextIsi(
-                controller: _passwordController,
-                hintText: 'Password',
-                labeltextku: 'Password',
-                obsecuretext: true),
+            TextIsi(controller: _passwordController, hintText: 'Password', labeltextku: 'Password', obsecuretext: true),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: login,

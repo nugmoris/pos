@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ota_update/ota_update.dart';
 
+import 'home.dart';
 import 'jual.dart';
 import 'laporan.dart';
 import 'login.dart';
@@ -17,18 +18,16 @@ void main() {
 
 Future<String> getCurrentVersion() async {
   final result1 = await ApiService.cekversi();
-  // print(result1.toString());
-  final version = result1['versiku']; // Access the 'versiku' key directly
 
+  final version = result1['versiku']; // Access the 'versiku' key directly
   return version;
 }
 
 Future<String> getserverupdate() async {
   final result2 = await ApiService.serverupdate();
   final serverupdate = result2['serverupdate'];
-  //print('serverupdate : $serverupdate');
-  return serverupdate
-      .toString(); // Convert serverupdate to a String before returning
+
+  return serverupdate.toString(); // Convert serverupdate to a String before returning
 }
 
 void tryOtaUpdateIfNeeded() async {
@@ -36,11 +35,7 @@ void tryOtaUpdateIfNeeded() async {
   if (currentVersion != myversion) {
     final serverUpdateUrlx = await getserverupdate();
     final serverupdateUrl = '$serverUpdateUrlx/$currentVersion.apk';
-    //print('ini lokasi update');
-    // print(serverupdateUrl); // Mendapatkan nilai serverupdate
-    tryOtaUpdate(
-        serverupdateUrl); // Memanggil tryOtaUpdate() dengan serverUpdateUrl
-    //print('update');
+    tryOtaUpdate(serverupdateUrl); // Memanggil tryOtaUpdate() dengan serverUpdateUrl
   }
 }
 
@@ -59,6 +54,15 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/jual': (context) => JualPage(),
         '/lapjual': (context) => LapPage(),
+
+        '/home': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+          final varpbuser = args?['varpbuser'];
+          final varbagian = args?['varbagian'];
+          final varlks = args?['varlks'];
+
+          return HomeSalesPage(varpbuser!, varbagian!, varlks!);
+        },
 
         // '/jual': (context) {
         //   final args = ModalRoute.of(context)?.settings.arguments
