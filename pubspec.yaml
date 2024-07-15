@@ -34,7 +34,7 @@ dependencies:
   barcode_scan2: ^4.3.0
   blue_thermal_printer: ^1.2.3
   ota_update: ^6.0.0
-
+  google_fonts: ^4.0.0
   flutter:
     sdk: flutter
 
@@ -58,6 +58,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/birukecil.png
+    - assets/birumuda.png
+    - assets/biru2.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

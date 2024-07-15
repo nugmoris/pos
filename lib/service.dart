@@ -29,9 +29,12 @@ class ApiService {
           final user = jsonResponse[0];
           final varbagian = user['bagian'];
           final varlks = user['lks'];
+          final varnmlok = user['nmlok'];
+
           return {
             'bagian': varbagian,
             'lks': varlks,
+            'nmlok': varnmlok,
           };
         } else {
           throw Exception('Format JSON tidak valid');
@@ -42,6 +45,39 @@ class ApiService {
     } else {
       throw Exception('Failed to login');
     }
+  }
+
+  static Future<String> gantiPassword(String varpbuser, String oldPassword, String newPassword) async {
+    // final url = '$root/api.php?action=GANTIPWD&pbuser1=$varpbuser&passlama=$oldPassword&passbaru=$newPassword';
+    final url = '$root/api.php?action=GANTIPWD';
+    final Map<String, String> jsonData = {
+      'pbuser1': varpbuser,
+      'passlama': oldPassword,
+      'passbaru': newPassword,
+    };
+    print(url);
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode(jsonData),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonResponse = json.decode(response.body);
+        final hasil = jsonResponse[0]['@hasil'];
+        print(hasil);
+        if (hasil == 'Gagal, password lama salah') {
+          return 'Password Lama Anda Salah';
+        } else if (hasil == 'Sukses') {
+          return 'Ganti Password Berhasil';
+        }
+      } catch (e) {
+        print('Error parsing JSON: $e');
+      }
+    }
+
+    return 'Terjadi kesalahan';
   }
 
   static Future<Map<String, dynamic>> cekversi() async {
@@ -199,28 +235,6 @@ class ApiService {
     } else {
       throw Exception('Failed to fetch report data');
     }
-  }
-
-  static Future<String> gantiPassword(String varpbuser, String oldPassword, String newPassword) async {
-    final url = '$root/api.php?action=GANTIPWD&pbuser1=$varpbuser&passlama=$oldPassword&passbaru=$newPassword';
-    final response = await http.post(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      try {
-        final jsonResponse = json.decode(response.body);
-        final hasil = jsonResponse[0]['@hasil'];
-
-        if (hasil == 'Gagal, password lama salah') {
-          return 'Password Lama Anda Salah';
-        } else if (hasil == 'Sukses') {
-          return 'Ganti Password Berhasil';
-        }
-      } catch (e) {
-        print('Error parsing JSON: $e');
-      }
-    }
-
-    return 'Terjadi kesalahan';
   }
 }
 

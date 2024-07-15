@@ -55,13 +55,24 @@ class MyApp extends StatelessWidget {
         '/jual': (context) => JualPage(),
         '/lapjual': (context) => LapPage(),
 
-        '/home': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
-          final varpbuser = args?['varpbuser'];
-          final varbagian = args?['varbagian'];
-          final varlks = args?['varlks'];
+        // '/home': (context) {
+        //   final args = ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+        //   final varpbuser = args?['varpbuser'];
+        //   final varbagian = args?['varbagian'];
+        //   final varlks = args?['varlks'];
+        //   final varnmlok = args?['varnmlok'];
 
-          return HomeSalesPage(varpbuser!, varbagian!, varlks!);
+        //   return HomeSalesPage(varpbuser!, varbagian!, varlks!, varnmlok!);
+        // },
+
+        '/home': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return HomeSalesPage(varpbuser!, varbagian!, varlks!, varnmlok!);
         },
 
         // '/jual': (context) {

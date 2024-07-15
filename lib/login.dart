@@ -42,8 +42,9 @@ class _LoginPageState extends State<LoginPage> {
       if (result.isNotEmpty) {
         final varbagian = result['bagian'];
         final varlks = result['lks'];
+        final varnmlok = result['nmlok'];
         if (varbagian == 'sales') {
-          Navigator.pushNamed(context, '/home', arguments: [varpbuser, varbagian, varlks]);
+          Navigator.pushNamed(context, '/home', arguments: [varpbuser, varbagian, varlks, varnmlok]);
         } else if (varbagian == 'Error') {
           setState(() {
             _error = 'Login gagal..User/password salah/tidak aktif';
