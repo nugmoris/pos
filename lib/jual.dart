@@ -2,11 +2,19 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'bayarjual.dart';
+import 'customer_search_popup.dart';
 import 'report.dart';
 import 'service.dart';
+import 'transaction_search_popup.dart';
 
 class JualPage extends StatefulWidget {
-  const JualPage({super.key});
+  final String varpbuser;
+  final String varbagian;
+  final String varlks;
+  final String varnmlok;
+
+  JualPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok);
   @override
   State<JualPage> createState() => _JualPageState();
 }
@@ -21,15 +29,21 @@ class _JualPageState extends State<JualPage> {
   TextEditingController diskonController = TextEditingController();
   TextEditingController totalController = TextEditingController();
   TextEditingController notransController = TextEditingController();
+  TextEditingController kdcustController = TextEditingController();
+  TextEditingController nmcustController = TextEditingController();
 
   // Tambahkan variabel untuk menyimpan data transaksi
   List<Map<String, dynamic>> transaksiData = [];
-
+  String totbayar = '0';
+  String hrsbayar = '0';
   @override
   void initState() {
     super.initState();
     jumlahController.addListener(_updateSubtotalAndTotal);
-    notransController.text = 'notrans';
+    notransController.text = 'Transaksi Baru';
+    kdcustController.text = '01';
+    nmcustController.text = 'Customer Umum';
+
     // Inisialisasi printer Bluetooth
   }
 
@@ -44,14 +58,15 @@ class _JualPageState extends State<JualPage> {
     totalController.dispose();
     diskonController.dispose();
     notransController.dispose();
+    kdcustController.dispose();
+    nmcustController.dispose();
     super.dispose();
   }
 
   void _updateSubtotalAndTotal() {
     if (hargaController.text.isNotEmpty && jumlahController.text.isNotEmpty) {
       final formatter = NumberFormat("#,###");
-      int hargaJual =
-          int.tryParse(hargaController.text.replaceAll(',', '')) ?? 0;
+      int hargaJual = int.tryParse(hargaController.text.replaceAll(',', '')) ?? 0;
       int jumlah = int.tryParse(jumlahController.text) ?? 0;
       int subtotal = hargaJual * jumlah;
       int diskon = int.tryParse(diskonController.text.replaceAll(',', '')) ?? 0;
@@ -70,7 +85,7 @@ class _JualPageState extends State<JualPage> {
       MaterialPageRoute(
         builder: (context) => ReportPage(
           reportData: transaksiData,
-          varpbuser: "username",
+          varpbuser: widget.varpbuser,
           varnotrans: notransController.text,
         ),
       ),
@@ -88,39 +103,33 @@ class _JualPageState extends State<JualPage> {
 
   void input() async {
     try {
-      print('input1');
-      print('Barcode: ${barcodeController.text}');
-      print('Jumlah: ${jumlahController.text}');
-      print('Harga: ${hargaController.text.replaceAll(',', '')}'); // Hapus koma
-      print('No Trans: ${notransController.text}');
+      //  print('inputtrans2');
+      // print('Barcode: ${barcodeController.text}');
+      // print('Jumlah: ${jumlahController.text}');
+      // print('Harga: ${hargaController.text.replaceAll(',', '')}'); // Hapus koma
+      // print('No Trans: ${notransController.text}');
 
       if (barcodeController.text.isNotEmpty &&
           jumlahController.text.isNotEmpty &&
           hargaController.text.isNotEmpty &&
           notransController.text.isNotEmpty) {
         var result = await ApiService.inputtrans2(
-          barcodeController.text,
-          jumlahController.text,
-          hargaController.text
-              .replaceAll(',', ''), // Hapus koma sebelum mengirim ke API
-          "username",
-          "01",
-          "01",
-          "keth",
-          "01",
-          notransController.text,
-        );
-        print('input2');
+            barcodeController.text,
+            jumlahController.text,
+            hargaController.text.replaceAll(',', ''), // Hapus koma sebelum mengirim ke API
+            widget.varpbuser,
+            kdcustController.text, //kdcust
+            "01", //ntop
+            "keth", //keth
+            "01", //kdsales
+            notransController.text,
+            widget.varlks //notrans
+            );
+        // print('input2');
 
         setState(() {
-          transaksiData = result
-              .map((item) => {
-                    'nama': item['nama'],
-                    'harga': item['nrp'],
-                    'jumlah': item['nqty'],
-                    'subtotal': item['subtotal']
-                  })
-              .toList();
+          transaksiData =
+              result.map((item) => {'nama': item['nama'], 'harga': item['nrp'], 'jumlah': item['nqty'], 'subtotal': item['subtotal']}).toList();
 
           // Perbarui notransController dengan notrans dari respons API
           if (result.isNotEmpty && result[0].containsKey('notrans')) {
@@ -130,11 +139,14 @@ class _JualPageState extends State<JualPage> {
           // Mengatur ulang nilai controller setelah menambahkan data ke tabel
           barcodeController.clear();
           namaController.clear();
+          kdcustController.text = '01';
+          nmcustController.text = 'Customer Umum';
           hargaController.text = '0';
           jumlahController.text = '0';
           subttlController.text = '0';
           diskonController.text = '0';
           totalController.text = '0';
+          totbayar = '0';
         });
       }
     } catch (e) {
@@ -158,52 +170,37 @@ class _JualPageState extends State<JualPage> {
     }
   }
 
-  void searchTransactions() async {
+  void searchTransactions() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return TransactionSearchPopup(
+          varpbuser: widget.varpbuser,
+          onTransactionSelected: (notrans, nbayar) {
+            onTransactionSelected(notrans, nbayar); // Menambahkan parameter nbayar
+          },
+        );
+      },
+    );
+  }
+
+  void onTransactionSelected(String notran, String nbayar) async {
     try {
-      // Ambil tanggal hari ini
-      String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      List<Map<String, dynamic>> result = await ApiService.lapjualperno(widget.varpbuser, notran);
 
-      // Panggil API untuk mengambil laporan penjualan
-      List<Map<String, dynamic>> result =
-          await ApiService.lapjual(today, today, "1");
-
-      // Tampilkan hasil dalam bentuk dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Hasil Pencarian'),
-            content: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text('No Transaksi')),
-                    DataColumn(label: Text('Total')),
-                  ],
-                  rows: result.map((data) {
-                    return DataRow(cells: [
-                      DataCell(Text(data['notrans'])),
-                      DataCell(Text(data['tot'])),
-                    ]);
-                  }).toList(),
-                ),
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('Tutup'),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Tutup dialog
-                },
-              ),
-            ],
-          );
-        },
-      );
+      if (result.isNotEmpty) {
+        setState(() {
+          notransController.text = result[0]['notrans'] ?? '';
+          kdcustController.text = result[0]['kdcust'] ?? '';
+          nmcustController.text = result[0]['nmcust'] ?? '';
+          totbayar = nbayar;
+          print(totbayar);
+          transaksiData =
+              result.map((item) => {'nama': item['nmbarang'], 'harga': item['nrp'], 'jumlah': item['nqty'], 'subtotal': item['subtotal']}).toList();
+        });
+      }
     } catch (e) {
-      print('Error fetching transaction data: $e');
+      print('Error fetching transaction details: $e');
     }
   }
 
@@ -214,16 +211,12 @@ class _JualPageState extends State<JualPage> {
 
       setState(() {
         namaController.text = details['nama'];
-        hargaController.text =
-            formatter.format(int.parse(details['hargaJual']));
+        hargaController.text = formatter.format(int.parse(details['hargaJual']));
         jumlahController.text = '1';
-        subttlController.text = formatter.format(
-            int.parse(details['hargaJual']) * int.parse(jumlahController.text));
+        subttlController.text = formatter.format(int.parse(details['hargaJual']) * int.parse(jumlahController.text));
         diskonController.text = '0';
-        totalController.text = formatter.format(
-            (int.parse(details['hargaJual']) *
-                    int.parse(jumlahController.text) -
-                int.parse(diskonController.text)));
+        totalController.text =
+            formatter.format((int.parse(details['hargaJual']) * int.parse(jumlahController.text) - int.parse(diskonController.text)));
       });
     } catch (e) {
       setState(() {
@@ -240,8 +233,7 @@ class _JualPageState extends State<JualPage> {
 
   // Widget untuk menampilkan data transaksi dengan kemampuan scroll horizontal
   Widget buildTransaksiTable() {
-    final formatter =
-        NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
+    final formatter = NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -257,11 +249,9 @@ class _JualPageState extends State<JualPage> {
           rows: transaksiData.map((data) {
             return DataRow(cells: [
               DataCell(Text(data['nama'] ?? 'Nama tidak tersedia')),
-              DataCell(
-                  Text(formatter.format(int.parse(data['harga'].toString())))),
+              DataCell(Text(formatter.format(int.parse(data['harga'].toString())))),
               DataCell(Text(data['jumlah'].toString())),
-              DataCell(Text(
-                  formatter.format(int.parse(data['subtotal'].toString())))),
+              DataCell(Text(formatter.format(int.parse(data['subtotal'].toString())))),
             ]);
           }).toList(),
         ),
@@ -270,15 +260,23 @@ class _JualPageState extends State<JualPage> {
   }
 
   String calculateGrandTotal() {
-    final formatter =
-        NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
+    final formatter = NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
     int total = transaksiData.fold(0, (sum, item) {
       int subtotal = int.tryParse(item['subtotal'].toString()) ?? 0;
       return sum + subtotal;
     });
 
-    return formatter.format(
-        total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
+    return formatter.format(total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
+  }
+
+  String hitungbayar() {
+    final formatter = NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
+    int total = transaksiData.fold(0, (sum, item) {
+      int totbayar = int.tryParse(item['nbayar'].toString()) ?? 0;
+      return sum + totbayar;
+    });
+
+    return formatter.format(total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
   }
 
   void clearTransactionData() {
@@ -287,88 +285,67 @@ class _JualPageState extends State<JualPage> {
     });
   }
 
-  void showPaymentDialog() {
+  void showPaymentDialog() async {
     print("Isi transaksiData: $transaksiData");
-    //  bool isPaymentEnabled = transaksiData.any((item) => item['llunas'] == '0');
-    //  print("isPaymentEnabled: $isPaymentEnabled");
 
-    TextEditingController paymentController = TextEditingController();
+    String grandTotal = calculateGrandTotal(); // Mengambil nilai Grand Total
 
+    // Menunggu nilai yang dikembalikan dari bayarjual.dart
+    final paymentValue = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PaymentDialog(
+          notrans: notransController.text,
+          grandTotal: grandTotal,
+          totbayar: totbayar,
+          username: widget.varpbuser,
+          varlks: widget.varlks,
+        );
+      },
+    );
+
+// Pastikan paymentValue tidak null dan lakukan update yang diperlukan
+    if (paymentValue != null) {
+      setState(() {
+        double bayar = double.tryParse(paymentValue) ?? 0.0;
+        double currentTotbayar = double.tryParse(totbayar.replaceAll(',', '')) ?? 0.0;
+        currentTotbayar += bayar;
+        currentTotbayar = bayar;
+        final formatter = NumberFormat("#,###");
+        totbayar = formatter.format(currentTotbayar);
+      });
+    }
+  }
+
+  // Fungsi untuk mencari dan terhubung ke printer Bluetooth
+  void _searchCustomer() async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String grandTotal =
-            calculateGrandTotal(); // Mengambil nilai Grand Total
-        return AlertDialog(
-          title: Text('Pembayaran'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('No Transaksi: ${notransController.text}'),
-                Text(
-                    'Tanggal: ${DateFormat('dd-MM-yyyy').format(DateTime.now())}'),
-                Text(
-                  'Grand Total: $grandTotal',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                TextField(
-                  controller: paymentController,
-                  decoration: InputDecoration(
-                    labelText: 'Nilai Bayar',
-                    hintText: 'Masukkan jumlah pembayaran',
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Batal'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Tutup dialog
-              },
-            ),
-            TextButton(
-                child: Text('Bayar'),
-                onPressed: () async {
-                  // Logika pembayaran atau validasi bisa ditambahkan di sini
-                  try {
-                    var paymentData = await ApiService.bayarjual(
-                        notransController.text,
-                        grandTotal.replaceAll(",",
-                            ""), // Menggunakan Grand Total sebagai nrp, menghapus koma untuk format angka
-                        "username", // Sesuaikan dengan data yang diperlukan
-                        "01" // Sesuaikan dengan data yang diperlukan
-                        );
-                    print('Pembayaran berhasil: $paymentData');
-                    Navigator.of(context).pop(); // Tutup dialog setelah bayar
-                    setState(() {
-                      // Update UI atau state jika diperlukan
-                    });
-                  } catch (e) {
-                    print('Error saat melakukan pembayaran: $e');
-                  }
-                }
-                // Tombol akan dinonaktifkan jika semua transaksi lunas
-                ),
-          ],
+        return CustomerSearchPopup(
+          varpbuser: widget.varpbuser,
+          onCustomerSelected: (kode, nama) {
+            setState(() {
+              kdcustController.text = kode;
+              nmcustController.text = nama;
+            });
+          },
         );
       },
     );
   }
 
-  // Fungsi untuk mencari dan terhubung ke printer Bluetooth
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.grey[700],
           title: const Text("Penjualan...."),
         ),
         body: SafeArea(
             child: SingleChildScrollView(
           child: Column(children: [
+            SizedBox(height: 10),
             TextField(
               readOnly: true,
               decoration: InputDecoration(
@@ -377,7 +354,53 @@ class _JualPageState extends State<JualPage> {
               ),
               controller: notransController,
             ),
+            Divider(
+              color: Colors.black, // Warna garis
+              thickness: 2, // Ketebalan garis
+              indent: 10, // Jarak dari awal garis ke tepi kiri
+              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
+            ),
             SizedBox(height: 10),
+
+            Row(
+              children: [
+                SizedBox(height: 20),
+                Expanded(
+                  flex: 2,
+                  child: TextField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Kode Customer',
+                    ),
+                    controller: kdcustController,
+                  ),
+                ),
+                SizedBox(width: 5),
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: _searchCustomer,
+                ),
+              ],
+            ),
+            SizedBox(height: 5),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                nmcustController.text,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Divider(
+              color: Colors.black, // Warna garis
+              thickness: 2, // Ketebalan garis
+              indent: 10, // Jarak dari awal garis ke tepi kiri
+              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
+            ),
+            SizedBox(height: 5),
             Row(
               children: [
                 Expanded(
@@ -407,6 +430,9 @@ class _JualPageState extends State<JualPage> {
                     diskonController.text = '0';
                     totalController.text = '0';
                     notransController.text = 'baru';
+                    kdcustController.text = '01';
+                    nmcustController.text = 'Customer Umum';
+                    totbayar = '0';
                     clearTransactionData(); // Mengosongkan transaksiData
                   },
                 ),
@@ -435,13 +461,11 @@ class _JualPageState extends State<JualPage> {
                     controller: hargaController,
                   ),
                 ),
-                SizedBox(
-                    width: 10), // Menambahkan sedikit ruang antar TextField
+                SizedBox(width: 10), // Menambahkan sedikit ruang antar TextField
                 Expanded(
                   flex: 1, // Memberi lebih sedikit ruang untuk QTY
                   child: TextField(
-                    keyboardType:
-                        TextInputType.number, // Keyboard numerik untuk QTY
+                    keyboardType: TextInputType.number, // Keyboard numerik untuk QTY
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'QTY',
@@ -468,8 +492,7 @@ class _JualPageState extends State<JualPage> {
                 Expanded(
                     flex: 1,
                     child: TextField(
-                      keyboardType:
-                          TextInputType.number, // Keyboard numerik untuk Diskon
+                      keyboardType: TextInputType.number, // Keyboard numerik untuk Diskon
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Diskon',
@@ -507,13 +530,23 @@ class _JualPageState extends State<JualPage> {
                 )),
               ],
             ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              // Bagian A
+              Expanded(
+                child: Text(
+                  'Grand Total : ${calculateGrandTotal()}',
+                  textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Bagian A
                 Expanded(
                   child: Text(
-                    'Grand Total: ${calculateGrandTotal()}',
+                    'Total Bayar : $totbayar',
                     textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
@@ -526,10 +559,7 @@ class _JualPageState extends State<JualPage> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.payment),
-                        onPressed:
-                            !transaksiData.any((item) => item['llunas'] == '1')
-                                ? showPaymentDialog
-                                : null,
+                        onPressed: !transaksiData.any((item) => item['llunas'] == '1') ? showPaymentDialog : null,
                       ),
                       IconButton(
                         icon: Icon(Icons.print),
@@ -537,19 +567,24 @@ class _JualPageState extends State<JualPage> {
                       ),
                       IconButton(
                         icon: Icon(Icons.search),
-                        onPressed:
-                            searchTransactions, // Panggil fungsi pencarian
+                        onPressed: searchTransactions, // Panggil fungsi pencarian
                       ),
-                      IconButton(
-                        icon: Icon(Icons.report_off_rounded),
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/lapjual');
-                        }, // Tambahkan fungsi
-                      ),
+                      // IconButton(
+                      //   icon: Icon(Icons.book),
+                      //   onPressed: () {
+                      //     Navigator.pushNamed(context, '/lapjual');
+                      //   }, // Tambahkan fungsi
+                      // ),
                     ],
                   ),
                 ),
               ],
+            ),
+            Divider(
+              color: Colors.black, // Warna garis
+              thickness: 2, // Ketebalan garis
+              indent: 10, // Jarak dari awal garis ke tepi kiri
+              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
             ),
             buildTransaksiTable(), // Tambahkan widget tabel di UI
           ]),

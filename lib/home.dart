@@ -35,6 +35,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
 
   void penjualanFunction() {
     print("Penjualan clicked");
+    Navigator.pushNamed(context, '/jual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
     // Tambahkan fungsi lain yang Anda inginkan
   }
 
