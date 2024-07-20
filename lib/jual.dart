@@ -34,8 +34,12 @@ class _JualPageState extends State<JualPage> {
 
   // Tambahkan variabel untuk menyimpan data transaksi
   List<Map<String, dynamic>> transaksiData = [];
-  String totbayar = '0';
-  String hrsbayar = '0';
+  final NumberFormat currencyFormat = NumberFormat("#,##0", "en_US");
+  double totbayar = 0.0;
+
+  // String hrsbayar = '0';
+  double hrsbayar = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -146,7 +150,7 @@ class _JualPageState extends State<JualPage> {
           subttlController.text = '0';
           diskonController.text = '0';
           totalController.text = '0';
-          totbayar = '0';
+          totbayar = 0.0;
         });
       }
     } catch (e) {
@@ -193,7 +197,8 @@ class _JualPageState extends State<JualPage> {
           notransController.text = result[0]['notrans'] ?? '';
           kdcustController.text = result[0]['kdcust'] ?? '';
           nmcustController.text = result[0]['nmcust'] ?? '';
-          totbayar = nbayar;
+          totbayar = double.parse(nbayar.replaceAll(',', ''));
+          //nbayar;
           print(totbayar);
           transaksiData =
               result.map((item) => {'nama': item['nmbarang'], 'harga': item['nrp'], 'jumlah': item['nqty'], 'subtotal': item['subtotal']}).toList();
@@ -297,7 +302,7 @@ class _JualPageState extends State<JualPage> {
         return PaymentDialog(
           notrans: notransController.text,
           grandTotal: grandTotal,
-          totbayar: totbayar,
+          totbayar: currencyFormat.format(totbayar),
           username: widget.varpbuser,
           varlks: widget.varlks,
         );
@@ -308,11 +313,18 @@ class _JualPageState extends State<JualPage> {
     if (paymentValue != null) {
       setState(() {
         double bayar = double.tryParse(paymentValue) ?? 0.0;
-        double currentTotbayar = double.tryParse(totbayar.replaceAll(',', '')) ?? 0.0;
-        currentTotbayar += bayar;
+
+        // Pastikan totbayar adalah String sebelum melakukan replaceAll
+        String totbayarString = totbayar.toString();
+        double currentTotbayar = double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
+
+        // Tambahkan bayar ke currentTotbayar jika diperlukan
         currentTotbayar = bayar;
+
         final formatter = NumberFormat("#,###");
-        totbayar = formatter.format(currentTotbayar);
+        print(currentTotbayar.runtimeType);
+        //totbayar = formatter.format(currentTotbayar);
+        totbayar = currentTotbayar;
       });
     }
   }
@@ -432,7 +444,7 @@ class _JualPageState extends State<JualPage> {
                     notransController.text = 'baru';
                     kdcustController.text = '01';
                     nmcustController.text = 'Customer Umum';
-                    totbayar = '0';
+                    totbayar = 0.0;
                     clearTransactionData(); // Mengosongkan transaksiData
                   },
                 ),
@@ -546,7 +558,7 @@ class _JualPageState extends State<JualPage> {
                 // Bagian A
                 Expanded(
                   child: Text(
-                    'Total Bayar : $totbayar',
+                    'Total Bayar : ${currencyFormat.format(totbayar)}',
                     textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),

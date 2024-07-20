@@ -15,6 +15,7 @@ class TransactionSearchPopup extends StatefulWidget {
 
 class _TransactionSearchPopupState extends State<TransactionSearchPopup> {
   List<Map<String, dynamic>> searchResults = [];
+  final NumberFormat currencyFormat = NumberFormat("#,##0", "en_US");
 
   @override
   void initState() {
@@ -60,11 +61,11 @@ class _TransactionSearchPopupState extends State<TransactionSearchPopup> {
                     widget.onTransactionSelected(data['notrans'], data['nbayar']); // Mengirim notrans dan nbayar
                     Navigator.of(context).pop();
                   }),
-                  DataCell(Text(data['tot']), onTap: () {
+                  DataCell(Text(currencyFormat.format(int.parse(data['tot']))), onTap: () {
                     widget.onTransactionSelected(data['notrans'], data['nbayar']); // Mengirim notrans dan nbayar
                     Navigator.of(context).pop();
                   }),
-                  DataCell(Text(data['nbayar']), onTap: () {
+                  DataCell(Text(currencyFormat.format(int.parse(data['nbayar']))), onTap: () {
                     widget.onTransactionSelected(data['notrans'], data['nbayar']); // Mengirim notrans dan nbayar
                     Navigator.of(context).pop();
                   }),
