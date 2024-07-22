@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import 'ganti_pwd.dart';
 import 'login.dart';
@@ -10,25 +11,32 @@ class HomeSalesPage extends StatefulWidget {
   final String varbagian;
   final String varlks;
   final String varnmlok;
+  final String varsaldokas;
 
-  HomeSalesPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok);
+  HomeSalesPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok, this.varsaldokas);
 
   @override
   State<HomeSalesPage> createState() => _HomeSalesPageState();
 }
 
 class _HomeSalesPageState extends State<HomeSalesPage> {
+  late double saldokasku;
   void lapPenjualanFunction() {
+    Navigator.pushNamed(context, '/lapjual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+
     print("Lap. Penjualan clicked");
     // Tambahkan fungsi lain yang Anda inginkan
   }
 
   void stockFunction() {
+    Navigator.pushNamed(context, '/lapstok', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
     print("Stock clicked");
     // Tambahkan fungsi lain yang Anda inginkan
   }
 
   void daftarHargaFunction() {
+    Navigator.pushNamed(context, '/daftarharga', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+
     print("Daftar Harga clicked");
     // Tambahkan fungsi lain yang Anda inginkan
   }
@@ -55,7 +63,13 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '')) ?? 0.0;
+  }
+
   Widget build(BuildContext context) {
+    final numberFormat = NumberFormat.decimalPattern('id_ID');
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.96),
       bottomNavigationBar: BottomNavigationBar(
@@ -195,7 +209,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                               textAlign: TextAlign.left, // Align text to the left
                             ),
                             Text(
-                              'Rp 9.876.541',
+                              numberFormat.format(saldokasku),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 50, // Larger font size

@@ -5,9 +5,10 @@ import 'service.dart';
 
 class TransactionSearchPopup extends StatefulWidget {
   final String varpbuser;
+  final String varlks;
   final Function(String, String) onTransactionSelected; // Mengubah parameter
 
-  TransactionSearchPopup({required this.varpbuser, required this.onTransactionSelected});
+  TransactionSearchPopup({required this.varpbuser, required this.onTransactionSelected, required this.varlks});
 
   @override
   _TransactionSearchPopupState createState() => _TransactionSearchPopupState();
@@ -26,7 +27,7 @@ class _TransactionSearchPopupState extends State<TransactionSearchPopup> {
   void _searchTransactions() async {
     try {
       String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      List<Map<String, dynamic>> result = await ApiService.lapjual(today, today, "1");
+      List<Map<String, dynamic>> result = await ApiService.lapjual(today, today, "1", widget.varlks);
       setState(() {
         searchResults = result;
       });

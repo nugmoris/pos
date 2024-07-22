@@ -180,8 +180,9 @@ class _JualPageState extends State<JualPage> {
       builder: (BuildContext context) {
         return TransactionSearchPopup(
           varpbuser: widget.varpbuser,
+          varlks: widget.varlks, // Menambahkan varlks disini
           onTransactionSelected: (notrans, nbayar) {
-            onTransactionSelected(notrans, nbayar); // Menambahkan parameter nbayar
+            onTransactionSelected(notrans, nbayar);
           },
         );
       },

@@ -4,29 +4,43 @@ import 'package:intl/intl.dart';
 import 'service.dart';
 
 class LapPage extends StatefulWidget {
+  final String varpbuser;
+  final String varbagian;
+  final String varlks;
+  final String varnmlok;
+  LapPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok);
   @override
   _LapPageState createState() => _LapPageState();
 }
 
 class _LapPageState extends State<LapPage> {
   final NumberFormat numberFormat = NumberFormat.decimalPattern('en');
+  final DateFormat dateFormat = DateFormat('yyyy-MM-dd'); // Date format to show only the date
 
   DateTime? selectedDate1;
   DateTime? selectedDate2;
   String selectedServer = 'ALL';
   num nominalTotal = 0;
-  num nominalMenangTotal = 0;
+  List<Map<String, dynamic>> data = [];
 
-  Future<List<Map<String, dynamic>>> _fetchData() async {
+  Future<void> _fetchData() async {
     try {
-      final List<Map<String, dynamic>> data = await ApiService.lapjual(
-          selectedDate1?.toString() ?? '',
-          selectedDate2?.toString() ?? '',
-          '2');
-      return data;
+      final List<Map<String, dynamic>> fetchedData = await ApiService.lapjual(
+        selectedDate1?.toString() ?? '',
+        selectedDate2?.toString() ?? '',
+        '2',
+        widget.varlks,
+      );
+      print('cetak lap penjualan');
+      setState(() {
+        data = fetchedData;
+        nominalTotal = data.fold(0, (sum, item) => sum + int.parse(item['subttl'] ?? '0'));
+      });
     } catch (e) {
-      //print('Error fetching data: $e');
-      return [];
+      print('Error fetching data: $e');
+      setState(() {
+        data = [];
+      });
     }
   }
 
@@ -61,6 +75,13 @@ class _LapPageState extends State<LapPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    selectedDate1 = DateTime.now();
+    selectedDate2 = DateTime.now();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -72,6 +93,13 @@ class _LapPageState extends State<LapPage> {
             padding: EdgeInsets.all(16.0),
             child: Column(
               children: [
+                Text(
+                  widget.varnmlok,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Row(
                   children: [
                     Expanded(
@@ -84,8 +112,7 @@ class _LapPageState extends State<LapPage> {
                               suffixIcon: Icon(Icons.calendar_today),
                             ),
                             controller: TextEditingController(
-                              text:
-                                  selectedDate1?.toString().split(' ')[0] ?? '',
+                              text: selectedDate1?.toString().split(' ')[0] ?? '',
                             ),
                           ),
                         ),
@@ -102,8 +129,7 @@ class _LapPageState extends State<LapPage> {
                               suffixIcon: Icon(Icons.calendar_today),
                             ),
                             controller: TextEditingController(
-                              text:
-                                  selectedDate2?.toString().split(' ')[0] ?? '',
+                              text: selectedDate2?.toString().split(' ')[0] ?? '',
                             ),
                           ),
                         ),
@@ -115,11 +141,7 @@ class _LapPageState extends State<LapPage> {
                 Row(
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _fetchData(); // Panggil fungsi _fetchData() saat tombol Tampilkan diklik
-                        });
-                      },
+                      onPressed: _fetchData,
                       child: Text('Tampilkan'),
                     ),
                     SizedBox(width: 10),
@@ -133,70 +155,67 @@ class _LapPageState extends State<LapPage> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: _fetchData(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error fetching data'));
-                } else {
-                  final data = snapshot.data!;
-                  nominalTotal = 0;
-                  nominalMenangTotal = 0;
-                  data.forEach((item) {
-                    nominalTotal += int.parse(item['subttl'] ?? '0');
-                  });
-                  final numberFormat = NumberFormat.decimalPattern('id_ID');
-
-                  return Column(
-                    children: [
-                      Text(
-                        'Total: ${numberFormat.format(nominalTotal)}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+            child: data.isNotEmpty
+                ? SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SingleChildScrollView(
+                      child: DataTable(
+                        columns: [
+                          DataColumn(label: Text('No Trans')),
+                          DataColumn(label: Text('Tanggal')),
+                          DataColumn(label: Text('Nama Customer')),
+                          DataColumn(label: Text('Nama Barang')),
+                          DataColumn(label: Text('Qty')),
+                          DataColumn(label: Text('NRP')),
+                          DataColumn(label: Text('Subttl')),
+                          DataColumn(label: Text('Total')),
+                        ],
+                        rows: _buildDataRows(),
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            final item = data[index];
-                            final nrp = numberFormat.parse(item['nrp'] ?? '0');
-                            final subttl =
-                                numberFormat.parse(item['subttl'] ?? '0');
-
-                            return Container(
-                              child: Card(
-                                child: ListTile(
-                                  title: Text(item['notrans']),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Tanggal: ${item['tgl']}'),
-                                      Text('kode: ${item['kdbarang']}'),
-                                      Text('Nama: ${item['nama']}'),
-                                      Text(
-                                          'Nominal: Rp.${numberFormat.format(nrp)}'),
-                                      Text('Qty: ${item['nqty']}'),
-                                      Text(
-                                          'Subttl: Rp.${numberFormat.format(subttl)}'),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }
-              },
+                    ),
+                  )
+                : Center(child: Text('No data available')),
+          ),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Grand Total: ${numberFormat.format(nominalTotal)}',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
         ],
       ),
     );
+  }
+
+  List<DataRow> _buildDataRows() {
+    List<DataRow> rows = [];
+    String? lastNotrans;
+    num subttlTotal = 0;
+
+    for (var i = 0; i < data.length; i++) {
+      var item = data[i];
+      bool isNewTransaction = item['notrans'] != lastNotrans;
+
+      if (isNewTransaction) {
+        subttlTotal =
+            data.where((element) => element['notrans'] == item['notrans']).fold(0, (sum, element) => sum + int.parse(element['subttl'] ?? '0'));
+      }
+
+      rows.add(DataRow(cells: [
+        DataCell(Text(isNewTransaction ? item['notrans'] ?? '' : '')),
+        DataCell(Text(isNewTransaction ? dateFormat.format(DateTime.parse(item['tgl'])) : '')),
+        DataCell(Text(isNewTransaction ? item['nmcust'] ?? '' : '')),
+        DataCell(Text(item['nmbarang'] ?? '')),
+        DataCell(Text(item['nqty'] ?? '')),
+        DataCell(Text(numberFormat.format(int.parse(item['nrp'] ?? '0')))),
+        DataCell(Text(numberFormat.format(int.parse(item['subttl'] ?? '0')))),
+        DataCell(Text(isNewTransaction ? numberFormat.format(subttlTotal) : '')),
+      ]));
+
+      lastNotrans = item['notrans'];
+    }
+
+    return rows;
   }
 }

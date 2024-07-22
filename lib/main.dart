@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ota_update/ota_update.dart';
 
+import 'daftarharga.dart';
 import 'home.dart';
 import 'jual.dart';
 import 'laporan.dart';
+import 'lapstok.dart';
 import 'login.dart';
 import 'service.dart';
 
@@ -52,15 +54,16 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginPage(),
         '/login': (context) => LoginPage(),
-        '/lapjual': (context) => LapPage(),
+        // '/lapjual': (context) => LapPage(),
         '/home': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
           final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
           final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
           final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
           final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+          final varsaldokas = args?.isNotEmpty == true ? args![4] as String? : null;
 
-          return HomeSalesPage(varpbuser!, varbagian!, varlks!, varnmlok!);
+          return HomeSalesPage(varpbuser!, varbagian!, varlks!, varnmlok!, varsaldokas!);
         },
         '/jual': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
@@ -70,6 +73,34 @@ class MyApp extends StatelessWidget {
           final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
 
           return JualPage(varpbuser!, varbagian!, varlks!, varnmlok!);
+        },
+        '/lapjual': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return LapPage(varpbuser!, varbagian!, varlks!, varnmlok!);
+        },
+
+        '/lapstok': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return LapStok(varpbuser!, varbagian!, varlks!, varnmlok!);
+        },
+        '/daftarharga': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return DaftarHarga(varpbuser!, varbagian!, varlks!, varnmlok!);
         },
       },
     );
