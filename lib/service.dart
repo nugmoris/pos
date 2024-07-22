@@ -162,6 +162,24 @@ class ApiService {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> crbarang2(String username, String cari1, String kondisi1) async {
+    final url = '$root/api.php?action=CRBARANG2';
+    final Map<String, String> jsonData = {
+      'user1': username,
+      'cari1': cari1,
+      'kondisi1': kondisi1,
+    };
+
+    var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+      print(jsonData);
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
   static Future<List<Map<String, dynamic>>> crcust(String username, String cari1, String kondisi1) async {
     final url = '$root/api.php?action=CARICUST';
     final Map<String, String> jsonData = {

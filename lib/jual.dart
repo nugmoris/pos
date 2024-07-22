@@ -1,6 +1,7 @@
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pos/item_search_popup.dart';
 
 import 'bayarjual.dart';
 import 'customer_search_popup.dart';
@@ -330,7 +331,26 @@ class _JualPageState extends State<JualPage> {
     }
   }
 
-  // Fungsi untuk mencari dan terhubung ke printer Bluetooth
+  void caribrgmanual() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ItemSearchPopup(
+          varpbuser: widget.varpbuser,
+          onItemSelected: (kode, nama, nhargajual) {
+            setState(() {
+              barcodeController.text = kode;
+              namaController.text = nama;
+              hargaController.text = nhargajual;
+              jumlahController.text = '1';
+              subttlController.text = nhargajual;
+            });
+          },
+        );
+      },
+    );
+  }
+
   void _searchCustomer() async {
     showDialog(
       context: context,
@@ -431,6 +451,10 @@ class _JualPageState extends State<JualPage> {
                 IconButton(
                   icon: Icon(Icons.camera_alt),
                   onPressed: scanBarcode,
+                ),
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: caribrgmanual, // Panggil fungsi pencarian
                 ),
                 IconButton(
                   icon: Icon(Icons.refresh),
