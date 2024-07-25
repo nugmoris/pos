@@ -48,16 +48,22 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
   }
 
   void setorFunction() {
+    Navigator.pushNamed(context, '/setor', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+
     print("Setor clicked");
     // Tambahkan fungsi lain yang Anda inginkan
   }
 
   void penjKaryawanFunction() {
+    Navigator.pushNamed(context, '/penjkary', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+
     print("Penj. Karyawan clicked");
     // Tambahkan fungsi lain yang Anda inginkan
   }
 
   void laporanFunction() {
+    Navigator.pushNamed(context, '/lapkas', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+
     print("Laporan clicked");
     // Tambahkan fungsi lain yang Anda inginkan
   }
@@ -202,7 +208,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                           crossAxisAlignment: CrossAxisAlignment.start, // Aligns content to the left
                           children: [
                             Text(
-                              'Saldo Cash',
+                              'Saldo Kas',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -287,7 +293,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                       ),
                       TombolWidget(
                         icon: Icons.library_books,
-                        text: 'Laporan',
+                        text: 'Laporan Kas',
                         onTap: laporanFunction,
                       ),
                     ],

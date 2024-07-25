@@ -7,8 +7,8 @@ class TransactionSearchPopup extends StatefulWidget {
   final String varpbuser;
   final String varlks;
   final Function(String, String) onTransactionSelected; // Mengubah parameter
-
   TransactionSearchPopup({required this.varpbuser, required this.onTransactionSelected, required this.varlks});
+  // TransactionSearchPopup({required this.varpbuser, required this.varlks, required this.onTransactionSelected});
 
   @override
   _TransactionSearchPopupState createState() => _TransactionSearchPopupState();
@@ -26,8 +26,11 @@ class _TransactionSearchPopupState extends State<TransactionSearchPopup> {
 
   void _searchTransactions() async {
     try {
+      print(widget.varlks);
       String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      List<Map<String, dynamic>> result = await ApiService.lapjual(today, today, "1", widget.varlks);
+      print(today);
+      List<Map<String, dynamic>> result = await ApiService.lapjualx(today, today, "1", widget.varlks);
+      print('b');
       setState(() {
         searchResults = result;
       });

@@ -165,6 +165,7 @@ class _JualPageState extends State<JualPage> {
       setState(() {
         barcodeResult = result.rawContent;
         barcodeController.text = barcodeResult;
+        print('barcode');
       });
       fetchProductDetails();
     } catch (e) {
@@ -176,6 +177,7 @@ class _JualPageState extends State<JualPage> {
   }
 
   void searchTransactions() {
+    // print('serachTrans');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -213,7 +215,8 @@ class _JualPageState extends State<JualPage> {
 
   Future<void> fetchProductDetails() async {
     try {
-      var details = await ApiService.crbarang("username", barcodeResult);
+      var details = await ApiService.crbarang(widget.varpbuser, barcodeResult, '1');
+      print('proses cari kode barang 2');
       final formatter = NumberFormat("#,###");
 
       setState(() {
@@ -339,11 +342,14 @@ class _JualPageState extends State<JualPage> {
           varpbuser: widget.varpbuser,
           onItemSelected: (kode, nama, nhargajual) {
             setState(() {
+              final formatter = NumberFormat("#,###");
               barcodeController.text = kode;
               namaController.text = nama;
-              hargaController.text = nhargajual;
+              //hargaController.text = nhargajual;
+              hargaController.text = formatter.format(int.parse(nhargajual));
               jumlahController.text = '1';
-              subttlController.text = nhargajual;
+              //subttlController.text = nhargajual;
+              subttlController.text = formatter.format(int.parse(nhargajual));
             });
           },
         );

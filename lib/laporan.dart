@@ -25,7 +25,7 @@ class _LapPageState extends State<LapPage> {
 
   Future<void> _fetchData() async {
     try {
-      final List<Map<String, dynamic>> fetchedData = await ApiService.lapjual(
+      final List<Map<String, dynamic>> fetchedData = await ApiService.lapjualx(
         selectedDate1?.toString() ?? '',
         selectedDate2?.toString() ?? '',
         '2',
@@ -145,10 +145,10 @@ class _LapPageState extends State<LapPage> {
                       child: Text('Tampilkan'),
                     ),
                     SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Cetak'),
-                    ),
+                    // ElevatedButton(
+                    //   onPressed: () {},
+                    //   child: Text('Cetak'),
+                    // ),
                   ],
                 ),
               ],

@@ -4,13 +4,16 @@ import 'package:ota_update/ota_update.dart';
 import 'daftarharga.dart';
 import 'home.dart';
 import 'jual.dart';
+import 'lapkas.dart';
 import 'laporan.dart';
 import 'lapstok.dart';
 import 'login.dart';
+import 'penjkary.dart';
 import 'service.dart';
+import 'setor.dart';
 
 // Define myversion variable
-String myversion = 'POS2';
+String myversion = 'POS1';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,6 +104,36 @@ class MyApp extends StatelessWidget {
           final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
 
           return DaftarHarga(varpbuser!, varbagian!, varlks!, varnmlok!);
+        },
+
+        '/lapkas': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return LapKas(varpbuser!, varbagian!, varlks!, varnmlok!);
+        },
+
+        '/setor': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return Setor(varpbuser!, varbagian!, varlks!, varnmlok!);
+        },
+
+        '/penjkary': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return Penjkary(varpbuser!, varbagian!, varlks!, varnmlok!);
         },
       },
     );

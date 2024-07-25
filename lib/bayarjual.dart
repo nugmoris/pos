@@ -103,7 +103,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 TableRow(
                   children: [
                     Text(
-                      'Terbayar',
+                      'Terbyr',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(': '),
