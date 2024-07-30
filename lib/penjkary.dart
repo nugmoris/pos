@@ -223,28 +223,33 @@ class _PenjkaryState extends State<Penjkary> {
             laporanPenjualan.isNotEmpty
                 ? Expanded(
                     child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: [
-                          DataColumn(label: Text('No Trans')),
-                          DataColumn(label: Text('Tanggal')),
-                          DataColumn(label: Text('Nama Barang')),
-                          DataColumn(label: Text('Qty')),
-                          DataColumn(label: Text('NRP')),
-                          DataColumn(label: Text('Subtotal')),
-                        ],
-                        rows: laporanPenjualan.map((data) {
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(data['notrans'])),
-                              DataCell(Text(data['tgl'])),
-                              DataCell(Text(data['nmbarang'])),
-                              DataCell(Text(data['nqty'])),
-                              DataCell(Text(NumberFormat.currency(locale: 'id', symbol: '').format(int.parse(data['nrp'])))),
-                              DataCell(Text(NumberFormat.currency(locale: 'id', symbol: '').format(int.parse(data['subtotal'])))),
-                            ],
-                          );
-                        }).toList(),
+                      scrollDirection: Axis.vertical,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns: [
+                            DataColumn(label: Text('No Trans')),
+                            DataColumn(label: Text('Tanggal')),
+                            DataColumn(label: Text('Customer')),
+                            DataColumn(label: Text('Nama Barang')),
+                            DataColumn(label: Text('Qty')),
+                            DataColumn(label: Text('NRP')),
+                            DataColumn(label: Text('Subtotal')),
+                          ],
+                          rows: laporanPenjualan.map((data) {
+                            return DataRow(
+                              cells: [
+                                DataCell(Text(data['notrans'])),
+                                DataCell(Text(data['tgl'])),
+                                DataCell(Text(data['nmcust'])),
+                                DataCell(Text(data['nmbarang'])),
+                                DataCell(Text(data['nqty'])),
+                                DataCell(Text(NumberFormat.currency(locale: 'id', symbol: '').format(int.parse(data['nrp'])))),
+                                DataCell(Text(NumberFormat.currency(locale: 'id', symbol: '').format(int.parse(data['subtotal'])))),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   )

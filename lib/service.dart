@@ -442,8 +442,8 @@ class ApiService {
       'kdbarang1': kdbarang1,
     };
     var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
-
     print(url);
+    print(jsonData);
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
       print(jsonData);

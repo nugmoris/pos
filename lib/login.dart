@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 8),
             Text(
-              "Silahkan Login ! (ver 1.0.2)",
+              "Silahkan Login ! (ver 1.0.4)",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
             SizedBox(height: 20),

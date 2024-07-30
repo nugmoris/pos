@@ -13,7 +13,7 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion = 'POS1';
+String myversion = 'POS4';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

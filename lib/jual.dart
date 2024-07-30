@@ -533,15 +533,18 @@ class _JualPageState extends State<JualPage> {
                     )),
                 SizedBox(width: 5),
                 Expanded(
-                    flex: 1,
-                    child: TextField(
-                      keyboardType: TextInputType.number, // Keyboard numerik untuk Diskon
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Diskon',
-                      ),
-                      controller: diskonController,
-                    )),
+                  flex: 1,
+                  child: Visibility(
+                      visible: false, // Mengatur agar TextField diskon tidak terlihat
+                      child: TextField(
+                        keyboardType: TextInputType.number, // Keyboard numerik untuk Diskon
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Diskon',
+                        ),
+                        controller: diskonController,
+                      )),
+                ),
               ],
             ),
             SizedBox(height: 10),
