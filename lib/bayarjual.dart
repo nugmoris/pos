@@ -23,15 +23,32 @@ class PaymentDialog extends StatefulWidget {
 }
 
 class _PaymentDialogState extends State<PaymentDialog> {
+  TextEditingController jmluangController = TextEditingController();
+  TextEditingController kembaliController = TextEditingController();
   TextEditingController paymentController = TextEditingController();
+
   List<Map<String, dynamic>> kirabayarData = [];
   String? selectedKira;
   String? selectedKdgl;
+
+  final NumberFormat formatter = NumberFormat("#,###", "id_ID");
 
   @override
   void initState() {
     super.initState();
     _fetchKirabayarData();
+
+    // Add listener to jmluangController
+    jmluangController.addListener(_updatePaymentFields);
+  }
+
+  @override
+  void dispose() {
+    jmluangController.removeListener(_updatePaymentFields);
+    jmluangController.dispose();
+    kembaliController.dispose();
+    paymentController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchKirabayarData() async {
@@ -49,12 +66,29 @@ class _PaymentDialogState extends State<PaymentDialog> {
     }
   }
 
+  void _updatePaymentFields() {
+    String grandTotalClean = widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
+    String totbayarClean = widget.totbayar.replaceAll(RegExp(r'[^0-9]'), '');
+
+    int grandTotalInt = int.tryParse(grandTotalClean) ?? 0;
+    int totbayarInt = int.tryParse(totbayarClean) ?? 0;
+    int hrsbayarInt = grandTotalInt - totbayarInt;
+
+    int jmluangInt = int.tryParse(jmluangController.text.replaceAll(',', '')) ?? 0;
+
+    if (jmluangInt >= hrsbayarInt) {
+      kembaliController.text = formatter.format(jmluangInt - hrsbayarInt);
+      paymentController.text = formatter.format(hrsbayarInt);
+    } else {
+      kembaliController.text = '0';
+      paymentController.text = formatter.format(jmluangInt);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Menghitung kekurangan pembayaran (hrsbayar)
-    final formatter = NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
-    String grandTotalClean = widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), ''); // Menghapus semua karakter non-digit
-    String totbayarClean = widget.totbayar.replaceAll(RegExp(r'[^0-9]'), ''); // Menghapus semua karakter non-digit
+    String grandTotalClean = widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
+    String totbayarClean = widget.totbayar.replaceAll(RegExp(r'[^0-9]'), '');
 
     int grandTotalInt = int.tryParse(grandTotalClean) ?? 0;
     int totbayarInt = int.tryParse(totbayarClean) ?? 0;
@@ -68,9 +102,9 @@ class _PaymentDialogState extends State<PaymentDialog> {
           children: <Widget>[
             Table(
               columnWidths: {
-                0: FlexColumnWidth(2), // Lebar kolom pertama (label)
-                1: FixedColumnWidth(7), // Lebar kolom kedua (titik dua)
-                2: FlexColumnWidth(5), // Lebar kolom ketiga (nilai)
+                0: FlexColumnWidth(2),
+                1: FixedColumnWidth(7),
+                2: FlexColumnWidth(5),
               },
               children: [
                 TableRow(
@@ -129,7 +163,9 @@ class _PaymentDialogState extends State<PaymentDialog> {
                         SizedBox(width: 8),
                         GestureDetector(
                           onTap: () {
-                            paymentController.text = hrsbayarInt.toString();
+                            paymentController.text = formatter.format(hrsbayarInt);
+                            jmluangController.text = formatter.format(hrsbayarInt);
+                            kembaliController.text = '0';
                           },
                           child: Icon(Icons.add_circle_outline, color: Colors.blue),
                         ),
@@ -139,7 +175,42 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 ),
               ],
             ),
-            SizedBox(height: 16), // Jarak antara TextField dan ComboBox
+            SizedBox(height: 16),
+            TextField(
+              controller: jmluangController,
+              decoration: InputDecoration(
+                labelText: 'Jumlah Uang Rp',
+                hintText: 'Jumlah Uang Rp',
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: kembaliController,
+              decoration: InputDecoration(
+                labelText: 'Kembalian',
+                hintText: 'Kembalian',
+              ),
+              keyboardType: TextInputType.number,
+              readOnly: true,
+            ),
+            TextField(
+              controller: paymentController,
+              decoration: InputDecoration(
+                labelText: 'Nilai Bayar',
+                hintText: 'Masukkan jumlah pembayaran',
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            Divider(
+              color: Colors.black,
+              thickness: 2,
+              indent: 10,
+              endIndent: 10,
+            ),
+            Text(
+              'Dibayar ke :',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
             DropdownButton<String>(
               hint: Text("Pilih Kira"),
               value: selectedKira,
@@ -162,14 +233,11 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 alignment: Alignment.centerLeft,
                 child: Text('Kode : $selectedKdgl'),
               ),
-            SizedBox(height: 16), // Memberikan sedikit jarak antara tabel dan TextField
-            TextField(
-              controller: paymentController,
-              decoration: InputDecoration(
-                labelText: 'Nilai Bayar',
-                hintText: 'Masukkan jumlah pembayaran',
-              ),
-              keyboardType: TextInputType.number,
+            Divider(
+              color: Colors.black,
+              thickness: 2,
+              indent: 10,
+              endIndent: 10,
             ),
           ],
         ),
@@ -178,23 +246,24 @@ class _PaymentDialogState extends State<PaymentDialog> {
         TextButton(
           child: Text('Batal'),
           onPressed: () {
-            Navigator.of(context).pop(); // Tutup dialog
+            Navigator.of(context).pop();
           },
         ),
         TextButton(
           child: Text('Bayar'),
           onPressed: () async {
+            print(paymentController.text.replaceAll(',', ''));
             if (selectedKdgl != null && paymentController.text.isNotEmpty) {
               try {
                 var paymentData = await ApiService.bayarjual(
                   widget.notrans,
-                  paymentController.text,
+                  paymentController.text.replaceAll('.', ''),
                   widget.username,
                   widget.varlks,
                   selectedKdgl!,
                 );
                 print('Pembayaran berhasil: $paymentData');
-                Navigator.of(context).pop(paymentData[0]['totbyr']); // Mengembalikan nilai totbyr
+                Navigator.of(context).pop(paymentData[0]['totbyr']);
               } catch (e) {
                 print('Error saat melakukan pembayaran: $e');
               }

@@ -271,9 +271,7 @@ class _ReportPageState extends State<ReportPage> {
 
                                   printer.printCustom('Kop. Kasih', 1, 1);
                                   printer.printCustom('${widget.varnotrans} - $currentDate', 1, 1);
-
                                   printer.printNewLine();
-
                                   for (int i = 0; i < widget.reportData.length; i++) {
                                     final data = widget.reportData[i];
                                     final nmbarang = data['nama'];
@@ -297,6 +295,9 @@ class _ReportPageState extends State<ReportPage> {
 
                                   // printer.printNewLine();
                                   printer.printCustom('--------------------', 0, 1);
+                                  printer.printNewLine();
+                                  printer.printCustom('Terima kasih sudah berbelanja', 1, 1);
+                                  printer.printCustom('Barang yang sudah dibeli tidak dapat ditukar', 1, 1);
                                   printer.printNewLine();
                                 } finally {
                                   setState(() {
