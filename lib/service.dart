@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const root = "http://128.199.154.103/tuing_pos";
+  //static const root = "http://128.199.154.103/tuing_pos";
+  static const root = "http://103.80.96.26/tuing_pos";
+
   static const action = "LOGIN";
 
   static Future<Map<String, String>> login2(String username, String password, String alamatmac) async {

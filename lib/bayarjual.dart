@@ -96,7 +96,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
     String hrsbayar = formatter.format(hrsbayarInt);
 
     return AlertDialog(
-      title: Text('Pembayaran'),
+      //  title: Text('Pembayaran'),
       content: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -114,13 +114,13 @@ class _PaymentDialogState extends State<PaymentDialog> {
                     Text(widget.notrans),
                   ],
                 ),
-                TableRow(
-                  children: [
-                    Text('Tgl'),
-                    Text(': '),
-                    Text(DateFormat('dd-MM-yyyy').format(DateTime.now())),
-                  ],
-                ),
+                // TableRow(
+                //   children: [
+                //     Text('Tgl'),
+                //     Text(': '),
+                //     Text(DateFormat('dd-MM-yyyy').format(DateTime.now())),
+                //   ],
+                // ),
                 TableRow(
                   children: [
                     Text(
@@ -160,12 +160,12 @@ class _PaymentDialogState extends State<PaymentDialog> {
                           'Rp. $hrsbayar',
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        SizedBox(width: 8),
+                        // SizedBox(width: 8),
                         GestureDetector(
                           onTap: () {
-                            paymentController.text = formatter.format(hrsbayarInt);
                             jmluangController.text = formatter.format(hrsbayarInt);
                             kembaliController.text = '0';
+                            paymentController.text = formatter.format(hrsbayarInt);
                           },
                           child: Icon(Icons.add_circle_outline, color: Colors.blue),
                         ),
@@ -175,7 +175,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            // SizedBox(height: 5),
             TextField(
               controller: jmluangController,
               decoration: InputDecoration(
@@ -183,23 +183,39 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 hintText: 'Jumlah Uang Rp',
               ),
               keyboardType: TextInputType.number,
+              style: TextStyle(fontSize: 18),
             ),
-            TextField(
-              controller: kembaliController,
-              decoration: InputDecoration(
-                labelText: 'Kembalian',
-                hintText: 'Kembalian',
-              ),
-              keyboardType: TextInputType.number,
-              readOnly: true,
-            ),
-            TextField(
-              controller: paymentController,
-              decoration: InputDecoration(
-                labelText: 'Nilai Bayar',
-                hintText: 'Masukkan jumlah pembayaran',
-              ),
-              keyboardType: TextInputType.number,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: kembaliController,
+                    decoration: InputDecoration(
+                      labelText: 'Kembalian',
+                      hintText: 'Kembalian',
+                    ),
+                    keyboardType: TextInputType.number,
+                    readOnly: true,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold, // Warna font teks yang diketik
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: TextField(
+                    controller: paymentController,
+                    decoration: InputDecoration(
+                      labelText: 'Nilai Bayar',
+                      hintText: 'Masukkan jumlah pembayaran',
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ],
             ),
             Divider(
               color: Colors.black,
@@ -207,27 +223,38 @@ class _PaymentDialogState extends State<PaymentDialog> {
               indent: 10,
               endIndent: 10,
             ),
-            Text(
-              'Dibayar ke :',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    'Dibyr ke :',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: DropdownButton<String>(
+                    hint: Text("Pilih Kira"),
+                    value: selectedKira,
+                    isExpanded: true,
+                    items: kirabayarData.map((kira) {
+                      return DropdownMenuItem<String>(
+                        value: kira['nmkira'],
+                        child: Text(kira['nmkira']),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedKira = value;
+                        selectedKdgl = kirabayarData.firstWhere((kira) => kira['nmkira'] == value)['kdgl'];
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
-            DropdownButton<String>(
-              hint: Text("Pilih Kira"),
-              value: selectedKira,
-              isExpanded: true,
-              items: kirabayarData.map((kira) {
-                return DropdownMenuItem<String>(
-                  value: kira['nmkira'],
-                  child: Text(kira['nmkira']),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedKira = value;
-                  selectedKdgl = kirabayarData.firstWhere((kira) => kira['nmkira'] == value)['kdgl'];
-                });
-              },
-            ),
+
             if (selectedKdgl != null)
               Align(
                 alignment: Alignment.centerLeft,

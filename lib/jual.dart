@@ -40,6 +40,7 @@ class _JualPageState extends State<JualPage> {
 
   // String hrsbayar = '0';
   double hrsbayar = 0.0;
+  //FocusNode jumlahFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -55,6 +56,7 @@ class _JualPageState extends State<JualPage> {
   @override
   void dispose() {
     jumlahController.removeListener(_updateSubtotalAndTotal);
+    //jumlahFocusNode.dispose();
     jumlahController.dispose();
     barcodeController.dispose();
     namaController.dispose();
@@ -166,8 +168,10 @@ class _JualPageState extends State<JualPage> {
         barcodeResult = result.rawContent;
         barcodeController.text = barcodeResult;
         print('barcode');
+        //FocusScope.of(context).requestFocus(jumlahController);
       });
       fetchProductDetails();
+      // FocusScope.of(context).requestFocus(jumlahFocusNode);
     } catch (e) {
       setState(() {
         barcodeResult = 'Kesalahan dalam memindai barcode: $e';
@@ -234,7 +238,7 @@ class _JualPageState extends State<JualPage> {
         namaController.text = 'Gagal memuat data';
         hargaController.text = 'Gagal memuat data';
         subttlController.text = '0';
-        jumlahController.text = '1';
+        jumlahController.text = '';
         diskonController.text = '0';
         totalController.text = '0';
       });
@@ -347,9 +351,10 @@ class _JualPageState extends State<JualPage> {
               namaController.text = nama;
               //hargaController.text = nhargajual;
               hargaController.text = formatter.format(int.parse(nhargajual));
-              jumlahController.text = '1';
+              jumlahController.text = '';
               //subttlController.text = nhargajual;
               subttlController.text = formatter.format(int.parse(nhargajual));
+              // FocusScope.of(context).requestFocus(jumlahFocusNode);
             });
           },
         );
@@ -508,7 +513,8 @@ class _JualPageState extends State<JualPage> {
                 Expanded(
                   flex: 1, // Memberi lebih sedikit ruang untuk QTY
                   child: TextField(
-                    keyboardType: TextInputType.number, // Keyboard numerik untuk QTY
+                    //  focusNode: jumlahFocusNode,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'QTY',
