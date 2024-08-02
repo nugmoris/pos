@@ -115,7 +115,7 @@ class _JualPageState extends State<JualPage> {
       // print('Jumlah: ${jumlahController.text}');
       // print('Harga: ${hargaController.text.replaceAll(',', '')}'); // Hapus koma
       // print('No Trans: ${notransController.text}');
-
+      print(jumlahController.text);
       if (barcodeController.text.isNotEmpty &&
           jumlahController.text.isNotEmpty &&
           hargaController.text.isNotEmpty &&
@@ -167,10 +167,12 @@ class _JualPageState extends State<JualPage> {
       setState(() {
         barcodeResult = result.rawContent;
         barcodeController.text = barcodeResult;
-        print('barcode');
+        //  print('barcode');
         //FocusScope.of(context).requestFocus(jumlahController);
+        print('proses scan barcode 1');
       });
       fetchProductDetails();
+      print('proses scan barcode 2');
       // FocusScope.of(context).requestFocus(jumlahFocusNode);
     } catch (e) {
       setState(() {
@@ -225,12 +227,14 @@ class _JualPageState extends State<JualPage> {
 
       setState(() {
         namaController.text = details['nama'];
+        print('proses1');
         hargaController.text = formatter.format(int.parse(details['hargaJual']));
-        jumlahController.text = '1';
+        jumlahController.text = '0';
         subttlController.text = formatter.format(int.parse(details['hargaJual']) * int.parse(jumlahController.text));
         diskonController.text = '0';
         totalController.text =
             formatter.format((int.parse(details['hargaJual']) * int.parse(jumlahController.text) - int.parse(diskonController.text)));
+        jumlahController.text = '';
       });
     } catch (e) {
       setState(() {
@@ -238,9 +242,10 @@ class _JualPageState extends State<JualPage> {
         namaController.text = 'Gagal memuat data';
         hargaController.text = 'Gagal memuat data';
         subttlController.text = '0';
-        jumlahController.text = '';
+        jumlahController.text = '0';
         diskonController.text = '0';
         totalController.text = '0';
+        print('proses2');
       });
     }
   }
@@ -389,55 +394,82 @@ class _JualPageState extends State<JualPage> {
         body: SafeArea(
             child: SingleChildScrollView(
           child: Column(children: [
-            SizedBox(height: 10),
-            TextField(
-              readOnly: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'No. Transaksi',
+            SizedBox(height: 5),
+            Text(
+              notransController.text,
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
               ),
-              controller: notransController,
             ),
+            // TextField(
+            //   readOnly: true,
+            //   decoration: InputDecoration(
+            //     border: OutlineInputBorder(),
+            //     labelText: 'No. Transaksi',
+            //   ),
+            //   controller: notransController,
+            // ),
             Divider(
               color: Colors.black, // Warna garis
               thickness: 2, // Ketebalan garis
               indent: 10, // Jarak dari awal garis ke tepi kiri
               endIndent: 10, // Jarak dari akhir garis ke tepi kanan
             ),
-            SizedBox(height: 10),
-
+            SizedBox(height: 5),
             Row(
               children: [
-                SizedBox(height: 20),
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Kode Customer',
-                    ),
-                    controller: kdcustController,
-                  ),
-                ),
-                SizedBox(width: 5),
                 IconButton(
                   icon: Icon(Icons.search),
                   onPressed: _searchCustomer,
                 ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    kdcustController.text,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  ' - ',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    nmcustController.text,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                // Expanded(
+                //   flex: 2,
+                //   child:
+                //   TextField(
+                //     readOnly: true,
+                //     decoration: InputDecoration(
+                //       border: OutlineInputBorder(),
+                //       labelText: 'Kode Customer',
+                //     ),
+                //     controller: kdcustController,
+                //   ),
+                // ),
+                SizedBox(width: 5),
               ],
             ),
             SizedBox(height: 5),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                nmcustController.text,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+
             Divider(
               color: Colors.black, // Warna garis
               thickness: 2, // Ketebalan garis
@@ -486,16 +518,26 @@ class _JualPageState extends State<JualPage> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
-            TextField(
-              readOnly: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Nama Barang',
+            SizedBox(height: 5),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                namaController.text,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              controller: namaController,
             ),
-            SizedBox(height: 10),
+            // TextField(
+            //   readOnly: true,
+            //   decoration: InputDecoration(
+            //     border: OutlineInputBorder(),
+            //     labelText: 'Nama Barang',
+            //   ),
+            //   controller: namaController,
+            // ),
+            SizedBox(height: 5),
             Row(
               children: [
                 Expanded(
@@ -524,36 +566,37 @@ class _JualPageState extends State<JualPage> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                    flex: 2,
-                    child: TextField(
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Sub Total',
-                      ),
-                      controller: subttlController,
-                    )),
-                SizedBox(width: 5),
-                Expanded(
-                  flex: 1,
-                  child: Visibility(
-                      visible: false, // Mengatur agar TextField diskon tidak terlihat
-                      child: TextField(
-                        keyboardType: TextInputType.number, // Keyboard numerik untuk Diskon
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Diskon',
-                        ),
-                        controller: diskonController,
-                      )),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
+            // SizedBox(height: 10),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //         flex: 2,
+            //         child: TextField(
+            //           readOnly: true,
+            //           decoration: InputDecoration(
+            //             border: OutlineInputBorder(),
+            //             labelText: 'Sub Total',
+            //           ),
+            //           controller: subttlController,
+            //         )),
+            //     SizedBox(width: 5),
+            //     Expanded(
+            //       flex: 1,
+            //       child: Visibility(
+            //           visible: false, // Mengatur agar TextField diskon tidak terlihat
+            //           child: TextField(
+            //             keyboardType: TextInputType.number, // Keyboard numerik untuk Diskon
+            //             decoration: InputDecoration(
+            //               border: OutlineInputBorder(),
+            //               labelText: 'Diskon',
+            //             ),
+            //             controller: diskonController,
+            //           )),
+            //     ),
+            //   ],
+            // ),
+
+            SizedBox(height: 5),
             Row(
               children: [
                 Expanded(

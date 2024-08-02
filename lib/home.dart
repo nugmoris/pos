@@ -12,8 +12,10 @@ class HomeSalesPage extends StatefulWidget {
   final String varlks;
   final String varnmlok;
   final String varsaldokas;
+  final String myversion1;
+  final String currentVersion;
 
-  HomeSalesPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok, this.varsaldokas);
+  HomeSalesPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok, this.varsaldokas, this.myversion1, this.currentVersion);
 
   @override
   State<HomeSalesPage> createState() => _HomeSalesPageState();
@@ -92,13 +94,67 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
               children: [
                 // Baris pertama
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.menu,
-                        color: Colors.blue[700],
+                      GestureDetector(
+                        onTap: () {
+                          showMenu(
+                            color: Colors.white70,
+                            context: context,
+                            position: RelativeRect.fromLTRB(0.0, 0.0, 0.0, 0.0), // Ubah nilai ini
+                            items: [
+                              PopupMenuItem(
+                                child: ListTile(
+                                  title: Text('Ganti Password'),
+                                  onTap: () {
+                                    Navigator.pop(context); // Menutup menu sebelum menjalankan navigasi
+                                    Future.delayed(Duration(milliseconds: 10), () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => GantiPwdPage(widget.varpbuser),
+                                        ),
+                                      );
+                                    });
+                                  },
+                                ),
+                              ),
+                              PopupMenuItem(
+                                child: ListTile(
+                                  title: Text('Logout'),
+                                  onTap: () {
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginPage(myversion1: widget.myversion1, currentVersion: widget.currentVersion),
+                                      ),
+                                      (route) => false,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.menu,
+                                color: Colors.blue[700],
+                              ),
+                              Text(
+                                '${widget.myversion1} / ${widget.currentVersion}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                       Container(
                         width: 250,
@@ -128,45 +184,45 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                         ), // Kotak untuk logo (sementara)
                       ),
                       GestureDetector(
-                        onTap: () {
-                          showMenu(
-                            color: Colors.white70,
-                            context: context,
-                            position: RelativeRect.fromLTRB(1000.0, 80.0, 0.0, 0.0),
-                            items: [
-                              PopupMenuItem(
-                                child: ListTile(
-                                  title: Text('Ganti Password'),
-                                  onTap: () {
-                                    Navigator.pop(context); // Menutup menu sebelum menjalankan navigasi
-                                    Future.delayed(Duration(milliseconds: 10), () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => GantiPwdPage(widget.varpbuser),
-                                        ),
-                                      );
-                                    });
-                                  },
-                                ),
-                              ),
-                              PopupMenuItem(
-                                child: ListTile(
-                                  title: Text('Logout'),
-                                  onTap: () {
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginPage(),
-                                      ),
-                                      (route) => false,
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
-                        },
+                        // onTap: () {
+                        //   showMenu(
+                        //     color: Colors.white70,
+                        //     context: context,
+                        //     position: RelativeRect.fromLTRB(10.0, 80.0, 0.0, 0.0), // Ubah nilai ini
+                        //     items: [
+                        //       PopupMenuItem(
+                        //         child: ListTile(
+                        //           title: Text('Ganti Password'),
+                        //           onTap: () {
+                        //             Navigator.pop(context); // Menutup menu sebelum menjalankan navigasi
+                        //             Future.delayed(Duration(milliseconds: 10), () {
+                        //               Navigator.push(
+                        //                 context,
+                        //                 MaterialPageRoute(
+                        //                   builder: (context) => GantiPwdPage(widget.varpbuser),
+                        //                 ),
+                        //               );
+                        //             });
+                        //           },
+                        //         ),
+                        //       ),
+                        //       PopupMenuItem(
+                        //         child: ListTile(
+                        //           title: Text('Logout'),
+                        //           onTap: () {
+                        //             Navigator.pushAndRemoveUntil(
+                        //               context,
+                        //               MaterialPageRoute(
+                        //                 builder: (context) => LoginPage(),
+                        //               ),
+                        //               (route) => false,
+                        //             );
+                        //           },
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   );
+                        // },
                         child: Container(
                           child: Column(
                             children: [

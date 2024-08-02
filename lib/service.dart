@@ -4,20 +4,22 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   //static const root = "http://128.199.154.103/tuing_pos";
-  static const root = "http://103.80.96.26/tuing_pos";
+  //static const root = "http://103.80.96.26/tuing_pos";
+  static const root = "http://103.80.96.26/pos_coba";
 
   static const action = "LOGIN";
 
-  static Future<Map<String, String>> login2(String username, String password, String alamatmac) async {
-    final url = '$root/api.php?action=LOGIN2';
+  static Future<Map<String, String>> login2(String username, String password, String alamatmac, String myversion1) async {
+    final url = '$root/api.php?action=LOGIN3';
 
     final Map<String, String> jsonData = {
       'user1': username,
       'pass1': password,
       'alamatmac': alamatmac,
+      'versi': myversion1,
     };
     //print(url);
-    //print(jsonData);
+    print(jsonData);
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(jsonData),
@@ -87,7 +89,7 @@ class ApiService {
 
   static Future<Map<String, dynamic>> cekversi() async {
     final url = '$root/api.php?action=CEKVERSI';
-    // print(url);
+    print(url);
     final response = await http.get(Uri.parse(url)); // Fetch the response from the API
 
     if (response.statusCode == 200) {
@@ -97,7 +99,7 @@ class ApiService {
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
           final versiku = jsonResponse[0]; // Access the first element in the list
           final varversi = versiku['cketerangan2']; // Corrected variable name
-
+          print(varversi);
           return {'versiku': varversi};
         } else {
           throw Exception('Format JSON tidak valid');
@@ -122,7 +124,7 @@ class ApiService {
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
           final serverupdate = jsonResponse[0]; // Access the first element in the list
           final varserverupdate = serverupdate['cketerangan2']; // Corrected variable name
-
+          print(varserverupdate);
           return {'serverupdate': varserverupdate};
         } else {
           throw Exception('Format JSON tidak valid');

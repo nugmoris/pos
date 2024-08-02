@@ -5,6 +5,11 @@ import 'package:pos/utils/textisi.dart';
 import 'service.dart';
 
 class LoginPage extends StatefulWidget {
+  final String myversion1;
+  final String currentVersion;
+
+  LoginPage({required this.myversion1, required this.currentVersion});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -37,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
     alamatmac = _androidId ?? 'Unknown';
     try {
-      final result = await ApiService.login2(varpbuser, password, alamatmac);
+      final result = await ApiService.login2(varpbuser, password, alamatmac, widget.currentVersion);
 
       if (result.isNotEmpty) {
         final varbagian = result['bagian'];
@@ -77,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 8),
             Text(
-              "Silahkan Login ! (ver 1.0.6)",
+              "Hallo Silahkan Login ! (versi ${widget.myversion1} / ${widget.currentVersion})",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
             SizedBox(height: 20),

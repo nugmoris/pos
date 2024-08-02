@@ -13,31 +13,34 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion = 'POS6';
+String myversion1 = 'POS13B';
+String currentVersion = '';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  currentVersion = await getCurrentVersion();
   tryOtaUpdateIfNeeded();
   runApp(MyApp());
 }
 
 Future<String> getCurrentVersion() async {
   final result1 = await ApiService.cekversi();
-
   final version = result1['versiku']; // Access the 'versiku' key directly
+  //print(version);
   return version;
 }
 
 Future<String> getserverupdate() async {
   final result2 = await ApiService.serverupdate();
   final serverupdate = result2['serverupdate'];
-
   return serverupdate.toString(); // Convert serverupdate to a String before returning
 }
 
 void tryOtaUpdateIfNeeded() async {
-  final currentVersion = await getCurrentVersion();
-  if (currentVersion != myversion) {
+  // final currentVersion = await getCurrentVersion(); // Remove this line
+  //print('versiku =.$myversion1');
+  //print('versi sekarang=.$currentVersion');
+  if (currentVersion != myversion1) {
     final serverUpdateUrlx = await getserverupdate();
     final serverupdateUrl = '$serverUpdateUrlx/$currentVersion.apk';
     tryOtaUpdate(serverupdateUrl); // Memanggil tryOtaUpdate() dengan serverUpdateUrl
@@ -55,9 +58,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginPage(),
-        '/login': (context) => LoginPage(),
-        // '/lapjual': (context) => LapPage(),
+        // '/login': (context) => LoginPage(),
+        '/': (context) => LoginPage(myversion1: myversion1, currentVersion: currentVersion),
+        '/login': (context) => LoginPage(myversion1: myversion1, currentVersion: currentVersion),
         '/home': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
           final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
@@ -66,7 +69,7 @@ class MyApp extends StatelessWidget {
           final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
           final varsaldokas = args?.isNotEmpty == true ? args![4] as String? : null;
 
-          return HomeSalesPage(varpbuser!, varbagian!, varlks!, varnmlok!, varsaldokas!);
+          return HomeSalesPage(varpbuser!, varbagian!, varlks!, varnmlok!, varsaldokas!, myversion1!, currentVersion!);
         },
         '/jual': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
@@ -181,16 +184,20 @@ void tryOtaUpdate(String serverUpdateUrl) async {
     // print('ABI Platform: ${await OtaUpdate().getAbi()}');
     // print('bla..bla..bla  ');
     final lokupdateku = '$serverUpdateUrl';
-    //  print(lokupdateku);
+    // print('---');
+    // print(lokupdateku);
+    // print(currentVersion);
+    //  print(myversion1);
+    // print('--');
     OtaUpdate()
         .execute(
       lokupdateku, // Menggunakan serverUpdateUrl sebagai URL
-      destinationFilename: 'pos1.apk',
+      destinationFilename: 'POS1.apk',
     )
         .listen((OtaEvent event) {
       // Handle OTA update events here
     });
-    // print(myversion);
+    // print(myversion1);
     // print('menjalankan otaupdate');
   } catch (e) {
     print('Failed to make OTA update. Details: $e');
