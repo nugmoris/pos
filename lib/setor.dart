@@ -120,24 +120,27 @@ class _SetorState extends State<Setor> {
             hasilApi.isNotEmpty
                 ? Expanded(
                     child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: [
-                          DataColumn(label: Text('No Trans')),
-                          DataColumn(label: Text('Ket')),
-                          DataColumn(label: Text('N Debet')),
-                          DataColumn(label: Text('N Kredit')),
-                          DataColumn(label: Text('N Saldo')),
-                        ],
-                        rows: hasilApi.map((data) {
-                          return DataRow(cells: [
-                            DataCell(Text(data['notrans'])),
-                            DataCell(Text(data['ket'])),
-                            DataCell(Text(NumberFormat.decimalPattern().format(double.parse(data['ndebet'])))),
-                            DataCell(Text(NumberFormat.decimalPattern().format(double.parse(data['nkredit'])))),
-                            DataCell(Text(NumberFormat.decimalPattern().format(double.parse(data['saldo'])))),
-                          ]);
-                        }).toList(),
+                      scrollDirection: Axis.vertical,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns: [
+                            DataColumn(label: Text('No Trans')),
+                            DataColumn(label: Text('Ket')),
+                            DataColumn(label: Text('N Debet')),
+                            DataColumn(label: Text('N Kredit')),
+                            DataColumn(label: Text('N Saldo')),
+                          ],
+                          rows: hasilApi.map((data) {
+                            return DataRow(cells: [
+                              DataCell(Text(data['notrans'])),
+                              DataCell(Text(data['ket'])),
+                              DataCell(Text(NumberFormat.decimalPattern().format(double.parse(data['ndebet'])))),
+                              DataCell(Text(NumberFormat.decimalPattern().format(double.parse(data['nkredit'])))),
+                              DataCell(Text(NumberFormat.decimalPattern().format(double.parse(data['saldo'])))),
+                            ]);
+                          }).toList(),
+                        ),
                       ),
                     ),
                   )

@@ -166,9 +166,10 @@ class _LapPageState extends State<LapPage> {
                           DataColumn(label: Text('Nama Customer')),
                           DataColumn(label: Text('Nama Barang')),
                           DataColumn(label: Text('Qty')),
-                          DataColumn(label: Text('NRP')),
+                          DataColumn(label: Text('Harga')),
                           DataColumn(label: Text('Subttl')),
                           DataColumn(label: Text('Total')),
+                          DataColumn(label: Text('Waktu Input')),
                         ],
                         rows: _buildDataRows(),
                       ),
@@ -211,6 +212,7 @@ class _LapPageState extends State<LapPage> {
         DataCell(Text(numberFormat.format(int.parse(item['nrp'] ?? '0')))),
         DataCell(Text(numberFormat.format(int.parse(item['subttl'] ?? '0')))),
         DataCell(Text(isNewTransaction ? numberFormat.format(subttlTotal) : '')),
+        DataCell(Text(item['tgl'] ?? '')),
       ]));
 
       lastNotrans = item['notrans'];

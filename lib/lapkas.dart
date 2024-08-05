@@ -91,28 +91,34 @@ class _LapKasState extends State<LapKas> {
                 ? CircularProgressIndicator()
                 : Expanded(
                     child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: const [
-                          DataColumn(label: Text('No Trans')),
-                          DataColumn(label: Text('Tanggal')),
-                          DataColumn(label: Text('Dari')),
-                          DataColumn(label: Text('Debet')),
-                          DataColumn(label: Text('Kredit')),
-                          DataColumn(label: Text('Saldo')),
-                        ],
-                        rows: reportData.map((data) {
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(data['notrans'] ?? '')),
-                              DataCell(Text(data['tgl'] ?? '')),
-                              DataCell(Text(data['dari'] ?? '')),
-                              DataCell(Text(formatNumber(data['ndebet'] ?? '0.00'))),
-                              DataCell(Text(formatNumber(data['nkredit'] ?? '0.00'))),
-                              DataCell(Text(formatNumber(data['saldo'] ?? '0.00'))),
-                            ],
-                          );
-                        }).toList(),
+                      scrollDirection: Axis.vertical,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns: const [
+                            DataColumn(label: Text('No Trans')),
+                            DataColumn(label: Text('Tanggal')),
+                            DataColumn(label: Text('Dari')),
+                            DataColumn(label: Text('Debet')),
+                            DataColumn(label: Text('Kredit')),
+                            DataColumn(label: Text('Saldo')),
+                            DataColumn(label: Text('Waktu Input')),
+                          ],
+                          rows: reportData.map((data) {
+                            return DataRow(
+                              cells: [
+                                DataCell(Text(data['notrans'] ?? '')),
+                                //DataCell(Text(DateTime.parse(data['tgl']))),
+                                DataCell(Text(data['tgl'] ?? '')),
+                                DataCell(Text(data['dari'] ?? '')),
+                                DataCell(Text(formatNumber(data['ndebet'] ?? '0.00'))),
+                                DataCell(Text(formatNumber(data['nkredit'] ?? '0.00'))),
+                                DataCell(Text(formatNumber(data['saldo'] ?? '0.00'))),
+                                DataCell(Text(data['tgl'] ?? '')),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ),

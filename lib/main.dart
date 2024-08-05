@@ -13,7 +13,7 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion1 = 'POS13B';
+String myversion1 = 'POS14';
 String currentVersion = '';
 
 void main() async {
@@ -26,7 +26,7 @@ void main() async {
 Future<String> getCurrentVersion() async {
   final result1 = await ApiService.cekversi();
   final version = result1['versiku']; // Access the 'versiku' key directly
-  //print(version);
+
   return version;
 }
 
@@ -37,9 +37,6 @@ Future<String> getserverupdate() async {
 }
 
 void tryOtaUpdateIfNeeded() async {
-  // final currentVersion = await getCurrentVersion(); // Remove this line
-  //print('versiku =.$myversion1');
-  //print('versi sekarang=.$currentVersion');
   if (currentVersion != myversion1) {
     final serverUpdateUrlx = await getserverupdate();
     final serverupdateUrl = '$serverUpdateUrlx/$currentVersion.apk';
@@ -77,8 +74,8 @@ class MyApp extends StatelessWidget {
           final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
           final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
           final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
-
-          return JualPage(varpbuser!, varbagian!, varlks!, varnmlok!);
+          final varsaldokas = args?.isNotEmpty == true ? args![4] as String? : null;
+          return JualPage(varpbuser!, varbagian!, varlks!, varnmlok!, varsaldokas!);
         },
         '/lapjual': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
@@ -146,7 +143,6 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // print("Building HomePage");
     return Container(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -181,24 +177,14 @@ class HomePage extends StatelessWidget {
 
 void tryOtaUpdate(String serverUpdateUrl) async {
   try {
-    // print('ABI Platform: ${await OtaUpdate().getAbi()}');
-    // print('bla..bla..bla  ');
     final lokupdateku = '$serverUpdateUrl';
-    // print('---');
-    // print(lokupdateku);
-    // print(currentVersion);
-    //  print(myversion1);
-    // print('--');
+
     OtaUpdate()
         .execute(
-      lokupdateku, // Menggunakan serverUpdateUrl sebagai URL
-      destinationFilename: 'POS1.apk',
-    )
-        .listen((OtaEvent event) {
-      // Handle OTA update events here
-    });
-    // print(myversion1);
-    // print('menjalankan otaupdate');
+          lokupdateku, // Menggunakan serverUpdateUrl sebagai URL
+          destinationFilename: 'POS1.apk',
+        )
+        .listen((OtaEvent event) {});
   } catch (e) {
     print('Failed to make OTA update. Details: $e');
   }

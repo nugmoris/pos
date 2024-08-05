@@ -9,14 +9,15 @@ class PaymentDialog extends StatefulWidget {
   final String totbayar;
   final String username;
   final String varlks;
+  final String varsaldokas;
 
-  PaymentDialog({
-    required this.notrans,
-    required this.grandTotal,
-    required this.totbayar,
-    required this.username,
-    required this.varlks,
-  });
+  PaymentDialog(
+      {required this.notrans,
+      required this.grandTotal,
+      required this.totbayar,
+      required this.username,
+      required this.varlks,
+      required this.varsaldokas});
 
   @override
   _PaymentDialogState createState() => _PaymentDialogState();
@@ -83,6 +84,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
       kembaliController.text = '0';
       paymentController.text = formatter.format(jmluangInt);
     }
+    setState(() {}); // to update the button state
   }
 
   @override
@@ -96,7 +98,6 @@ class _PaymentDialogState extends State<PaymentDialog> {
     String hrsbayar = formatter.format(hrsbayarInt);
 
     return AlertDialog(
-      //  title: Text('Pembayaran'),
       content: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -114,13 +115,6 @@ class _PaymentDialogState extends State<PaymentDialog> {
                     Text(widget.notrans),
                   ],
                 ),
-                // TableRow(
-                //   children: [
-                //     Text('Tgl'),
-                //     Text(': '),
-                //     Text(DateFormat('dd-MM-yyyy').format(DateTime.now())),
-                //   ],
-                // ),
                 TableRow(
                   children: [
                     Text(
@@ -160,7 +154,6 @@ class _PaymentDialogState extends State<PaymentDialog> {
                           'Rp. $hrsbayar',
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        // SizedBox(width: 8),
                         GestureDetector(
                           onTap: () {
                             jmluangController.text = formatter.format(hrsbayarInt);
@@ -175,7 +168,6 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 ),
               ],
             ),
-            // SizedBox(height: 5),
             TextField(
               controller: jmluangController,
               decoration: InputDecoration(
@@ -200,7 +192,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.red,
-                      fontWeight: FontWeight.bold, // Warna font teks yang diketik
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -212,6 +204,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                       labelText: 'Nilai Bayar',
                       hintText: 'Masukkan jumlah pembayaran',
                     ),
+                    readOnly: true,
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -254,7 +247,6 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 ),
               ],
             ),
-
             if (selectedKdgl != null)
               Align(
                 alignment: Alignment.centerLeft,
@@ -278,26 +270,28 @@ class _PaymentDialogState extends State<PaymentDialog> {
         ),
         TextButton(
           child: Text('Bayar'),
-          onPressed: () async {
-            print(paymentController.text.replaceAll(',', ''));
-            if (selectedKdgl != null && paymentController.text.isNotEmpty) {
-              try {
-                var paymentData = await ApiService.bayarjual(
-                  widget.notrans,
-                  paymentController.text.replaceAll('.', ''),
-                  widget.username,
-                  widget.varlks,
-                  selectedKdgl!,
-                );
-                print('Pembayaran berhasil: $paymentData');
-                Navigator.of(context).pop(paymentData[0]['totbyr']);
-              } catch (e) {
-                print('Error saat melakukan pembayaran: $e');
-              }
-            } else {
-              print('Mohon lengkapi semua data sebelum melakukan pembayaran.');
-            }
-          },
+          onPressed: paymentController.text == '0'
+              ? null
+              : () async {
+                  print(paymentController.text.replaceAll(',', ''));
+                  if (selectedKdgl != null && paymentController.text.isNotEmpty) {
+                    try {
+                      var paymentData = await ApiService.bayarjual(
+                        widget.notrans,
+                        paymentController.text.replaceAll('.', ''),
+                        widget.username,
+                        widget.varlks,
+                        selectedKdgl!,
+                      );
+                      print('Pembayaran berhasil: $paymentData');
+                      Navigator.of(context).pop(paymentData[0]['totbyr']);
+                    } catch (e) {
+                      print('Error saat melakukan pembayaran: $e');
+                    }
+                  } else {
+                    print('Mohon lengkapi semua data sebelum melakukan pembayaran.');
+                  }
+                },
         ),
       ],
     );

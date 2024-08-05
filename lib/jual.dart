@@ -14,8 +14,9 @@ class JualPage extends StatefulWidget {
   final String varbagian;
   final String varlks;
   final String varnmlok;
+  final String varsaldokas;
 
-  JualPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok);
+  JualPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok, this.varsaldokas);
   @override
   State<JualPage> createState() => _JualPageState();
 }
@@ -110,12 +111,6 @@ class _JualPageState extends State<JualPage> {
 
   void input() async {
     try {
-      //  print('inputtrans2');
-      // print('Barcode: ${barcodeController.text}');
-      // print('Jumlah: ${jumlahController.text}');
-      // print('Harga: ${hargaController.text.replaceAll(',', '')}'); // Hapus koma
-      // print('No Trans: ${notransController.text}');
-      print(jumlahController.text);
       if (barcodeController.text.isNotEmpty &&
           jumlahController.text.isNotEmpty &&
           hargaController.text.isNotEmpty &&
@@ -132,7 +127,6 @@ class _JualPageState extends State<JualPage> {
             notransController.text,
             widget.varlks //notrans
             );
-        // print('input2');
 
         setState(() {
           transaksiData =
@@ -167,7 +161,7 @@ class _JualPageState extends State<JualPage> {
       setState(() {
         barcodeResult = result.rawContent;
         barcodeController.text = barcodeResult;
-        //  print('barcode');
+
         //FocusScope.of(context).requestFocus(jumlahController);
         print('proses scan barcode 1');
       });
@@ -183,7 +177,6 @@ class _JualPageState extends State<JualPage> {
   }
 
   void searchTransactions() {
-    // print('serachTrans');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -319,6 +312,7 @@ class _JualPageState extends State<JualPage> {
           totbayar: currencyFormat.format(totbayar),
           username: widget.varpbuser,
           varlks: widget.varlks,
+          varsaldokas: widget.varsaldokas,
         );
       },
     );
@@ -336,7 +330,7 @@ class _JualPageState extends State<JualPage> {
         currentTotbayar = bayar;
 
         final formatter = NumberFormat("#,###");
-        print(currentTotbayar.runtimeType);
+        print(widget.varsaldokas);
         //totbayar = formatter.format(currentTotbayar);
         totbayar = currentTotbayar;
       });
@@ -358,6 +352,7 @@ class _JualPageState extends State<JualPage> {
               hargaController.text = formatter.format(int.parse(nhargajual));
               jumlahController.text = '';
               //subttlController.text = nhargajual;
+              //print(nhargajual);
               subttlController.text = formatter.format(int.parse(nhargajual));
               // FocusScope.of(context).requestFocus(jumlahFocusNode);
             });
@@ -390,6 +385,16 @@ class _JualPageState extends State<JualPage> {
         appBar: AppBar(
           backgroundColor: Colors.grey[700],
           title: const Text("Penjualan...."),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.check),
+              onPressed: () {
+                // Update varsaldokas dan kembali ke home.dart dengan data yang diperbarui
+                Navigator.pop(context, widget.varsaldokas);
+                print(widget.varsaldokas);
+              },
+            ),
+          ],
         ),
         body: SafeArea(
             child: SingleChildScrollView(
@@ -402,14 +407,7 @@ class _JualPageState extends State<JualPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            // TextField(
-            //   readOnly: true,
-            //   decoration: InputDecoration(
-            //     border: OutlineInputBorder(),
-            //     labelText: 'No. Transaksi',
-            //   ),
-            //   controller: notransController,
-            // ),
+
             Divider(
               color: Colors.black, // Warna garis
               thickness: 2, // Ketebalan garis
@@ -453,18 +451,6 @@ class _JualPageState extends State<JualPage> {
                     ),
                   ),
                 ),
-                // Expanded(
-                //   flex: 2,
-                //   child:
-                //   TextField(
-                //     readOnly: true,
-                //     decoration: InputDecoration(
-                //       border: OutlineInputBorder(),
-                //       labelText: 'Kode Customer',
-                //     ),
-                //     controller: kdcustController,
-                //   ),
-                // ),
                 SizedBox(width: 5),
               ],
             ),
@@ -529,14 +515,7 @@ class _JualPageState extends State<JualPage> {
                 ),
               ),
             ),
-            // TextField(
-            //   readOnly: true,
-            //   decoration: InputDecoration(
-            //     border: OutlineInputBorder(),
-            //     labelText: 'Nama Barang',
-            //   ),
-            //   controller: namaController,
-            // ),
+
             SizedBox(height: 5),
             Row(
               children: [
@@ -566,35 +545,6 @@ class _JualPageState extends State<JualPage> {
                 ),
               ],
             ),
-            // SizedBox(height: 10),
-            // Row(
-            //   children: [
-            //     Expanded(
-            //         flex: 2,
-            //         child: TextField(
-            //           readOnly: true,
-            //           decoration: InputDecoration(
-            //             border: OutlineInputBorder(),
-            //             labelText: 'Sub Total',
-            //           ),
-            //           controller: subttlController,
-            //         )),
-            //     SizedBox(width: 5),
-            //     Expanded(
-            //       flex: 1,
-            //       child: Visibility(
-            //           visible: false, // Mengatur agar TextField diskon tidak terlihat
-            //           child: TextField(
-            //             keyboardType: TextInputType.number, // Keyboard numerik untuk Diskon
-            //             decoration: InputDecoration(
-            //               border: OutlineInputBorder(),
-            //               labelText: 'Diskon',
-            //             ),
-            //             controller: diskonController,
-            //           )),
-            //     ),
-            //   ],
-            // ),
 
             SizedBox(height: 5),
             Row(
@@ -664,12 +614,6 @@ class _JualPageState extends State<JualPage> {
                         icon: Icon(Icons.search),
                         onPressed: searchTransactions, // Panggil fungsi pencarian
                       ),
-                      // IconButton(
-                      //   icon: Icon(Icons.book),
-                      //   onPressed: () {
-                      //     Navigator.pushNamed(context, '/lapjual');
-                      //   }, // Tambahkan fungsi
-                      // ),
                     ],
                   ),
                 ),

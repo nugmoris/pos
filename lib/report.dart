@@ -287,7 +287,7 @@ class _ReportPageState extends State<ReportPage> {
                                     String subtotalStr =
                                         padLeftWithSpaces('Rp.${numberFormat.format(subtotal)}', 12); // Lebar tetap 12 untuk subtotal
 
-                                    printer.printCustom('$nmbarang', 0, 0);
+                                    printer.printCustom('$nmbarang', 1, 0);
                                     printer.printCustom('$qtyStr x $hargaStr = $subtotalStr', 0, 0);
                                   }
                                   printer.printCustom('--------------------', 0, 1);

@@ -45,7 +45,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
 
   void penjualanFunction() {
     print("Penjualan clicked");
-    Navigator.pushNamed(context, '/jual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/jual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok, widget.varsaldokas]);
     // Tambahkan fungsi lain yang Anda inginkan
   }
 
@@ -184,45 +184,6 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                         ), // Kotak untuk logo (sementara)
                       ),
                       GestureDetector(
-                        // onTap: () {
-                        //   showMenu(
-                        //     color: Colors.white70,
-                        //     context: context,
-                        //     position: RelativeRect.fromLTRB(10.0, 80.0, 0.0, 0.0), // Ubah nilai ini
-                        //     items: [
-                        //       PopupMenuItem(
-                        //         child: ListTile(
-                        //           title: Text('Ganti Password'),
-                        //           onTap: () {
-                        //             Navigator.pop(context); // Menutup menu sebelum menjalankan navigasi
-                        //             Future.delayed(Duration(milliseconds: 10), () {
-                        //               Navigator.push(
-                        //                 context,
-                        //                 MaterialPageRoute(
-                        //                   builder: (context) => GantiPwdPage(widget.varpbuser),
-                        //                 ),
-                        //               );
-                        //             });
-                        //           },
-                        //         ),
-                        //       ),
-                        //       PopupMenuItem(
-                        //         child: ListTile(
-                        //           title: Text('Logout'),
-                        //           onTap: () {
-                        //             Navigator.pushAndRemoveUntil(
-                        //               context,
-                        //               MaterialPageRoute(
-                        //                 builder: (context) => LoginPage(),
-                        //               ),
-                        //               (route) => false,
-                        //             );
-                        //           },
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   );
-                        // },
                         child: Container(
                           child: Column(
                             children: [
