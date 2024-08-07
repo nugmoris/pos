@@ -13,7 +13,7 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion1 = 'POS14';
+String myversion1 = 'POS15';
 String currentVersion = '';
 
 void main() async {
