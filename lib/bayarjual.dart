@@ -10,14 +10,17 @@ class PaymentDialog extends StatefulWidget {
   final String username;
   final String varlks;
   final String varsaldokas;
+  final ValueChanged<String> onPaymentSuccess; // Callback parameter
 
-  PaymentDialog(
-      {required this.notrans,
-      required this.grandTotal,
-      required this.totbayar,
-      required this.username,
-      required this.varlks,
-      required this.varsaldokas});
+  PaymentDialog({
+    required this.notrans,
+    required this.grandTotal,
+    required this.totbayar,
+    required this.username,
+    required this.varlks,
+    required this.varsaldokas,
+    required this.onPaymentSuccess, // Initialize callback parameter
+  });
 
   @override
   _PaymentDialogState createState() => _PaymentDialogState();
@@ -273,23 +276,32 @@ class _PaymentDialogState extends State<PaymentDialog> {
           onPressed: paymentController.text == '0'
               ? null
               : () async {
-                  print(paymentController.text.replaceAll(',', ''));
-                  if (selectedKdgl != null && paymentController.text.isNotEmpty) {
-                    try {
-                      var paymentData = await ApiService.bayarjual(
-                        widget.notrans,
-                        paymentController.text.replaceAll('.', ''),
-                        widget.username,
-                        widget.varlks,
-                        selectedKdgl!,
-                      );
-                      print('Pembayaran berhasil: $paymentData');
-                      Navigator.of(context).pop(paymentData[0]['totbyr']);
-                    } catch (e) {
-                      print('Error saat melakukan pembayaran: $e');
-                    }
-                  } else {
-                    print('Mohon lengkapi semua data sebelum melakukan pembayaran.');
+                  try {
+                    // Format string untuk menghapus karakter non-numerik (seperti titik)
+                    String cleanedVarsaldokas = widget.varsaldokas.replaceAll(RegExp(r'[^\d]'), '');
+                    String cleanedPayment = paymentController.text.replaceAll(RegExp(r'[^\d]'), '');
+
+                    int varsaldokasInt = int.tryParse(cleanedVarsaldokas) ?? 0;
+                    int paymentInt = int.tryParse(cleanedPayment) ?? 0;
+
+                    // Update varsaldokas dengan nilai pembayaran
+                    String updatedVarsaldokas = (varsaldokasInt + paymentInt).toString();
+
+                    // Melakukan pembayaran
+                    var paymentData = await ApiService.bayarjual(
+                      widget.notrans,
+                      cleanedPayment,
+                      widget.username,
+                      widget.varlks,
+                      selectedKdgl!,
+                    );
+                    print('Pembayaran berhasil: $paymentData');
+
+                    Navigator.of(context).pop();
+                    widget.onPaymentSuccess(updatedVarsaldokas);
+                    print(updatedVarsaldokas); // Call the callback with the updated value
+                  } catch (e) {
+                    print('Error saat melakukan pembayaran: $e');
                   }
                 },
         ),

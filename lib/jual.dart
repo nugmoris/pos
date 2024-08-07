@@ -41,6 +41,8 @@ class _JualPageState extends State<JualPage> {
 
   // String hrsbayar = '0';
   double hrsbayar = 0.0;
+  double saldokasku = 0.0;
+  String varsaldokas = '0';
   //FocusNode jumlahFocusNode = FocusNode();
 
   @override
@@ -50,7 +52,8 @@ class _JualPageState extends State<JualPage> {
     notransController.text = 'Transaksi Baru';
     kdcustController.text = '01';
     nmcustController.text = 'Customer Umum';
-
+    saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '')) ?? 0.0;
+    print('Saldokasku= $saldokasku');
     // Inisialisasi printer Bluetooth
   }
 
@@ -69,6 +72,12 @@ class _JualPageState extends State<JualPage> {
     kdcustController.dispose();
     nmcustController.dispose();
     super.dispose();
+  }
+
+  void updateSaldo(double payment) {
+    setState(() {
+      saldokasku += payment;
+    });
   }
 
   void _updateSubtotalAndTotal() {
@@ -202,7 +211,7 @@ class _JualPageState extends State<JualPage> {
           nmcustController.text = result[0]['nmcust'] ?? '';
           totbayar = double.parse(nbayar.replaceAll(',', ''));
           //nbayar;
-          print(totbayar);
+
           transaksiData =
               result.map((item) => {'nama': item['nmbarang'], 'harga': item['nrp'], 'jumlah': item['nqty'], 'subtotal': item['subtotal']}).toList();
         });
@@ -313,6 +322,12 @@ class _JualPageState extends State<JualPage> {
           username: widget.varpbuser,
           varlks: widget.varlks,
           varsaldokas: widget.varsaldokas,
+          onPaymentSuccess: (updatedVarsaldokas) {
+            setState(() {
+              varsaldokas = updatedVarsaldokas;
+              print('saldo dijual.dart $varsaldokas'); // Update varsaldokas with the new value
+            });
+          },
         );
       },
     );
@@ -330,7 +345,7 @@ class _JualPageState extends State<JualPage> {
         currentTotbayar = bayar;
 
         final formatter = NumberFormat("#,###");
-        print(widget.varsaldokas);
+
         //totbayar = formatter.format(currentTotbayar);
         totbayar = currentTotbayar;
       });
@@ -352,7 +367,7 @@ class _JualPageState extends State<JualPage> {
               hargaController.text = formatter.format(int.parse(nhargajual));
               jumlahController.text = '';
               //subttlController.text = nhargajual;
-              //print(nhargajual);
+
               subttlController.text = formatter.format(int.parse(nhargajual));
               // FocusScope.of(context).requestFocus(jumlahFocusNode);
             });
@@ -383,18 +398,14 @@ class _JualPageState extends State<JualPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.grey[700],
-          title: const Text("Penjualan...."),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.check),
-              onPressed: () {
-                // Update varsaldokas dan kembali ke home.dart dengan data yang diperbarui
-                Navigator.pop(context, widget.varsaldokas);
-                print(widget.varsaldokas);
-              },
-            ),
-          ],
+          title: Text("Penjualan"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context, varsaldokas.toString());
+              print('saldo yang dikembalikan ke home $varsaldokas');
+            },
+          ),
         ),
         body: SafeArea(
             child: SingleChildScrollView(
