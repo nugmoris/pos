@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ota_update/ota_update.dart';
 
+import 'daftablmbyr.dart';
 import 'daftarharga.dart';
+import 'daftarsetor.dart';
 import 'home.dart';
 import 'jual.dart';
 import 'lapkas.dart';
@@ -13,7 +15,7 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion1 = 'POS15';
+String myversion1 = 'POS17';
 String currentVersion = '';
 
 void main() async {
@@ -85,6 +87,26 @@ class MyApp extends StatelessWidget {
           final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
 
           return LapPage(varpbuser!, varbagian!, varlks!, varnmlok!);
+        },
+
+        '/daftarsetor': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return DaftarSetorPage(varpbuser!, varbagian!, varlks!, varnmlok!);
+        },
+
+        '/daftarblmlunas': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as List<dynamic>?;
+          final varpbuser = args?.isNotEmpty == true ? args![0] as String? : null;
+          final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
+          final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
+          final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
+
+          return DaftarBlmByrPage(varpbuser!, varbagian!, varlks!, varnmlok!);
         },
 
         '/lapstok': (context) {

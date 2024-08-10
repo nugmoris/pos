@@ -43,6 +43,7 @@ class _JualPageState extends State<JualPage> {
   double hrsbayar = 0.0;
   double saldokasku = 0.0;
   String varsaldokas = '0';
+  String urut = '0';
   //FocusNode jumlahFocusNode = FocusNode();
 
   @override
@@ -138,8 +139,16 @@ class _JualPageState extends State<JualPage> {
             );
 
         setState(() {
-          transaksiData =
-              result.map((item) => {'nama': item['nama'], 'harga': item['nrp'], 'jumlah': item['nqty'], 'subtotal': item['subtotal']}).toList();
+          transaksiData = result
+              .map((item) => {
+                    'nama': item['nama'],
+                    'harga': item['nrp'],
+                    'jumlah': item['nqty'],
+                    'subtotal': item['subtotal'],
+                    'llunas': item['llunas'],
+                    'urut': item['urut']
+                  })
+              .toList();
 
           // Perbarui notransController dengan notrans dari respons API
           if (result.isNotEmpty && result[0].containsKey('notrans')) {
@@ -161,6 +170,35 @@ class _JualPageState extends State<JualPage> {
       }
     } catch (e) {
       print('Error saat input transaksi: $e');
+    }
+  }
+
+  void hapus(String urut) async {
+    //  print('hapus function called');
+    print('hapus : $urut');
+    try {
+      if (urut.isNotEmpty) {
+        var result = await ApiService.hapustran(
+          widget.varpbuser,
+          urut,
+        );
+        //   print('proses del 2');
+        //// print('hapus : $urut');
+        setState(() {
+          transaksiData = result
+              .map((item) => {
+                    'nama': item['nama'],
+                    'harga': item['nrp'],
+                    'jumlah': item['nqty'],
+                    'subtotal': item['subtotal'],
+                    'llunas': item['llunas'],
+                    'urut': item['urut']
+                  })
+              .toList();
+        });
+      }
+    } catch (e) {
+      print('Error saat hapus transaksi: $e');
     }
   }
 
@@ -210,10 +248,19 @@ class _JualPageState extends State<JualPage> {
           kdcustController.text = result[0]['kdcust'] ?? '';
           nmcustController.text = result[0]['nmcust'] ?? '';
           totbayar = double.parse(nbayar.replaceAll(',', ''));
+          // llunas = double.parse(nbayar.replaceAll(',', ''));
           //nbayar;
 
-          transaksiData =
-              result.map((item) => {'nama': item['nmbarang'], 'harga': item['nrp'], 'jumlah': item['nqty'], 'subtotal': item['subtotal']}).toList();
+          transaksiData = result
+              .map((item) => {
+                    'nama': item['nmbarang'],
+                    'harga': item['nrp'],
+                    'jumlah': item['nqty'],
+                    'subtotal': item['subtotal'],
+                    'llunas': item['llunas'],
+                    'urut': item['urut']
+                  })
+              .toList();
         });
       }
     } catch (e) {
@@ -266,6 +313,8 @@ class _JualPageState extends State<JualPage> {
             DataColumn(label: Text('Harga')),
             DataColumn(label: Text('Jumlah')),
             DataColumn(label: Text('Subtotal')),
+            DataColumn(label: Text('urut')),
+            DataColumn(label: Text(' ')),
           ],
           rows: transaksiData.map((data) {
             return DataRow(cells: [
@@ -273,6 +322,31 @@ class _JualPageState extends State<JualPage> {
               DataCell(Text(formatter.format(int.parse(data['harga'].toString())))),
               DataCell(Text(data['jumlah'].toString())),
               DataCell(Text(formatter.format(int.parse(data['subtotal'].toString())))),
+              // DataCell(Text(data['llunas'].toString())),
+              DataCell(Text(data['urut'])),
+              DataCell(
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Visibility(
+                    visible: data['llunas'] == '0',
+                    child: RawMaterialButton(
+                      onPressed: () {
+                        hapus(data['urut'].toString());
+                        print('proses del1 ');
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white70, // Warna latar belakang tombol
+                      shape: CircleBorder(), // Membuat bentuk lingkaran
+                      padding: const EdgeInsets.all(15.0), // Ukuran tombol
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.red[400], // Warna ikon dalam tombol
+                        size: 20.0,
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ]);
           }).toList(),
         ),

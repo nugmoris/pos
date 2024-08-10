@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 8),
             Text(
-              "Hallo Silahkan Login ! (versi ${widget.myversion1} / ${widget.currentVersion})",
+              "Hallo Silahkan Login ! ",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
             SizedBox(height: 20),
@@ -98,6 +98,11 @@ class _LoginPageState extends State<LoginPage> {
             Text(
               "---Koperasi Kasih----",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              " (versi ${widget.myversion1} / ${widget.currentVersion})",
+              style: TextStyle(color: Colors.grey[700], fontSize: 14),
             ),
           ],
         ),

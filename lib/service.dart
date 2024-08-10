@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class ApiService {
   //static const root = "http://128.199.154.103/tuing_pos";
-  //static const root = "http://103.80.96.26/tuing_pos";
+  // static const root = "http://103.80.96.26/tuing_pos";
   static const root = "http://103.80.96.26/pos_coba";
 
   static const action = "LOGIN";
@@ -292,6 +293,7 @@ class ApiService {
     var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
+      // print(jsonData);
       return List<Map<String, dynamic>>.from(jsonData);
     } else {
       throw Exception('Failed to fetch report data');
@@ -438,6 +440,75 @@ class ApiService {
     var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> lapdaftarsetor(String user1, String lks1, String tgl1, String tgl2, String kondisi1) async {
+    final url = '$root/api.php?action=DAFTARSETOR';
+
+    final Map<String, String> jsonData = {
+      'user1': user1.trim(),
+      'lks1': lks1.trim(),
+      'tgl1': DateFormat('yyyy-MM-dd').format(DateTime.parse(tgl1)), // Formatting the date
+      'tgl2': DateFormat('yyyy-MM-dd').format(DateTime.parse(tgl2)), // Formatting the date
+      'kondisi1': kondisi1.trim(),
+    };
+
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(jsonData),
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> lapdaftarblmbyr(String user1, String lks1, String tgl1, String tgl2) async {
+    final url = '$root/api.php?action=DAFTARBLMBYR';
+
+    final Map<String, String> jsonData = {
+      'user1': user1.trim(),
+      'lks1': lks1.trim(),
+      'tgl1': DateFormat('yyyy-MM-dd').format(DateTime.parse(tgl1)), // Formatting the date
+      'tgl2': DateFormat('yyyy-MM-dd').format(DateTime.parse(tgl2)), // Formatting the date
+    };
+
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(jsonData),
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> hapustran(String user, String urut1) async {
+    final url = '$root/api.php?action=HAPUSJUAL';
+    final Map<String, String> jsonData = {
+      'user1': user,
+      'urut1': urut1,
+    };
+    print(url);
+    print(jsonData);
+    var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
       return List<Map<String, dynamic>>.from(jsonData);
     } else {
       throw Exception('Failed to fetch report data');

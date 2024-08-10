@@ -65,6 +65,15 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
     print("Penj. Karyawan clicked");
   }
 
+  void lapsetor() {
+    Navigator.pushNamed(context, '/daftarsetor', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    print("Lap. Daftar Setor clicked");
+  }
+
+  void julablmlunas() {
+    Navigator.pushNamed(context, '/daftarblmlunas', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+  }
+
   void laporanFunction() {
     Navigator.pushNamed(context, '/lapkas', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
     print("Laporan clicked");
@@ -142,7 +151,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                             Text(
                               '${widget.myversion1} / ${widget.currentVersion}',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 10,
                                 color: Colors.blue[700],
                               ),
                             ),
@@ -244,25 +253,31 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
               // Baris ketiga
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TombolWidget(
-                      icon: Icons.list,
-                      text: 'Lap. Penjualan',
-                      onTap: lapPenjualanFunction,
-                    ),
-                    TombolWidget(
-                      icon: Icons.checklist,
-                      text: 'Stock',
-                      onTap: stockFunction,
-                    ),
-                    TombolWidget(
-                      icon: Icons.price_check_sharp,
-                      text: 'Daftar Harga',
-                      onTap: daftarHargaFunction,
-                    ),
-                  ],
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TombolWidget(
+                        icon: Icons.list,
+                        text: 'Lap. Penjualan',
+                        onTap: lapPenjualanFunction,
+                      ),
+                      SizedBox(width: 10),
+                      TombolWidget(
+                        icon: Icons.checklist,
+                        text: 'Stock',
+                        onTap: stockFunction,
+                      ),
+                      SizedBox(width: 10),
+                      TombolWidget(
+                        icon: Icons.price_check_sharp,
+                        text: 'Daftar Harga',
+                        onTap: daftarHargaFunction,
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
                 ),
               ),
               // Baris keempat
@@ -308,26 +323,42 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
               // Baris kelima
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TombolWidget(
-                      icon: Icons.monetization_on,
-                      text: 'Setor',
-                      onTap: setorFunction,
-                    ),
-                    TombolWidget(
-                      icon: Icons.emoji_people,
-                      text: 'Penj. Karyawan',
-                      onTap: penjKaryawanFunction,
-                    ),
-                    TombolWidget(
-                      icon: Icons.library_books,
-                      text: 'Laporan Kas',
-                      onTap: laporanFunction,
-                    ),
-                  ],
-                ),
+                child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TombolWidget(
+                          icon: Icons.monetization_on,
+                          text: 'Setor',
+                          onTap: setorFunction,
+                        ),
+                        SizedBox(width: 10),
+                        TombolWidget(
+                          icon: Icons.emoji_people,
+                          text: 'Penj. Karyawan',
+                          onTap: penjKaryawanFunction,
+                        ),
+                        SizedBox(width: 10),
+                        TombolWidget(
+                          icon: Icons.library_books,
+                          text: 'Laporan Kas',
+                          onTap: laporanFunction,
+                        ),
+                        SizedBox(width: 10),
+                        TombolWidget(
+                          icon: Icons.list_alt_sharp,
+                          text: 'Daftar Setoran',
+                          onTap: lapsetor,
+                        ),
+                        SizedBox(width: 10),
+                        TombolWidget(
+                          icon: Icons.question_mark,
+                          text: 'Penjualan blm Lunas',
+                          onTap: julablmlunas,
+                        ),
+                      ],
+                    )),
               ),
             ],
           ),
