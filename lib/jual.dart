@@ -313,7 +313,7 @@ class _JualPageState extends State<JualPage> {
             DataColumn(label: Text('Harga')),
             DataColumn(label: Text('Jumlah')),
             DataColumn(label: Text('Subtotal')),
-            DataColumn(label: Text('urut')),
+            // DataColumn(label: Text('urut')),
             DataColumn(label: Text(' ')),
           ],
           rows: transaksiData.map((data) {
@@ -323,7 +323,7 @@ class _JualPageState extends State<JualPage> {
               DataCell(Text(data['jumlah'].toString())),
               DataCell(Text(formatter.format(int.parse(data['subtotal'].toString())))),
               // DataCell(Text(data['llunas'].toString())),
-              DataCell(Text(data['urut'])),
+              // DataCell(Text(data['urut'])),
               DataCell(
                 Align(
                   alignment: Alignment.centerRight,
