@@ -194,7 +194,7 @@ class _PenjkaryState extends State<Penjkary> {
                             builder: (context) {
                               return ItemSearchPopup(
                                 varpbuser: widget.varpbuser,
-                                onItemSelected: (kode, nama, harga) {
+                                onItemSelected: (kode, nama, harga, lmatang, nhargamatang) {
                                   setState(() {
                                     kodeBarangController.text = kode;
                                     namaBarangController.text = nama;

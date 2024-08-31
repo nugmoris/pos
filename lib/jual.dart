@@ -33,19 +33,24 @@ class _JualPageState extends State<JualPage> {
   TextEditingController notransController = TextEditingController();
   TextEditingController kdcustController = TextEditingController();
   TextEditingController nmcustController = TextEditingController();
+  TextEditingController totbayarku = TextEditingController();
 
   // Tambahkan variabel untuk menyimpan data transaksi
   List<Map<String, dynamic>> transaksiData = [];
   final NumberFormat currencyFormat = NumberFormat("#,##0", "en_US");
   double totbayar = 0.0;
 
-  // String hrsbayar = '0';
+  String nmbarang1 = '';
+  String lmatang = '0';
+  String nhargamatang1 = '0';
+  String nhargajual1 = '0';
+  bool matang = false; // This should be set based on your search result
+  bool isChecked = false; // To track the state of the checkbox
   double hrsbayar = 0.0;
   double saldokasku = 0.0;
+  //double totbayarController = 0.0;
   String varsaldokas = '0';
   String urut = '0';
-  //FocusNode jumlahFocusNode = FocusNode();
-
   @override
   void initState() {
     super.initState();
@@ -53,9 +58,9 @@ class _JualPageState extends State<JualPage> {
     notransController.text = 'Transaksi Baru';
     kdcustController.text = '01';
     nmcustController.text = 'Customer Umum';
+    // totBayarController = 0.0;
+    totbayarku.text = '0';
     saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '')) ?? 0.0;
-    print('Saldokasku= $saldokasku');
-    // Inisialisasi printer Bluetooth
   }
 
   @override
@@ -72,6 +77,7 @@ class _JualPageState extends State<JualPage> {
     notransController.dispose();
     kdcustController.dispose();
     nmcustController.dispose();
+    // totBayarController.dispose();
     super.dispose();
   }
 
@@ -125,7 +131,7 @@ class _JualPageState extends State<JualPage> {
           jumlahController.text.isNotEmpty &&
           hargaController.text.isNotEmpty &&
           notransController.text.isNotEmpty) {
-        var result = await ApiService.inputtrans2(
+        var result = await ApiService.inputtrans3(
             barcodeController.text,
             jumlahController.text,
             hargaController.text.replaceAll(',', ''), // Hapus koma sebelum mengirim ke API
@@ -135,8 +141,8 @@ class _JualPageState extends State<JualPage> {
             "keth", //keth
             "01", //kdsales
             notransController.text,
-            widget.varlks //notrans
-            );
+            widget.varlks,
+            isChecked ? '1' : '0'); // Ubah isChecked menjadi string '1' atau '0'
 
         setState(() {
           transaksiData = result
@@ -165,7 +171,9 @@ class _JualPageState extends State<JualPage> {
           subttlController.text = '0';
           diskonController.text = '0';
           totalController.text = '0';
-          totbayar = 0.0;
+          //totbayar = 0.0;
+          isChecked = false;
+          lmatang = '0';
         });
       }
     } catch (e) {
@@ -174,7 +182,6 @@ class _JualPageState extends State<JualPage> {
   }
 
   void hapus(String urut) async {
-    //  print('hapus function called');
     print('hapus : $urut');
     try {
       if (urut.isNotEmpty) {
@@ -182,8 +189,6 @@ class _JualPageState extends State<JualPage> {
           widget.varpbuser,
           urut,
         );
-        //   print('proses del 2');
-        //// print('hapus : $urut');
         setState(() {
           transaksiData = result
               .map((item) => {
@@ -208,18 +213,57 @@ class _JualPageState extends State<JualPage> {
       setState(() {
         barcodeResult = result.rawContent;
         barcodeController.text = barcodeResult;
-
-        //FocusScope.of(context).requestFocus(jumlahController);
         print('proses scan barcode 1');
       });
-      fetchProductDetails();
+      fetchhasilscan();
       print('proses scan barcode 2');
-      // FocusScope.of(context).requestFocus(jumlahFocusNode);
     } catch (e) {
       setState(() {
         barcodeResult = 'Kesalahan dalam memindai barcode: $e';
         barcodeController.text = barcodeResult;
       });
+    }
+  }
+
+  void fetchhasilscan() async {
+    try {
+      List<Map<String, dynamic>> result = await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
+      print(result);
+      setState(() {
+        if (result.isNotEmpty) {
+          final item = result[0];
+          // Set namaController dengan nama barang
+          namaController.text = item['nama'];
+
+          // Cek apakah barang matang atau tidak
+          if (item['lmatang'] == '1') {
+            // Jika matang, set harga dengan harga matang
+            hargaController.text = item['nhargajual'].toString();
+
+            matang = true;
+
+            // isChecked = true; // Centang checkbox secara otomatis
+          } else {
+            // Jika tidak matang, set harga dengan harga jual asli
+            hargaController.text = item['nhargajual'].toString();
+            matang = false;
+
+            //isChecked = false; // Checkbox tidak dicentang
+          }
+
+          //hargaController.text = formatter.format(int.parse(nhargajual));
+          jumlahController.text = '';
+          // subttlController.text = formatter.format(int.parse(nhargajual));
+          lmatang = lmatang;
+          nhargamatang1 = item['nhargamatang'];
+          nhargajual1 = item['nhargajual'];
+          // jumlahController.text = '0';
+          // diskonController.text = '0';
+          // subttlController.text = hargaController.text * int.parse(jumlahController.text);
+        }
+      });
+    } catch (e) {
+      print('Error fetching item data: $e');
     }
   }
 
@@ -248,6 +292,8 @@ class _JualPageState extends State<JualPage> {
           kdcustController.text = result[0]['kdcust'] ?? '';
           nmcustController.text = result[0]['nmcust'] ?? '';
           totbayar = double.parse(nbayar.replaceAll(',', ''));
+          totbayarku.text = nbayar;
+          //    totBayarController.text = totbayar;
           // llunas = double.parse(nbayar.replaceAll(',', ''));
           //nbayar;
 
@@ -270,20 +316,24 @@ class _JualPageState extends State<JualPage> {
 
   Future<void> fetchProductDetails() async {
     try {
-      var details = await ApiService.crbarang(widget.varpbuser, barcodeResult, '1');
-      print('proses cari kode barang 2');
+      var details = await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
+      print('proses cari kode barang 3');
       final formatter = NumberFormat("#,###");
 
       setState(() {
-        namaController.text = details['nama'];
-        print('proses1');
-        hargaController.text = formatter.format(int.parse(details['hargaJual']));
+        //   print(details['nama'].runtimeType);
+        //String nama = details['nama'] ?? '';
+        // print(nama);
+        //print(details['nmbarang']);
+        // namaController.text = (details['nama'] ?? '').toString();
+
+        //hargaController.text = formatter.format(int.parse(details['hargaJual']));
         jumlahController.text = '0';
-        subttlController.text = formatter.format(int.parse(details['hargaJual']) * int.parse(jumlahController.text));
+        //subttlController.text = formatter.format(int.parse(details['hargaJual']) * int.parse(jumlahController.text));
         diskonController.text = '0';
-        totalController.text =
-            formatter.format((int.parse(details['hargaJual']) * int.parse(jumlahController.text) - int.parse(diskonController.text)));
-        jumlahController.text = '';
+        // totalController.text =
+        //     formatter.format((int.parse(details['hargaJual']) * int.parse(jumlahController.text) - int.parse(diskonController.text)));
+        // jumlahController.text = '';
       });
     } catch (e) {
       setState(() {
@@ -382,9 +432,9 @@ class _JualPageState extends State<JualPage> {
 
   void showPaymentDialog() async {
     print("Isi transaksiData: $transaksiData");
-
     String grandTotal = calculateGrandTotal(); // Mengambil nilai Grand Total
-
+    print(totbayarku.text);
+    int totbayarInt = int.tryParse(totbayarku.text) ?? 0;
     // Menunggu nilai yang dikembalikan dari bayarjual.dart
     final paymentValue = await showDialog(
       context: context,
@@ -396,9 +446,11 @@ class _JualPageState extends State<JualPage> {
           username: widget.varpbuser,
           varlks: widget.varlks,
           varsaldokas: widget.varsaldokas,
-          onPaymentSuccess: (updatedVarsaldokas) {
+          vartotalbyr: currencyFormat.format(totbayarInt),
+          onPaymentSuccess: (updatedVarsaldokas, updatedVartotalbyr) {
             setState(() {
               varsaldokas = updatedVarsaldokas;
+              totbayarku.text = updatedVartotalbyr;
               print('saldo dijual.dart $varsaldokas'); // Update varsaldokas with the new value
             });
           },
@@ -410,17 +462,12 @@ class _JualPageState extends State<JualPage> {
     if (paymentValue != null) {
       setState(() {
         double bayar = double.tryParse(paymentValue) ?? 0.0;
-
         // Pastikan totbayar adalah String sebelum melakukan replaceAll
         String totbayarString = totbayar.toString();
         double currentTotbayar = double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
-
         // Tambahkan bayar ke currentTotbayar jika diperlukan
         currentTotbayar = bayar;
-
         final formatter = NumberFormat("#,###");
-
-        //totbayar = formatter.format(currentTotbayar);
         totbayar = currentTotbayar;
       });
     }
@@ -432,18 +479,20 @@ class _JualPageState extends State<JualPage> {
       builder: (BuildContext context) {
         return ItemSearchPopup(
           varpbuser: widget.varpbuser,
-          onItemSelected: (kode, nama, nhargajual) {
+          onItemSelected: (kode, nama, nhargajual, lmatang, nhargamatang) {
             setState(() {
               final formatter = NumberFormat("#,###");
               barcodeController.text = kode;
               namaController.text = nama;
-              //hargaController.text = nhargajual;
               hargaController.text = formatter.format(int.parse(nhargajual));
               jumlahController.text = '';
-              //subttlController.text = nhargajual;
-
               subttlController.text = formatter.format(int.parse(nhargajual));
-              // FocusScope.of(context).requestFocus(jumlahFocusNode);
+              lmatang = lmatang;
+              nhargamatang1 = nhargamatang;
+              // nhargamatang1 = formatter.format(int.parse(nhargamatang));
+              //nhargajual1 = nhargajual;
+              nhargajual1 = formatter.format(int.parse(nhargajual));
+              matang = lmatang == '1' ? true : false;
             });
           },
         );
@@ -584,6 +633,8 @@ class _JualPageState extends State<JualPage> {
                     kdcustController.text = '01';
                     nmcustController.text = 'Customer Umum';
                     totbayar = 0.0;
+                    totbayarku.text = '0';
+                    matang = false;
                     clearTransactionData(); // Mengosongkan transaksiData
                   },
                 ),
@@ -600,6 +651,34 @@ class _JualPageState extends State<JualPage> {
                 ),
               ),
             ),
+
+            SizedBox(height: 5),
+            Visibility(
+                visible: matang == true, // Tampilkan checkbox hanya jika lmatang = 1
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: isChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isChecked = value ?? false;
+                          if (isChecked) {
+                            namaController.text += ' Siap Saji';
+
+                            hargaController.text = nhargamatang1; // Menggunakan harga matang
+                          } else {
+                            namaController.text = namaController.text.replaceAll(' Siap Saji', '');
+                            hargaController.text = nhargajual1;
+
+                            // Jika perlu, ubah harga kembali ke harga awal (tidak matang)
+                            //  hargaController.text = formatter.format(int.parse(nhargajual));
+                          }
+                        });
+                      },
+                    ),
+                    Text('Siap saji'),
+                  ],
+                )),
 
             SizedBox(height: 5),
             Row(
@@ -675,11 +754,18 @@ class _JualPageState extends State<JualPage> {
               children: [
                 // Bagian A
                 Expanded(
-                  child: Text(
-                    'Total Bayar : ${currencyFormat.format(totbayar)}',
-                    textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  child: TextField(
+                    controller: totbayarku,
+                    decoration: InputDecoration(
+                      labelText: 'Total Bayar',
+                    ),
                   ),
+
+                  // Text(
+                  //   'Total Bayar : ${currencyFormat.format(totbayar)}',
+                  //   textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
+                  //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  // ),
                 ),
 
                 // Bagian B

@@ -26,11 +26,11 @@ class _TransactionSearchPopupState extends State<TransactionSearchPopup> {
 
   void _searchTransactions() async {
     try {
-      print(widget.varlks);
+      //print(widget.varlks);
       String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      print(today);
+      //print(today);
       List<Map<String, dynamic>> result = await ApiService.lapjualx(today, today, "1", widget.varlks);
-      print('b');
+      //print('b');
       setState(() {
         searchResults = result;
       });

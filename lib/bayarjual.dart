@@ -10,7 +10,8 @@ class PaymentDialog extends StatefulWidget {
   final String username;
   final String varlks;
   final String varsaldokas;
-  final ValueChanged<String> onPaymentSuccess; // Callback parameter
+  final String vartotalbyr;
+  final void Function(String, String) onPaymentSuccess; // Callback parameter
 
   PaymentDialog({
     required this.notrans,
@@ -19,6 +20,7 @@ class PaymentDialog extends StatefulWidget {
     required this.username,
     required this.varlks,
     required this.varsaldokas,
+    required this.vartotalbyr,
     required this.onPaymentSuccess, // Initialize callback parameter
   });
 
@@ -72,7 +74,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
 
   void _updatePaymentFields() {
     String grandTotalClean = widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
-    String totbayarClean = widget.totbayar.replaceAll(RegExp(r'[^0-9]'), '');
+    String totbayarClean = widget.vartotalbyr.replaceAll(RegExp(r'[^0-9]'), '');
 
     int grandTotalInt = int.tryParse(grandTotalClean) ?? 0;
     int totbayarInt = int.tryParse(totbayarClean) ?? 0;
@@ -93,7 +95,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
   @override
   Widget build(BuildContext context) {
     String grandTotalClean = widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
-    String totbayarClean = widget.totbayar.replaceAll(RegExp(r'[^0-9]'), '');
+    String totbayarClean = widget.vartotalbyr.replaceAll(RegExp(r'[^0-9]'), '');
 
     int grandTotalInt = int.tryParse(grandTotalClean) ?? 0;
     int totbayarInt = int.tryParse(totbayarClean) ?? 0;
@@ -139,7 +141,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                     ),
                     Text(': '),
                     Text(
-                      'Rp. ${widget.totbayar}',
+                      'Rp. ${widget.vartotalbyr}',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ],
@@ -277,20 +279,19 @@ class _PaymentDialogState extends State<PaymentDialog> {
               ? null
               : () async {
                   try {
-                    // Format string untuk menghapus karakter non-numerik (seperti titik)
-                    String cleanedVarsaldokas = widget.varsaldokas.replaceAll(RegExp(r'[^\d]'), '');
-                    String cleanedPayment = paymentController.text.replaceAll(RegExp(r'[^\d]'), '');
-
-                    int varsaldokasInt = int.tryParse(cleanedVarsaldokas) ?? 0;
-                    int paymentInt = int.tryParse(cleanedPayment) ?? 0;
+                    // Bersihkan dan konversi nilai String ke int
+                    int varsaldokasInt = int.tryParse(widget.varsaldokas.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+                    int paymentInt = int.tryParse(paymentController.text.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+                    int totalbyrdulu = int.tryParse(widget.totbayar.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
 
                     // Update varsaldokas dengan nilai pembayaran
                     String updatedVarsaldokas = (varsaldokasInt + paymentInt).toString();
+                    String updatedVartotalbyr = (totalbyrdulu + paymentInt).toString();
 
                     // Melakukan pembayaran
                     var paymentData = await ApiService.bayarjual(
                       widget.notrans,
-                      cleanedPayment,
+                      paymentInt.toString(),
                       widget.username,
                       widget.varlks,
                       selectedKdgl!,
@@ -298,13 +299,13 @@ class _PaymentDialogState extends State<PaymentDialog> {
                     print('Pembayaran berhasil: $paymentData');
 
                     Navigator.of(context).pop();
-                    widget.onPaymentSuccess(updatedVarsaldokas);
-                    print(updatedVarsaldokas); // Call the callback with the updated value
+                    widget.onPaymentSuccess(updatedVarsaldokas, updatedVartotalbyr);
+                    print(updatedVartotalbyr); // Call the callback with the updated value
                   } catch (e) {
                     print('Error saat melakukan pembayaran: $e');
                   }
                 },
-        ),
+        )
       ],
     );
   }
