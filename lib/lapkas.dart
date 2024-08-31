@@ -19,6 +19,14 @@ class _LapKasState extends State<LapKas> {
   DateTime selectedDate = DateTime.now();
   List<Map<String, dynamic>> reportData = [];
   bool isLoading = false;
+  List<Map<String, dynamic>> kirabayarData = [];
+  String? selectedKdgl;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchKirabayarData();
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -38,16 +46,31 @@ class _LapKasState extends State<LapKas> {
     return NumberFormat('#,##0.00', 'en_US').format(double.parse(number));
   }
 
+  Future<void> fetchKirabayarData() async {
+    try {
+      List<Map<String, dynamic>> data = await ApiService.kirabayar(
+        widget.varpbuser,
+        widget.varlks,
+      );
+      setState(() {
+        kirabayarData = data;
+      });
+    } catch (e) {
+      print("Failed to fetch kirabayar data: $e");
+    }
+  }
+
   Future<void> fetchReport() async {
     setState(() {
       isLoading = true;
     });
 
     try {
-      List<Map<String, dynamic>> data = await ApiService.lapkascb(
+      List<Map<String, dynamic>> data = await ApiService.lapkascb2(
         DateFormat('yyyy-MM-dd').format(selectedDate),
         widget.varpbuser,
         widget.varlks,
+        selectedKdgl ?? '',
       );
       setState(() {
         reportData = data;
@@ -73,6 +96,21 @@ class _LapKasState extends State<LapKas> {
           children: [
             Text('Laporan Kas ${widget.varnmlok} tanggal ${DateFormat('yyyy-MM-dd').format(selectedDate)}'),
             SizedBox(height: 16.0),
+            DropdownButton<String>(
+              hint: Text("Pilih Kdgl"),
+              value: selectedKdgl,
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedKdgl = newValue;
+                });
+              },
+              items: kirabayarData.map<DropdownMenuItem<String>>((Map<String, dynamic> value) {
+                return DropdownMenuItem<String>(
+                  value: value['kdgl'],
+                  child: Text('${value['nmkira']} (${value['kdgl']})'),
+                );
+              }).toList(),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -108,7 +146,6 @@ class _LapKasState extends State<LapKas> {
                             return DataRow(
                               cells: [
                                 DataCell(Text(data['notrans'] ?? '')),
-                                //DataCell(Text(DateTime.parse(data['tgl']))),
                                 DataCell(Text(data['tgl'] ?? '')),
                                 DataCell(Text(data['dari'] ?? '')),
                                 DataCell(Text(formatNumber(data['ndebet'] ?? '0.00'))),

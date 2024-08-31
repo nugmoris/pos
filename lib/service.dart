@@ -419,6 +419,26 @@ class ApiService {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> lapkascb2(String tgl1, String user1, String lks1, String kdgl1) async {
+    final url = '$root/api.php?action=LAPKASCB2';
+    final Map<String, String> jsonData = {
+      'user1': user1,
+      'lks1': lks1,
+      'tgl1': tgl1,
+      'kdgl1': kdgl1,
+    };
+
+    var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
   static Future<List<Map<String, dynamic>>> setorkascb(String user1, String lks1, String nrp1, String ket1) async {
     final url = '$root/api.php?action=SETOR';
     final Map<String, String> jsonData = {
@@ -489,6 +509,7 @@ class ApiService {
     var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
+      print(jsonData);
       return List<Map<String, dynamic>>.from(jsonData);
     } else {
       throw Exception('Failed to fetch report data');
