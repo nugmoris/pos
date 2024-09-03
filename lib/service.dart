@@ -475,6 +475,50 @@ class ApiService {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> carijual(String user1, String cari1, String kondisi1, String caritgl1) async {
+    final url = '$root/api.php?action=CARIJUAL';
+
+    final Map<String, String> jsonData = {
+      'user1': user1,
+      'cari1': cari1,
+      'kondisi1': kondisi1,
+      'caritgl1': caritgl1,
+    };
+    var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> returjual(
+      String notrans1, String lks1, String kdbarang1, String nqty1, String nrp1, String nojual1, String ket1, String user1) async {
+    final url = '$root/api.php?action=RETJL';
+    final Map<String, String> jsonData = {
+      'notrans1': notrans1,
+      'lks1': lks1,
+      'kdbarang1': kdbarang1,
+      'nqty1': nqty1,
+      'nrp1': nrp1,
+      'nojual1': nojual1,
+      'ket1': ket1,
+      'user1': user1,
+    };
+    var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
   static Future<List<Map<String, dynamic>>> lapjualkary(
       String user1, String lks1, String tgl1, String tgl2, String kdcust1, String kondisi1, String kondisi2, String kdbarang1) async {
     final url = '$root/api.php?action=LAPJUALKARY';

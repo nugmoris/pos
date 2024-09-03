@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -77,6 +78,11 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
   void laporanFunction() {
     Navigator.pushNamed(context, '/lapkas', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
     print("Laporan clicked");
+  }
+
+  void returjual() {
+    Navigator.pushNamed(context, '/returjual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    print("Retur Penjualan diklik");
   }
 
   @override
@@ -276,6 +282,12 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                         onTap: daftarHargaFunction,
                       ),
                       SizedBox(width: 10),
+                      TombolWidget(
+                        icon: CupertinoIcons.cart_fill_badge_minus,
+                        text: 'Retur Penjualan',
+                        onTap: returjual,
+                      ),
+                      SizedBox(width: 10),
                     ],
                   ),
                 ),
@@ -312,7 +324,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                       shape: BoxShape.circle, // Bentuk ikon
                     ),
                     child: Icon(
-                      Icons.local_grocery_store, // Ganti dengan ikon yang diinginkan
+                      CupertinoIcons.cart_fill_badge_plus, // Ganti dengan ikon yang diinginkan
                       color: Colors.white, // Warna ikon
                       size: 80, // Ukuran ikon
                     ),
