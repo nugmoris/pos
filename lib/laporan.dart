@@ -203,16 +203,22 @@ class _LapPageState extends State<LapPage> {
             data.where((element) => element['notrans'] == item['notrans']).fold(0, (sum, element) => sum + int.parse(element['subttl'] ?? '0'));
       }
 
+      // Periksa apakah nqty kurang dari 0
+      bool isQtyNegative = int.tryParse(item['nqty'] ?? '0')! < 0;
+
+      // Atur warna teks berdasarkan kondisi
+      TextStyle textStyle = TextStyle(color: isQtyNegative ? Colors.red : Colors.black);
+
       rows.add(DataRow(cells: [
-        DataCell(Text(isNewTransaction ? item['notrans'] ?? '' : '')),
-        DataCell(Text(isNewTransaction ? dateFormat.format(DateTime.parse(item['tgl'])) : '')),
-        DataCell(Text(isNewTransaction ? item['nmcust'] ?? '' : '')),
-        DataCell(Text(item['nmbarang'] ?? '')),
-        DataCell(Text(item['nqty'] ?? '')),
-        DataCell(Text(numberFormat.format(int.parse(item['nrp'] ?? '0')))),
-        DataCell(Text(numberFormat.format(int.parse(item['subttl'] ?? '0')))),
-        DataCell(Text(isNewTransaction ? numberFormat.format(subttlTotal) : '')),
-        DataCell(Text(item['tgl'] ?? '')),
+        DataCell(Text(isNewTransaction ? item['notrans'] ?? '' : '', style: textStyle)),
+        DataCell(Text(isNewTransaction ? dateFormat.format(DateTime.parse(item['tgl'])) : '', style: textStyle)),
+        DataCell(Text(isNewTransaction ? item['nmcust'] ?? '' : '', style: textStyle)),
+        DataCell(Text(item['nmbarang'] ?? '', style: textStyle)),
+        DataCell(Text(item['nqty'] ?? '', style: textStyle)),
+        DataCell(Text(numberFormat.format(int.parse(item['nrp'] ?? '0')), style: textStyle)),
+        DataCell(Text(numberFormat.format(int.parse(item['subttl'] ?? '0')), style: textStyle)),
+        DataCell(Text(isNewTransaction ? numberFormat.format(subttlTotal) : '', style: textStyle)),
+        DataCell(Text(item['tgl'] ?? '', style: textStyle)),
       ]));
 
       lastNotrans = item['notrans'];

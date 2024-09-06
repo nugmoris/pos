@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pos/carijual.dart';
 
+import 'search_popup.dart';
 import 'service.dart';
 
 class ReturJualPage extends StatefulWidget {
@@ -20,6 +22,10 @@ class _ReturJualPageState extends State<ReturJualPage> {
   TextEditingController nqtyreturController = TextEditingController();
   TextEditingController nrpreturController = TextEditingController();
   TextEditingController keteranganController = TextEditingController();
+  TextEditingController nqtyjualController = TextEditingController();
+  TextEditingController nrpjualController = TextEditingController();
+  TextEditingController nsubttljualController = TextEditingController();
+  TextEditingController tglreturcontroller = TextEditingController();
 
   String nojual = '';
   String nmcustomer = '';
@@ -33,6 +39,54 @@ class _ReturJualPageState extends State<ReturJualPage> {
 
   List<Map<String, dynamic>> returDetail = [];
 
+  void openSearchPopup() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SearchPopup(
+          varpbuser: widget.varpbuser,
+          varlks: widget.varlks,
+          onItemSelected: (notrans) {
+            onItemSelected(notrans);
+          },
+        );
+      },
+    );
+  }
+
+  void onItemSelected(String notrans) async {
+    try {
+      List<Map<String, dynamic>> result = await ApiService.cariretjual(
+        widget.varpbuser,
+        widget.varlks,
+        '3',
+        notrans,
+      );
+
+      if (result.isNotEmpty) {
+        setState(() {
+          notransController.text = result[0]['notrans'] ?? '';
+
+          returDetail = result
+              .map((item) => {
+                    'kdbarang': item['kdbarang'],
+                    'nmbarang': item['nmbarang'],
+                    'nrpretur': item['nrp'],
+                    'nqtyretur': item['nqty'],
+                    'nsubtotal': item['nsubttl'],
+                    'llunas': item['llunas'],
+                    'notrans': item['notrans'],
+                    'nojual': item['nojual']
+                  })
+              .toList();
+          print('returdetail : $returDetail');
+        });
+      }
+    } catch (e) {
+      print('Error fetching transaction details: $e');
+    }
+  }
+
   void updateNotrans() {
     setState(() {
       notransController.text = 'RJL-Baru';
@@ -44,11 +98,16 @@ class _ReturJualPageState extends State<ReturJualPage> {
       nqtyjual = '';
       nrpjual = '';
       nsubtotal = '';
+      //nmbarangController.clear();
       nqtyreturController.clear();
       nrpreturController.clear();
+      nqtyjualController.clear();
+      nrpjualController.clear();
+      nsubttljualController.clear();
       nsubtotalret = '';
       keteranganController.clear();
       returDetail.clear();
+      tglreturcontroller.clear();
     });
   }
 
@@ -70,12 +129,18 @@ class _ReturJualPageState extends State<ReturJualPage> {
       setState(() {
         nojual = result['notrans'] ?? '';
         nmcustomer = result['nmcust'] ?? '';
-        tgljual = result['tgl'] ?? '';
+        tgljual = result['tgljual']?.toString() ?? '';
         kdbarang = result['kdbarang'] ?? '';
         nmbarang = result['nmbarang'] ?? '';
+        // nmbarangController.text = result['nmbarang'];
         nqtyjual = result['nqty']?.toString() ?? '';
+        final formatter = NumberFormat("#,###");
+        nrpjualController.text = formatter.format(int.parse(result['nrp']));
+        nqtyjualController.text = result['nqty'];
+        nsubttljualController.text = formatter.format(int.parse(result['subttl']));
         nrpjual = result['nrp']?.toString() ?? '';
         nsubtotal = result['subttl']?.toString() ?? '';
+        //
       });
     }
   }
@@ -95,14 +160,22 @@ class _ReturJualPageState extends State<ReturJualPage> {
     setState(() {
       if (response.isNotEmpty) {
         notransController.text = response.first['notrans'] ?? 'RJL-Baru';
+        // Pastikan untuk membersihkan dan menambahkan data baru ke returDetail
+        returDetail.clear();
         returDetail.addAll(response);
         kdbarang = '';
         nmbarang = '';
         nqtyjual = '';
         nrpjual = '';
         nsubtotal = '';
+        keteranganController.clear();
+        nqtyjualController.clear();
+        nrpjualController.clear();
+        nsubttljualController.clear();
         nqtyreturController.clear();
         nrpreturController.clear();
+        nsubttljualController.clear();
+        tglreturcontroller.clear();
         nsubtotalret = '';
       }
     });
@@ -123,12 +196,26 @@ class _ReturJualPageState extends State<ReturJualPage> {
               children: [
                 Expanded(
                   child: TextField(
+                    readOnly: true,
                     controller: notransController,
                     decoration: InputDecoration(labelText: 'No. Transaksi'),
                   ),
                 ),
                 SizedBox(width: 8),
-                Text('Tgl Transaksi: ${DateTime.now().toString().split(' ')[0]}'),
+                Expanded(
+                  child: TextField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Tanggal Retur',
+                    ),
+                    style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.bold, // Ubah warna font menjadi biru
+                    ),
+                    controller: tglreturcontroller,
+                  ),
+                ),
                 SizedBox(width: 8),
                 IconButton(
                   icon: Icon(Icons.refresh),
@@ -136,7 +223,12 @@ class _ReturJualPageState extends State<ReturJualPage> {
                 ),
               ],
             ),
-            Divider(),
+            Divider(
+              color: Colors.black, // Warna garis
+              thickness: 2, // Ketebalan garis
+              indent: 10, // Jarak dari awal garis ke tepi kiri
+              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
+            ),
             Row(
               children: [
                 IconButton(
@@ -149,12 +241,73 @@ class _ReturJualPageState extends State<ReturJualPage> {
             ),
             SizedBox(height: 8),
             Text('$nmcustomer - $tgljual'),
-            // Text('Tgl Jual: $tgljual'),
-            SizedBox(height: 8),
-            Text('Barang: $kdbarang - $nmbarang'),
-            //Text('Nama Barang: $nmbarang'),
-            SizedBox(height: 8),
-            Text('$nqtyjual pcs x Rp $nrpjual = Rp $nsubtotal'),
+            SizedBox(height: 15),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '$kdbarang - $nmbarang',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue[900],
+                ),
+              ),
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: [
+                Expanded(
+                  flex: 3, // Memberi lebih banyak ruang untuk harga jual
+                  child: TextField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Harga Jual',
+                    ),
+                    style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.bold, // Ubah warna font menjadi biru
+                    ),
+                    controller: nrpjualController,
+                  ),
+                ),
+                SizedBox(width: 5), // Menambahkan sedikit ruang antar TextField
+                Expanded(
+                  flex: 1, // Memberi lebih sedikit ruang untuk QTY
+                  child: TextField(
+                    readOnly: true,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'QTY',
+                    ),
+                    style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.bold, // Ubah warna font menjadi biru
+                    ),
+                    controller: nqtyjualController,
+                  ),
+                ),
+                SizedBox(width: 5),
+                Expanded(
+                  flex: 3, // Memberi lebih sedikit ruang untuk QTY
+                  child: TextField(
+                    //  focusNode: jumlahFocusNode,
+                    readOnly: true,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Sub Total',
+                    ),
+                    style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.bold, // Ubah warna font menjadi biru
+                    ),
+                    controller: nsubttljualController,
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height: 16),
             Row(
               children: [
@@ -197,15 +350,15 @@ class _ReturJualPageState extends State<ReturJualPage> {
                     // Implementasikan logika pembayaran di sini
                   },
                 ),
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () {
-                    // Implementasikan logika pencarian tambahan jika diperlukan
-                  },
-                ),
+                IconButton(icon: Icon(Icons.search), onPressed: openSearchPopup),
               ],
             ),
-            Divider(),
+            Divider(
+              color: Colors.black, // Warna garis
+              thickness: 2, // Ketebalan garis
+              indent: 10, // Jarak dari awal garis ke tepi kiri
+              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
+            ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
@@ -216,16 +369,18 @@ class _ReturJualPageState extends State<ReturJualPage> {
                   DataColumn(label: Text('Harga Retur')),
                   DataColumn(label: Text('Subtotal')),
                   DataColumn(label: Text('No. Transaksi')),
+                  DataColumn(label: Text('No. Penjualan')),
                 ],
                 rows: returDetail.map((detail) {
                   return DataRow(
                     cells: [
                       DataCell(Text(detail['kdbarang'] ?? '')),
                       DataCell(Text(detail['nmbarang'] ?? '')),
-                      DataCell(Text(detail['nqtyretur']?.toString() ?? '')),
-                      DataCell(Text(detail['nrpretur']?.toString() ?? '')),
-                      DataCell(Text(detail['nsubtotal']?.toString() ?? '')),
+                      DataCell(Text(detail['nqtyretur'].toString() ?? '')),
+                      DataCell(Text(detail['nrpretur'].toString() ?? '')),
+                      DataCell(Text(detail['nsubtotal'].toString() ?? '')),
                       DataCell(Text(detail['notrans'] ?? '')),
+                      DataCell(Text(detail['nojual'] ?? '')),
                     ],
                   );
                 }).toList(),

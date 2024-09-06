@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 
 class ApiService {
   //static const root = "http://128.199.154.103/tuing_pos";
-  //static const root = "http://103.80.96.26/tuing_pos";
-  static const root = "http://103.80.96.26/pos_coba";
+  static const root = "http://103.80.96.26/tuing_pos";
+  //static const root = "http://103.80.96.26/pos_coba";
 
   static const action = "LOGIN";
 
@@ -512,6 +512,27 @@ class ApiService {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
+      print(jsonData);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> cariretjual(String user1, String lks1, String kondisi1, String cari1) async {
+    final url = '$root/api.php?action=CARIRETJL';
+    final Map<String, String> jsonData = {
+      'user1': user1,
+      'lks1': lks1,
+      'kondisi1': kondisi1,
+      'cari1': cari1,
+    };
+    var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+      print(jsonData);
 
       return List<Map<String, dynamic>>.from(jsonData);
     } else {

@@ -81,6 +81,7 @@ class _CarijualPageState extends State<CarijualPage> {
                                 'nqty': result['nqty'],
                                 'nrp': result['nrp'],
                                 'subttl': result['subttl'],
+                                'tgljual': result['tgl'],
                               });
                             }
                           },
