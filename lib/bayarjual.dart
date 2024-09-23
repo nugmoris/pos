@@ -11,9 +11,11 @@ class PaymentDialog extends StatefulWidget {
   final String varlks;
   final String varsaldokas;
   final String vartotalbyr;
+  final String asal;
   final void Function(String, String) onPaymentSuccess; // Callback parameter
 
   PaymentDialog({
+    required this.asal,
     required this.notrans,
     required this.grandTotal,
     required this.totbayar,
@@ -296,11 +298,11 @@ class _PaymentDialogState extends State<PaymentDialog> {
                       widget.varlks,
                       selectedKdgl!,
                     );
-                    print('Pembayaran berhasil: $paymentData');
+                    //print('Pembayaran berhasil: $paymentData');
 
                     Navigator.of(context).pop();
                     widget.onPaymentSuccess(updatedVarsaldokas, updatedVartotalbyr);
-                    print(updatedVartotalbyr); // Call the callback with the updated value
+                    //print(updatedVartotalbyr); // Call the callback with the updated value
                   } catch (e) {
                     print('Error saat melakukan pembayaran: $e');
                   }

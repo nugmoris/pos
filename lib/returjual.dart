@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pos/carijual.dart';
 
+import 'bayarjual.dart';
 import 'search_popup.dart';
 import 'service.dart';
 
@@ -26,7 +27,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
   TextEditingController nrpjualController = TextEditingController();
   TextEditingController nsubttljualController = TextEditingController();
   TextEditingController tglreturcontroller = TextEditingController();
-
+  String varsaldokas = '0';
   String nojual = '';
   String nmcustomer = '';
   String tgljual = '';
@@ -36,8 +37,54 @@ class _ReturJualPageState extends State<ReturJualPage> {
   String nrpjual = '';
   String nsubtotal = '';
   String nsubtotalret = '';
+  final NumberFormat currencyFormat = NumberFormat("#,##0", "en_US");
+  double totbayar = 0.0;
+  List<Map<String, dynamic>> transaksiData = [];
 
-  List<Map<String, dynamic>> returDetail = [];
+  void showPaymentDialog() async {
+    print('showpaymentdialog');
+    String grandTotal = calculateGrandTotal(); // Mengambil nilai Grand Total
+    //  int totbayarInt = int.tryParse(totbayarku.text) ?? 0;
+    int totbayarInt = 0;
+    print('showpaymentdialog');
+    // Menunggu nilai yang dikembalikan dari bayarjual.dart
+    final paymentValue = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PaymentDialog(
+          asal: 'retur',
+          notrans: notransController.text,
+          grandTotal: grandTotal,
+          totbayar: currencyFormat.format(totbayar),
+          username: widget.varpbuser,
+          varlks: widget.varlks,
+          varsaldokas: '0',
+          vartotalbyr: currencyFormat.format(totbayarInt),
+          onPaymentSuccess: (updatedVarsaldokas, updatedVartotalbyr) {
+            setState(() {
+              varsaldokas = updatedVarsaldokas;
+              //totbayarku.text = updatedVartotalbyr;
+              print('saldo dijual.dart $varsaldokas'); // Update varsaldokas with the new value
+            });
+          },
+        );
+      },
+    );
+
+// Pastikan paymentValue tidak null dan lakukan update yang diperlukan
+    if (paymentValue != null) {
+      setState(() {
+        double bayar = double.tryParse(paymentValue) ?? 0.0;
+        // Pastikan totbayar adalah String sebelum melakukan replaceAll
+        String totbayarString = totbayar.toString();
+        double currentTotbayar = double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
+        // Tambahkan bayar ke currentTotbayar jika diperlukan
+        currentTotbayar = bayar;
+        final formatter = NumberFormat("#,###");
+        totbayar = currentTotbayar;
+      });
+    }
+  }
 
   void openSearchPopup() {
     showDialog(
@@ -67,7 +114,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
         setState(() {
           notransController.text = result[0]['notrans'] ?? '';
 
-          returDetail = result
+          transaksiData = result
               .map((item) => {
                     'kdbarang': item['kdbarang'],
                     'nmbarang': item['nmbarang'],
@@ -79,7 +126,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
                     'nojual': item['nojual']
                   })
               .toList();
-          print('returdetail : $returDetail');
+          //print('transaksiData : $transaksiData');
         });
       }
     } catch (e) {
@@ -106,7 +153,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
       nsubttljualController.clear();
       nsubtotalret = '';
       keteranganController.clear();
-      returDetail.clear();
+      transaksiData.clear();
       tglreturcontroller.clear();
     });
   }
@@ -160,9 +207,9 @@ class _ReturJualPageState extends State<ReturJualPage> {
     setState(() {
       if (response.isNotEmpty) {
         notransController.text = response.first['notrans'] ?? 'RJL-Baru';
-        // Pastikan untuk membersihkan dan menambahkan data baru ke returDetail
-        returDetail.clear();
-        returDetail.addAll(response);
+        // Pastikan untuk membersihkan dan menambahkan data baru ke transaksiData
+        transaksiData.clear();
+        transaksiData.addAll(response);
         kdbarang = '';
         nmbarang = '';
         nqtyjual = '';
@@ -179,6 +226,16 @@ class _ReturJualPageState extends State<ReturJualPage> {
         nsubtotalret = '';
       }
     });
+  }
+
+  String calculateGrandTotal() {
+    final formatter = NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
+    int total = transaksiData.fold(0, (sum, item) {
+      int subtotal = int.tryParse(item['subtotal'].toString()) ?? 0;
+      return sum + subtotal;
+    });
+
+    return formatter.format(total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
   }
 
   @override
@@ -347,7 +404,13 @@ class _ReturJualPageState extends State<ReturJualPage> {
                 IconButton(
                   icon: Icon(Icons.payment),
                   onPressed: () {
-                    // Implementasikan logika pembayaran di sini
+                    print('bayar');
+                    // showPaymentDialog();
+
+                    //    !transaksiData.any((item) => item['llunas'] == '1') ? showPaymentDialog : null;
+                    if (!transaksiData.any((item) => item['llunas'] == '1')) {
+                      showPaymentDialog();
+                    }
                   },
                 ),
                 IconButton(icon: Icon(Icons.search), onPressed: openSearchPopup),
@@ -371,7 +434,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
                   DataColumn(label: Text('No. Transaksi')),
                   DataColumn(label: Text('No. Penjualan')),
                 ],
-                rows: returDetail.map((detail) {
+                rows: transaksiData.map((detail) {
                   return DataRow(
                     cells: [
                       DataCell(Text(detail['kdbarang'] ?? '')),

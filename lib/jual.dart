@@ -431,15 +431,14 @@ class _JualPageState extends State<JualPage> {
   }
 
   void showPaymentDialog() async {
-    print("Isi transaksiData: $transaksiData");
     String grandTotal = calculateGrandTotal(); // Mengambil nilai Grand Total
-    print(totbayarku.text);
     int totbayarInt = int.tryParse(totbayarku.text) ?? 0;
     // Menunggu nilai yang dikembalikan dari bayarjual.dart
     final paymentValue = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return PaymentDialog(
+          asal: 'jual',
           notrans: notransController.text,
           grandTotal: grandTotal,
           totbayar: currencyFormat.format(totbayar),
