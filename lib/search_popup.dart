@@ -6,7 +6,7 @@ import 'service.dart';
 class SearchPopup extends StatefulWidget {
   final String varpbuser;
   final String varlks;
-  final Function(String) onItemSelected; // Callback untuk mengirim data yang dipilih
+  final Function(String, String) onItemSelected; // Callback untuk mengirim data yang dipilih
 
   SearchPopup({
     required this.varpbuser,
@@ -37,7 +37,6 @@ class _SearchPopupState extends State<SearchPopup> {
 
     setState(() {
       searchResults = result;
-      print('hasil search $searchResults');
     });
   }
 
@@ -52,7 +51,6 @@ class _SearchPopupState extends State<SearchPopup> {
 
     setState(() {
       searchResults = result;
-      //print(searchResults);
     });
   }
 
@@ -84,6 +82,7 @@ class _SearchPopupState extends State<SearchPopup> {
                           DataColumn(label: Text('Tanggal')),
                           DataColumn(label: Text('No Jual')),
                           DataColumn(label: Text('Nama Barang')),
+                          DataColumn(label: Text('Terbayar')),
                         ],
                         rows: searchResults.map((data) {
                           return DataRow(
@@ -92,30 +91,35 @@ class _SearchPopupState extends State<SearchPopup> {
                               DataCell(
                                 Text(data['notrans']),
                                 onTap: () {
-                                  widget.onItemSelected(
-                                    data['notrans'],
-                                  );
+                                  widget.onItemSelected(data['notrans'], data['nbayar']);
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['tanggal']),
                                 onTap: () {
-                                  widget.onItemSelected(data['notrans']);
+                                  widget.onItemSelected(data['notrans'], data['nbayar']);
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['nojual']),
                                 onTap: () {
-                                  widget.onItemSelected(data['notrans']);
+                                  widget.onItemSelected(data['notrans'], data['nbayar']);
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['nmbarang']),
                                 onTap: () {
-                                  widget.onItemSelected(data['notrans']);
+                                  widget.onItemSelected(data['notrans'], data['nbayar']);
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              DataCell(
+                                Text(data['nbayar']),
+                                onTap: () {
+                                  widget.onItemSelected(data['notrans'], data['nbayar']);
                                   Navigator.of(context).pop();
                                 },
                               ),

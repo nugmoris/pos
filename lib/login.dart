@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 8),
             Text(
-              "Hallo Silahkan Login ! ",
+              "Hallo Silahkan Login.. ! ",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
             SizedBox(height: 20),

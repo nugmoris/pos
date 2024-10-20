@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  win32: ^5.0.9
   http: ^0.13.6
   android_id: ^0.3.6
   intl: ^0.18.0

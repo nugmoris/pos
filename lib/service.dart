@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 class ApiService {
   //static const root = "http://128.199.154.103/tuing_pos";
-  // static const root = "http://103.80.96.26/tuing_pos";
+  //static const root = "http://103.80.96.26/tuing_pos";
   static const root = "http://103.80.96.26/pos_coba";
 
   static const action = "LOGIN";
@@ -276,15 +276,18 @@ class ApiService {
     String user1,
     String lks1,
     String kdgl1,
+    String asal,
   ) async {
-    final url = '$root/api.php?action=BAYARJL';
+    final url = '$root/api.php?action=BAYARJL2';
     final Map<String, String> jsonData = {
       'lks1': lks1,
       'nojual1': nojual1,
       'kdgl1': kdgl1,
       'nrp1': nrp1,
       'user1': user1,
+      'asal1': asal,
     };
+
     var response = await http.post(Uri.parse(url), body: jsonEncode(jsonData), headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {

@@ -293,9 +293,6 @@ class _JualPageState extends State<JualPage> {
           nmcustController.text = result[0]['nmcust'] ?? '';
           totbayar = double.parse(nbayar.replaceAll(',', ''));
           totbayarku.text = nbayar;
-          //    totBayarController.text = totbayar;
-          // llunas = double.parse(nbayar.replaceAll(',', ''));
-          //nbayar;
 
           transaksiData = result
               .map((item) => {
@@ -321,19 +318,8 @@ class _JualPageState extends State<JualPage> {
       final formatter = NumberFormat("#,###");
 
       setState(() {
-        //   print(details['nama'].runtimeType);
-        //String nama = details['nama'] ?? '';
-        // print(nama);
-        //print(details['nmbarang']);
-        // namaController.text = (details['nama'] ?? '').toString();
-
-        //hargaController.text = formatter.format(int.parse(details['hargaJual']));
         jumlahController.text = '0';
-        //subttlController.text = formatter.format(int.parse(details['hargaJual']) * int.parse(jumlahController.text));
         diskonController.text = '0';
-        // totalController.text =
-        //     formatter.format((int.parse(details['hargaJual']) * int.parse(jumlahController.text) - int.parse(diskonController.text)));
-        // jumlahController.text = '';
       });
     } catch (e) {
       setState(() {
@@ -344,7 +330,6 @@ class _JualPageState extends State<JualPage> {
         jumlahController.text = '0';
         diskonController.text = '0';
         totalController.text = '0';
-        print('proses2');
       });
     }
   }
@@ -450,7 +435,6 @@ class _JualPageState extends State<JualPage> {
             setState(() {
               varsaldokas = updatedVarsaldokas;
               totbayarku.text = updatedVartotalbyr;
-              print('saldo dijual.dart $varsaldokas'); // Update varsaldokas with the new value
             });
           },
         );
@@ -668,9 +652,6 @@ class _JualPageState extends State<JualPage> {
                           } else {
                             namaController.text = namaController.text.replaceAll(' Siap Saji', '');
                             hargaController.text = nhargajual1;
-
-                            // Jika perlu, ubah harga kembali ke harga awal (tidak matang)
-                            //  hargaController.text = formatter.format(int.parse(nhargajual));
                           }
                         });
                       },
@@ -759,12 +740,6 @@ class _JualPageState extends State<JualPage> {
                       labelText: 'Total Bayar',
                     ),
                   ),
-
-                  // Text(
-                  //   'Total Bayar : ${currencyFormat.format(totbayar)}',
-                  //   textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
-                  //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  // ),
                 ),
 
                 // Bagian B

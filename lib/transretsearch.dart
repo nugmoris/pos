@@ -8,7 +8,6 @@ class TransRetSearchPopup extends StatefulWidget {
   final String varlks;
   final Function(String, String) onTransactionSelected; // Mengubah parameter
   TransRetSearchPopup({required this.varpbuser, required this.onTransactionSelected, required this.varlks});
-  // TransRetSearchPopup({required this.varpbuser, required this.varlks, required this.onTransactionSelected});
 
   @override
   _TransRetSearchPopupState createState() => _TransRetSearchPopupState();
@@ -26,11 +25,9 @@ class _TransRetSearchPopupState extends State<TransRetSearchPopup> {
 
   void _searchTransactions() async {
     try {
-      //print(widget.varlks);
       String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      //print(today);
       List<Map<String, dynamic>> result = await ApiService.lapjualx(today, today, "1", widget.varlks);
-      //print('b');
+
       setState(() {
         searchResults = result;
       });

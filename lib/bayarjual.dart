@@ -35,6 +35,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
   TextEditingController kembaliController = TextEditingController();
   TextEditingController paymentController = TextEditingController();
 
+  bool isProcessing = false; // Tambahkan variabel untuk melacak status pembayaran
   List<Map<String, dynamic>> kirabayarData = [];
   String? selectedKira;
   String? selectedKdgl;
@@ -271,40 +272,46 @@ class _PaymentDialogState extends State<PaymentDialog> {
       actions: <Widget>[
         TextButton(
           child: Text('Batal'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: isProcessing
+              ? null
+              : () {
+                  Navigator.of(context).pop();
+                },
         ),
         TextButton(
           child: Text('Bayar'),
-          onPressed: paymentController.text == '0'
+          onPressed: (paymentController.text == '0' || isProcessing)
               ? null
               : () async {
+                  setState(() {
+                    isProcessing = true; // Set isProcessing to true saat proses pembayaran dimulai
+                  });
+
                   try {
-                    // Bersihkan dan konversi nilai String ke int
                     int varsaldokasInt = int.tryParse(widget.varsaldokas.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
                     int paymentInt = int.tryParse(paymentController.text.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
                     int totalbyrdulu = int.tryParse(widget.totbayar.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
 
-                    // Update varsaldokas dengan nilai pembayaran
                     String updatedVarsaldokas = (varsaldokasInt + paymentInt).toString();
                     String updatedVartotalbyr = (totalbyrdulu + paymentInt).toString();
 
-                    // Melakukan pembayaran
                     var paymentData = await ApiService.bayarjual(
                       widget.notrans,
                       paymentInt.toString(),
                       widget.username,
                       widget.varlks,
                       selectedKdgl!,
+                      widget.asal,
                     );
-                    //print('Pembayaran berhasil: $paymentData');
 
                     Navigator.of(context).pop();
                     widget.onPaymentSuccess(updatedVarsaldokas, updatedVartotalbyr);
-                    //print(updatedVartotalbyr); // Call the callback with the updated value
                   } catch (e) {
                     print('Error saat melakukan pembayaran: $e');
+                  } finally {
+                    setState(() {
+                      isProcessing = false; // Set isProcessing to false setelah proses selesai
+                    });
                   }
                 },
         )

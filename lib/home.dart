@@ -81,7 +81,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
   }
 
   void returjual() {
-    Navigator.pushNamed(context, '/returjual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/returjual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok, widget.varsaldokas]);
     print("Retur Penjualan diklik");
   }
 

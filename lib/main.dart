@@ -16,7 +16,7 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion1 = 'POS23';
+String myversion1 = 'POS25';
 String currentVersion = '';
 
 void main() async {
@@ -28,6 +28,7 @@ void main() async {
 
 Future<String> getCurrentVersion() async {
   final result1 = await ApiService.cekversi();
+
   final version = result1['versiku']; // Access the 'versiku' key directly
 
   return version;
@@ -96,8 +97,8 @@ class MyApp extends StatelessWidget {
           final varbagian = args?.isNotEmpty == true ? args![1] as String? : null;
           final varlks = args?.isNotEmpty == true ? args![2] as String? : null;
           final varnmlok = args?.isNotEmpty == true ? args![3] as String? : null;
-
-          return ReturJualPage(varpbuser!, varbagian!, varlks!, varnmlok!);
+          final varsaldokas = args?.isNotEmpty == true ? args![4] as String? : null;
+          return ReturJualPage(varpbuser!, varbagian!, varlks!, varnmlok!, varsaldokas!);
         },
 
         '/daftarsetor': (context) {
