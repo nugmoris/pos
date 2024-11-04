@@ -104,6 +104,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
               // Baris pertama
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                //header
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -167,11 +168,12 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                     ),
                     Container(
                       width: 250,
-                      height: 50,
+                      height: 60,
                       color: Colors.transparent,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          //Nama Company
                           Text(
                             'Koperasi Kasih',
                             style: GoogleFonts.leagueSpartan(
@@ -181,11 +183,12 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                             ),
                             textAlign: TextAlign.center,
                           ),
+                          // Nama Lokasi
                           Text(
                             widget.varnmlok,
                             style: GoogleFonts.quicksand(
                               color: Colors.blue[700],
-                              fontSize: 18,
+                              fontSize: 16,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -215,6 +218,7 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                 ),
               ),
               // Baris kedua
+              // Saldo kas
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
                 child: Row(
