@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 
 class ApiService {
   //static const root = "http://128.199.154.103/tuing_pos";
-  static const root = "http://103.80.96.26/tuing_pos";
-  //static const root = "http://103.80.96.26/pos_coba";
+  // static const root = "http://103.80.96.26/tuing_pos";
+  static const root = "http://103.80.96.26/pos_coba";
 
   static const action = "LOGIN";
 

@@ -165,7 +165,7 @@ class _JualPageState extends State<JualPage> {
           barcodeController.clear();
           namaController.clear();
           kdcustController.text = '01';
-          nmcustController.text = 'Customer Umum';
+          // nmcustController.text = 'Customer Umum';
           hargaController.text = '0';
           jumlahController.text = '0';
           subttlController.text = '0';
