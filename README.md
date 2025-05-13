@@ -1,16 +1,24 @@
-# pos
+**POS App – Point of Sale for Cooperatives**
+A complete Point of Sale (POS) system tailored for cooperatives (koperasi), built with Flutter. This system includes inventory, barcode scanning, daily transaction reports, and financial summaries.
 
-A new Flutter project.
+🧩 Features
+Barcode scanning for product sales
 
-## Getting Started
+Daily transaction and deposit tracking
 
-This project is a starting point for a Flutter application.
+Receipt printing (Bluetooth printers supported)
 
-A few resources to get you started if this is your first Flutter project:
+Sales & financial reporting
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Role-based user access (admin & cashier)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Offline-first architecture (local storage with sync)
+
+🔧 Technologies Used
+Flutter + Dart
+
+SQLite (offline DB)
+
+PHP + MySQL for server-side reporting
+
+Printer support via ESC/POS
