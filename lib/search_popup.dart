@@ -6,7 +6,8 @@ import 'service.dart';
 class SearchPopup extends StatefulWidget {
   final String varpbuser;
   final String varlks;
-  final Function(String, String) onItemSelected; // Callback untuk mengirim data yang dipilih
+  final Function(String, String)
+      onItemSelected; // Callback untuk mengirim data yang dipilih
 
   SearchPopup({
     required this.varpbuser,
@@ -91,35 +92,40 @@ class _SearchPopupState extends State<SearchPopup> {
                               DataCell(
                                 Text(data['notrans']),
                                 onTap: () {
-                                  widget.onItemSelected(data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(
+                                      data['notrans'], data['nbayar'] ?? 0);
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['tanggal']),
                                 onTap: () {
-                                  widget.onItemSelected(data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(
+                                      data['notrans'], data['nbayar']);
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['nojual']),
                                 onTap: () {
-                                  widget.onItemSelected(data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(
+                                      data['notrans'], data['nbayar']);
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['nmbarang']),
                                 onTap: () {
-                                  widget.onItemSelected(data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(
+                                      data['notrans'], data['nbayar']);
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['nbayar']),
                                 onTap: () {
-                                  widget.onItemSelected(data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(
+                                      data['notrans'], data['nbayar']);
                                   Navigator.of(context).pop();
                                 },
                               ),

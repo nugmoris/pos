@@ -1,0 +1,632 @@
+--------- beginning of main
+06-21 13:21:44.347  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: bindService is called for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiService and for client com.google.android.gms.persistent
+06-21 13:21:44.347  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: total connections for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiServiceare :15
+06-21 13:21:44.347  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: total connections for client : com.google.android.gms.persistentare :6
+06-21 13:21:44.350  3137  3137 D BoundBrokerSvc: onRebind: Intent { act=com.google.android.gms.libs.gmscorelogger.service.START dat=chimera-action: cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+06-21 13:21:44.373  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:44.379  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:44.429  1775  2191 I chatty  : uid=1000(system) SensorService identical 2 lines
+06-21 13:21:44.561  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:44.575  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:44.626  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:44.778  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:44.920  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:44.979  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:45.159  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:45.179  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:45.280  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:45.290  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:45.380  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:45.460  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:45.464  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:21:45.493  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:45.583  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:45.786  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:45.818  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:45.823  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:21:45.890  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:45.989  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:46.001  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:46.189  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:46.390  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:46.560  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:46.591  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:46.592  2593  2697 D NetworkController.MobileSignalController(1): onSignalStrengthsChanged signalStrength=SignalStrength:{mCdma=CellSignalStrengthCdma: cdmaDbm=2147483647 cdmaEcio=2147483647 evdoDbm=2147483647 evdoEcio=2147483647 evdoSnr=2147483647 miuiLevel=0 level=0,mGsm=CellSignalStrengthGsm: rssi=2147483647 ber=2147483647 mTa=2147483647 miuiLevel=0 mLevel=0,mWcdma=CellSignalStrengthWcdma: ss=2147483647 ber=2147483647 rscp=2147483647 ecno=2147483647 miuiLevel=0 level=0,mTdscdma=CellSignalStrengthTdscdma: rssi=2147483647 ber=2147483647 rscp=2147483647 miuiLevel=0 level=0,mLte=CellSignalStrengthLte: rssi=-51 rsrp=-93 rsrq=-20 rssnr=-3 cqi=2147483647 ta=2147483647 miuiLevel=5 level=4 parametersUseForLevel=0,mNr=CellSignalStrengthNr:{ csiRsrp = 2147483647 csiRsrq = 2147483647 csiSinr = 2147483647 ssRsrp = 2147483647 ssRsrq = 2147483647 ssSinr = 2147483647 miuiLevel = 0 level = 0 parametersUseForLevel = 0 },primary=CellSignalStrengthLte} level=4
+06-21 13:21:46.596  2593  2697 D NetworkController.MobileSignalController(1): updateTelephonySignalStrength: hasService=true ss=SignalStrength:{mCdma=CellSignalStrengthCdma: cdmaDbm=2147483647 cdmaEcio=2147483647 evdoDbm=2147483647 evdoEcio=2147483647 evdoSnr=2147483647 miuiLevel=0 level=0,mGsm=CellSignalStrengthGsm: rssi=2147483647 ber=2147483647 mTa=2147483647 miuiLevel=0 mLevel=0,mWcdma=CellSignalStrengthWcdma: ss=2147483647 ber=2147483647 rscp=2147483647 ecno=2147483647 miuiLevel=0 level=0,mTdscdma=CellSignalStrengthTdscdma: rssi=2147483647 ber=2147483647 rscp=2147483647 miuiLevel=0 level=0,mLte=CellSignalStrengthLte: rssi=-51 rsrp=-93 rsrq=-20 rssnr=-3 cqi=2147483647 ta=2147483647 miuiLevel=5 level=4 parametersUseForLevel=0,mNr=CellSignalStrengthNr:{ csiRsrp = 2147483647 csiRsrq = 2147483647 csiSinr = 2147483647 ssRsrp = 2147483647 ssRsrq = 2147483647 ssSinr = 2147483647 miuiLevel = 0 level = 0 parametersUseForLevel = 0 },primary=CellSignalStrengthLte} displayInfo=TelephonyDisplayInfo {network=LTE, override=NONE}
+06-21 13:21:46.596  2593  2697 D NetworkController.MobileSignalController(1): NotQcom5G, signal level = 5
+06-21 13:21:46.721  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:46.723  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:46.793  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:46.904  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:46.960  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:46.994  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:47.082  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:47.195  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:47.263  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:47.293  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:47.396  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:47.597  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:47.644  9797  9797 W ThreadPoolForeg: type=1400 audit(0.0:31751): avc: denied { write } for name="traced_producer" dev="tmpfs" ino=536 scontext=u:r:gmscore_app:s0:c512,c768 tcontext=u:object_r:traced_producer_socket:s0 tclass=sock_file permissive=0 app=com.google.android.gms
+06-21 13:21:47.797  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:48.201  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 2 lines
+06-21 13:21:48.402  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:48.523  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:48.575  2650  5503 D ApfFilter: (wlan0): Ignoring RA RA fe80::1227:f5ff:fe2f:a709 -> ff02::1 0s  which matches RA fe80::1227:f5ff:fe2f:a709 -> ff02::1 0s 
+06-21 13:21:48.603  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:48.804  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 1 line
+06-21 13:21:49.007  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:49.062  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:49.091  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:49.208  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:50.016  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 4 lines
+06-21 13:21:50.218  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:50.321  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:50.326  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:50.420  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:50.421   595   595 I hwservicemanager: getTransport: Cannot find entry android.hardware.power.stats@1.0::IPowerStats/default in either framework or device manifest.
+06-21 13:21:50.423   595   595 I hwservicemanager: getTransport: Cannot find entry android.hardware.power@1.0::IPower/default in either framework or device manifest.
+06-21 13:21:50.424  1775  1938 E BatteryStatsService: Unable to load Power Hal or power.stats HAL
+--------- beginning of system
+06-21 13:21:48.487  1775  1901 I chatty  : uid=1000(system) ActivityManager expire 115 lines
+06-21 13:21:49.489  1775  1901 W ActivityManager: Scheduling restart of crashed service com.qti.diagservices/.QTIDiagServices in 1000ms for start-requested
+06-21 13:21:50.427  2593  2593 I MiuiChargeManager: notifyBatteryStatusChanged:  status: 3 isPlugged: 0 level: 41 wireState: -1 chargeSpeed: 0 mWiredChargeType: 0 mWirelessChargeType: 0 chargeDeviceType: -1 maxChargingWattage: -1 SUPPORT_BROADCAST_QUICK_CHARGE: true
+06-21 13:21:50.427  2593  2593 D KeyguardUpdateMonitor: handleBatteryUpdate
+06-21 13:21:50.428  2722  2722 D QtiCarrierConfigHelper: WARNING, no carrier configs on phone Id: 0
+06-21 13:21:50.433  7560  7811 D PowerCheckerService: onBatteryChanged, mBatteryLevel = 42, status = 3, level = 41, plug = 0, scale = 100
+06-21 13:21:50.435  6885  6885 I PowerSaveService: onReceive: android.intent.action.BATTERY_CHANGED
+06-21 13:21:50.438  6885  6885 I PowerNoticeUI: handleBatteryChanged oldPlugType 0 mPlugType 0 oldBatteryLevel 42 mBatteryLevel 41 temperature 258
+06-21 13:21:50.439  6885  6885 I ChargerBatteryIntelligenceReceiver: onBatteryChanged temperature：25,plugType:0
+06-21 13:21:50.439  6885  6885 I PowerFeatureUtils: getVendorName:qcom
+06-21 13:21:50.442   595   595 I hwservicemanager: getTransport: Cannot find entry android.hardware.power.stats@1.0::IPowerStats/default in either framework or device manifest.
+06-21 13:21:50.441  2593  2593 I MiuiChargeController: checkBatteryStatus: wireState -1 status 3 plugged 0 chargeSpeed 0 maxChargingWattage -1 isRapidCharge false isSuperCharge false isStrongSuperCharge false isCarMode false mChargeDeviceType -1 mChargeDeviceForAnalytic -1 SUPPORT_NEW_ANIMATION true isChargeAnimationDisabled false
+06-21 13:21:50.445  2593  2593 I MiuiChargeController: dealWithAnimationShow mWireState=-1,wireState=-1,mShowDoubleAnimation=false,mIsFastCharge=false
+06-21 13:21:50.446  2593  2593 I MiuiChargeController:  dealWithAnimationShow 相同 
+06-21 13:21:50.446  2792  2792 D DeviceStatisticsService: chargerType=0 batteryLevel=41 totalBatteryCapacity=5324600
+06-21 13:21:50.447   595   595 I hwservicemanager: getTransport: Cannot find entry android.hardware.power@1.0::IPower/default in either framework or device manifest.
+06-21 13:21:50.447  1775  1938 E BatteryStatsService: Unable to load Power Hal or power.stats HAL
+06-21 13:21:50.450  1775  1901 D CompatibilityInfo: mCompatibilityFlags - 0
+06-21 13:21:50.450  1775  1901 D CompatibilityInfo: applicationDensity - 440
+06-21 13:21:50.450  1775  1901 D CompatibilityInfo: applicationScale - 1.0
+06-21 13:21:50.452  1775  2321 I MiuiNetworkPolicy: updateUidState uid = 10186, uidState = 11
+06-21 13:21:50.455  2593  2593 D BatteryController: onReceive: Intent = Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) } action = android.intent.action.BATTERY_CHANGED
+06-21 13:21:50.455  2593  2593 D KeyguardUpdateMonitor: received broadcast android.intent.action.BATTERY_CHANGED
+06-21 13:21:50.477  1775  1938 E system_server: No implementation found for boolean com.android.internal.os.KernelCpuUidBpfMapReader.startTrackingBpfTimes() (tried Java_com_android_internal_os_KernelCpuUidBpfMapReader_startTrackingBpfTimes and Java_com_android_internal_os_KernelCpuUidBpfMapReader_startTrackingBpfTimes__)
+06-21 13:21:50.481  1775  2321 I MiuiNetworkPolicy: updateUidState uid = 10186, uidState = 19
+06-21 13:21:50.490  1775  1901 W ActivityManager: Scheduling restart of crashed service com.qti.diagservices/.QTIDiagServices in 1000ms for start-requested
+06-21 13:21:50.621  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:50.786  6885  7435 W FileUtils: Slow Operation: fsync took 104ms procState=3
+06-21 13:21:51.491  1775  1901 W ActivityManager: Scheduling restart of crashed service com.qti.diagservices/.QTIDiagServices in 1000ms for start-requested
+06-21 13:21:51.827  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 6 lines
+06-21 13:21:52.030  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:52.160  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:52.231  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:53.641  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 7 lines
+06-21 13:21:53.842  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:53.920  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:54.043  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:54.244  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:54.289  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:54.349  1775  2321 D MiuiNetworkPolicy: updateLimit mLimitEnabled=true,enabled=false,mNetworkPriorityMode=0
+06-21 13:21:54.445  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:54.644  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:54.646  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:54.719  2650  5503 D ApfFilter: (wlan0): Ignoring RA RA fe80::1227:f5ff:fe2f:a709 -> ff02::1 0s  which matches RA fe80::1227:f5ff:fe2f:a709 -> ff02::1 0s 
+06-21 13:21:54.847  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:55.048  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:55.181  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:55.248  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:55.426  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:55.449  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:55.540  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:55.650  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:55.851  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:55.901  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:55.902  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:21:55.958  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:56.019  1775  2402 D SlaveWifiManager: getWifiSlaveConnectionInfo
+06-21 13:21:56.020  1775  2402 D SlaveWifiManager: getWifiSlaveConnectionInfo
+06-21 13:21:56.025  2593  2697 D NetworkController: onReceive: intent=Intent { act=android.net.wifi.RSSI_CHANGED flg=0x4000010 (has extras) }
+06-21 13:21:56.025  2816  3878 D QCNEJ/WlanStaInfoRelay: Received action: android.net.wifi.RSSI_CHANGED
+06-21 13:21:56.051  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:56.059  7308 12675 D WM-NetworkStateTracker: Network capabilities changed: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED LinkUpBandwidth>=159060Kbps LinkDnBandwidth>=180750Kbps SignalStrength: -55 AdministratorUids: [] RequestorUid: -1 RequestorPackageName: null]
+06-21 13:21:56.254  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:56.457  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:56.619  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:56.624  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:56.657  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:56.689  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:56.858  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:56.917  4332  4332 I CNSS    : cnss_open_log_file: directory /data/vendor/wlan_logs/ created
+06-21 13:21:57.026  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:57.060  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:57.161  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:57.165  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:21:57.225  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:57.261  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:57.339  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:57.462  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:57.665  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:57.702  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:57.868  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:58.069  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:58.093  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:58.241  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:58.270  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:58.416  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: unbindService is called for service : com.google.android.gms/.chimera.PersistentApiService and for client com.google.android.gms.persistent
+06-21 13:21:58.417  3137  3137 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.auth.aang.events.services.START dat=chimera-action: cmp=com.google.android.gms/.chimera.PersistentApiService }
+06-21 13:21:58.436  2593  2697 D NetworkController.MobileSignalController(1): onSignalStrengthsChanged signalStrength=SignalStrength:{mCdma=CellSignalStrengthCdma: cdmaDbm=2147483647 cdmaEcio=2147483647 evdoDbm=2147483647 evdoEcio=2147483647 evdoSnr=2147483647 miuiLevel=0 level=0,mGsm=CellSignalStrengthGsm: rssi=2147483647 ber=2147483647 mTa=2147483647 miuiLevel=0 mLevel=0,mWcdma=CellSignalStrengthWcdma: ss=2147483647 ber=2147483647 rscp=2147483647 ecno=2147483647 miuiLevel=0 level=0,mTdscdma=CellSignalStrengthTdscdma: rssi=2147483647 ber=2147483647 rscp=2147483647 miuiLevel=0 level=0,mLte=CellSignalStrengthLte: rssi=-55 rsrp=-94 rsrq=-18 rssnr=-3 cqi=2147483647 ta=2147483647 miuiLevel=5 level=4 parametersUseForLevel=0,mNr=CellSignalStrengthNr:{ csiRsrp = 2147483647 csiRsrq = 2147483647 csiSinr = 2147483647 ssRsrp = 2147483647 ssRsrq = 2147483647 ssSinr = 2147483647 miuiLevel = 0 level = 0 parametersUseForLevel = 0 },primary=CellSignalStrengthLte} level=4
+06-21 13:21:58.436  2593  2697 D NetworkController.MobileSignalController(1): updateTelephonySignalStrength: hasService=true ss=SignalStrength:{mCdma=CellSignalStrengthCdma: cdmaDbm=2147483647 cdmaEcio=2147483647 evdoDbm=2147483647 evdoEcio=2147483647 evdoSnr=2147483647 miuiLevel=0 level=0,mGsm=CellSignalStrengthGsm: rssi=2147483647 ber=2147483647 mTa=2147483647 miuiLevel=0 mLevel=0,mWcdma=CellSignalStrengthWcdma: ss=2147483647 ber=2147483647 rscp=2147483647 ecno=2147483647 miuiLevel=0 level=0,mTdscdma=CellSignalStrengthTdscdma: rssi=2147483647 ber=2147483647 rscp=2147483647 miuiLevel=0 level=0,mLte=CellSignalStrengthLte: rssi=-55 rsrp=-94 rsrq=-18 rssnr=-3 cqi=2147483647 ta=2147483647 miuiLevel=5 level=4 parametersUseForLevel=0,mNr=CellSignalStrengthNr:{ csiRsrp = 2147483647 csiRsrq = 2147483647 csiSinr = 2147483647 ssRsrp = 2147483647 ssRsrq = 2147483647 ssSinr = 2147483647 miuiLevel = 0 level = 0 parametersUseForLevel = 0 },primary=CellSignalStrengthLte} displayInfo=TelephonyDisplayInfo {network=LTE, override=NONE}
+06-21 13:21:58.436  2593  2697 D NetworkController.MobileSignalController(1): NotQcom5G, signal level = 5
+06-21 13:21:58.471  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:58.672  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:58.785  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:58.873  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:59.054  1775  2402 D SlaveWifiManager: getWifiSlaveConnectionInfo
+06-21 13:21:59.055  1775  2402 D SlaveWifiManager: getWifiSlaveConnectionInfo
+06-21 13:21:59.059  2593  2697 D NetworkController: onReceive: intent=Intent { act=android.net.wifi.RSSI_CHANGED flg=0x4000010 (has extras) }
+06-21 13:21:59.065  2816  3878 D QCNEJ/WlanStaInfoRelay: Received action: android.net.wifi.RSSI_CHANGED
+06-21 13:21:59.074  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:59.093  7308 12675 D WM-NetworkStateTracker: Network capabilities changed: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED LinkUpBandwidth>=166290Kbps LinkDnBandwidth>=180750Kbps SignalStrength: -56 AdministratorUids: [] RequestorUid: -1 RequestorPackageName: null]
+06-21 13:21:57.505  1775  1901 I chatty  : uid=1000(system) ActivityManager identical 6 lines
+06-21 13:21:58.509  1775  1901 W ActivityManager: Scheduling restart of crashed service com.qti.diagservices/.QTIDiagServices in 1000ms for start-requested
+06-21 13:21:59.171  1775  2362 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.yourcompany.pos/.MainActivity} from uid 2000
+06-21 13:21:59.172  1775  1870 D EventSequenceValidator: Transition from ACTIVITY_CANCELLED to INTENT_STARTED
+06-21 13:21:59.172  1775  2362 D MiuiMultiWindowAdapter: MiuiMultiWindowAdapter::getFreeformBlackList::sSmallWindowBlackList = [com.miui.securitycenter, com.miui.mishare.connectivity, com.android.settings, com.android.printspooler, com.miui.backup, com.miui.huanji, com.android.thememanager, com.mfashiongallery.emag, com.miui.virtualsim, com.miui.smarttravel, com.mi.health, com.android.camera, com.lbe.security.miui, com.miui.cleanmaster, com.miui.newhome, com.miui.voiceassist, com.android.phone, com.miui.yellowpage, com.android.updater, com.miui.tsmclient, com.miui.securitycore, com.xiaomi.account, com.xiaomi.hm.health, com.xiaomi.mibrain.speech, com.xiaomi.mimoji, com.xiaomi.scanner, com.duokan.phone.remotecontroller, com.miui.hybrid, com.miui.videoplayer, com.miui.packageinstaller, com.mi.android.globallauncher, com.mi.android.globallauncher-poco, com.google.android.dialer, com.miui.compass, com.miui.greenguard, com.kiteguard, com.google.ar.lens, com.xiangkan.android, com.android.bankabc, com.sohu.inputmethod.sogou, com.shyz.toutiao, com.netease.mc.mi, com.outfit7.talkingtomgoldrun.mi, com.doudz.mi, com.wepie.snake.new.mi, cn.jj, com.standddz002.mi, com.miHoYo.bh3.mi, com.qqgame.hlddz, com.happyelements.AndroidAnimal, com.minitech.miniworld.TMobile.mi, com.mfp.jelly.xiaomi, com.lilithgames.afk.mi, com.tencent.peng, com.teenpatti.hd.gold, blockpuzzle.jewelgames.jewelslegend, com.playgendary.tanks, com.chillingo.robberybobfree.android.row, com.episodeinteractive.android.catalog, com.playrix.township, com.ansangha.drdriving, com.google.android.youtube, com.gbits.atm.mi, com.tencent.tetris, com.sukhavati.gotoplaying.bubble.BubbleShooter.mint, com.block.puzzle.game.hippo.mi, com.youzu.bs.mi, com.appsomniacs.da2, com.android.stk, com.feiyu.carrot3.mi, com.popcap.pvz2cthdxm, com.mxtech.videoplayer.ad, cn.cisc, com.kiloo.subwaysurf, com.cncyj.mostbrain, pdf.tap.scanner, com.og.ttddz.mi, com.ximalaya.ting.lite, com.google.android.apps.googleassistant, com.netease.mrzh.mi, com.netease.mrzh.bili, com.netease.pes.huawei, com.netease.pes.mi, com.netease.pes.bili, com.flyfish.supermario, com.picsart.studio, com.netease.dwrg.mi, com.netease.dwrg.bili, com.netease.dwrg.nearme.gamecenter, com.netease.dwrg, com.netease.dwrg.huawei, com.tencent.tmgp.dwrg, com.netease.dwrg.m4399, com.netease.dwrg.mz, com.netease.dwrg.aligames, com.netease.dwrg.baidu, com.netease.dwrg.qihoo, com.moji.mjweather, com.tencent.tmgp.kof98, com.taobao.idlefish, com.ledou.mhhy.mi, com.hzfy.ddzbs.mi, com.qsmy.walkmonkey, com.fy.bzzbc.mi, com.dw.xprqj.mi, com.miui.accessibility, com.ymt.nbaftx.mi, com.amazon.kindlefc, com.sinyee.babybus.recommendapp, com.mcdonalds.gma.cn, com.midea.ai.appliances, com.eco.global.app, com.inspur.icity.tianjin, com.zy.game.thief.mi, com.alimama.moon, com.xinhu.steward, com.rytong.ceair, com.nxy.mobilebank.gx, com.xplaygame.mfbwz.mi, cn.gov.lottery, com.zy.game.bubbletea.mi, com.zy.game.psdc.mi, com.microsoft.office.powerpoint, com.duoduo.child.story, com.lemon.lv]
+06-21 13:21:59.173  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 0
+06-21 13:21:59.173  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 0
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.174   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.174   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for AdaptLaunch
+06-21 13:21:59.174   994  1035 D ANDR-PERF-LM: Feature: lookup() 101: Feature Name = AppClassifier, total featuers = 4, featureFound = 1
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.174   994   994 D ANDR-PERF-LM: ThreadHelper: wakeUp() 103: (Meter,Helper,Name,pending)=(0xb4000074438287c0,0xb400007443868120,PreKillActionThread,1)
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.174   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.174   994   994 D ANDR-PERF-LM: Feature: lookup() 101: Feature Name = AppClassifier, total featuers = 4, featureFound = 1
+06-21 13:21:59.175   994  3796 D ANDR-PERF-LM: ThreadHelper: thread_callback() 149: Starting:(Meter,Helper,Name,pending)=(0xb4000074438287c0,0xb400007443868120,PreKillActionThread,0) 
+06-21 13:21:59.175   994  3796 D ANDR-PERF-LM: ThreadHelper: thread_callback() 162: Returned from Start:(Meter,Helper,Name,pending)=(0xb4000074438287c0,0xb400007443868120,PreKillActionThread,0) 
+06-21 13:21:59.175   994  3796 D ANDR-PERF-LM: ThreadHelper: thread_callback() 134: Waiting:(Meter,Helper,Name,pending)=(0xb4000074438287c0,0xb400007443868120,PreKillActionThread,0)
+06-21 13:21:59.175   994  1035 D ANDR-PERF-LM: Feature: getData() 112: data.data = 0
+06-21 13:21:59.175   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for AdaptLaunch returned
+06-21 13:21:59.175   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for PreKill
+06-21 13:21:59.175   994   994 D ANDR-PERF-LM: Feature: getData() 112: data.data = 0
+06-21 13:21:59.175   994   994 I ANDR-PERF-LM: FeedbackAPI: getFeedback() 60: app:com.yourcompany.pos feature:AppClassifier feedback = 0
+06-21 13:21:59.175   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for PreKill returned
+06-21 13:21:59.175   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.175   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=1
+06-21 13:21:59.175   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.175   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for AdaptLaunch
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: MetaMeter: isValidAsync() 194: AsyncInfo: hintID = 4225
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: hintType: 2
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: isPrimary = 0
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: MetaMeter: isValidAsync() 203: Invalid (hintID,hintType,appName,duration,appPID,appThreadTID) = (4225, 2,com.yourcompany.pos,-1,1775,2362)
+06-21 13:21:59.176   994  1035 E ANDR-PERF-LM: MetaMeter: handleAsync() 164: AdaptLaunch Invalid Async
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for AdaptLaunch returned
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for PreKill
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for PreKill returned
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.176   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.177   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.177   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.177   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.177   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.177   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.177   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for AdaptLaunch
+06-21 13:21:59.177  1775  2362 E ANDR-PERF-JNI: com_qualcomm_qtiperformance_native_perf_io_prefetch_start
+06-21 13:21:59.178   994  1035 I ANDR-PERF-LM: MetaMeter: isValidAsync() 194: AsyncInfo: hintID = 4225
+06-21 13:21:59.178   994  1035 I ANDR-PERF-LM: hintType: 3
+06-21 13:21:59.178   994  1035 I ANDR-PERF-LM: isPrimary = 0
+06-21 13:21:59.178   994  1035 I ANDR-PERF-LM: MetaMeter: isValidAsync() 203: Invalid (hintID,hintType,appName,duration,appPID,appThreadTID) = (4225, 3,com.yourcompany.pos,-1,1775,2362)
+06-21 13:21:59.178   994  1035 E ANDR-PERF-LM: MetaMeter: handleAsync() 164: AdaptLaunch Invalid Async
+06-21 13:21:59.178   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for AdaptLaunch returned
+06-21 13:21:59.178   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for PreKill
+06-21 13:21:59.181   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for PreKill returned
+06-21 13:21:59.181   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.181   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.181   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.181   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.181   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.181   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.181   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.181   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for AdaptLaunch
+06-21 13:21:59.181   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for AdaptLaunch returned
+06-21 13:21:59.181   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for PreKill
+06-21 13:21:59.182   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.182   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.182   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.182   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.182   991  1002 E ANDR-IOP: io prefetch is disabled
+06-21 13:21:59.183   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for PreKill returned
+06-21 13:21:59.183   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.183   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=1
+06-21 13:21:59.183   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.183   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for AdaptLaunch
+06-21 13:21:59.183   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for AdaptLaunch returned
+06-21 13:21:59.183   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for PreKill
+06-21 13:21:59.184   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for PreKill returned
+06-21 13:21:59.184   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.184   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.186  1775  2362 D CompatibilityInfo: mCompatibilityFlags - 0
+06-21 13:21:59.186  1775  2362 D CompatibilityInfo: applicationDensity - 440
+06-21 13:21:59.186  1775  2362 D CompatibilityInfo: applicationScale - 1.0
+06-21 13:21:59.187   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.187   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.187   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.187   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.187  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 2
+06-21 13:21:59.187   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.187   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for GameOptimization
+06-21 13:21:59.187   994  1035 D ANDR-PERF-LM: Feature: lookup() 101: Feature Name = AppClassifier, total featuers = 4, featureFound = 1
+06-21 13:21:59.187  1775  2362 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+06-21 13:21:59.187  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 3
+06-21 13:21:59.187   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.187   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.187   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.187   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.187  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 3
+06-21 13:21:59.187   994  1035 D ANDR-PERF-LM: Feature: getData() 112: data.data = 0
+06-21 13:21:59.187   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for GameOptimization returned
+06-21 13:21:59.187   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.187   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=1
+06-21 13:21:59.187   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.187   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for GameOptimization
+06-21 13:21:59.187   994  1035 D ANDR-PERF-LM: Feature: lookup() 101: Feature Name = AppClassifier, total featuers = 4, featureFound = 1
+06-21 13:21:59.188   994  1035 D ANDR-PERF-LM: Feature: getData() 112: data.data = 1
+06-21 13:21:59.188   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for GameOptimization returned
+06-21 13:21:59.188   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.188   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.194  2880  2880 D Launcher.Lifecycle: onPause:UserHandle{0},e6c52f9,true
+06-21 13:21:59.194  2880  2880 D Launcher_UnlockAnimationStateMachine: setState:PAUSE_WAIT
+06-21 13:21:59.196  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 4
+06-21 13:21:59.196  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 4
+06-21 13:21:59.196  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 2
+06-21 13:21:59.196   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.196   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.196   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.196   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.196   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.196   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for GameOptimization
+06-21 13:21:59.196   994  1035 D ANDR-PERF-LM: Feature: lookup() 101: Feature Name = AppClassifier, total featuers = 4, featureFound = 1
+06-21 13:21:59.197   994  1035 D ANDR-PERF-LM: Feature: getData() 112: data.data = 0
+06-21 13:21:59.197   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for GameOptimization returned
+06-21 13:21:59.197   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.197   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.200  1775  1870 W ActivityManager: ProcessRecord{329b67f 0:com.yourcompany.pos/u0a1547}: ART verification disabled
+06-21 13:21:59.201  1775  1871 D DecorView: createDecorCaptionView windowingMode:1 mWindowMode 1 isFullscreen: true
+06-21 13:21:59.203  2880  3012 D StatusBarController: handleMessage: flag 800000  disable false
+06-21 13:21:59.209  1775  1870 D EventSequenceValidator: Transition from INTENT_STARTED to ACTIVITY_LAUNCHED
+06-21 13:21:59.219  2880  2880 D Launcher_WallpaperUtils: changeStatusBarMode:false
+06-21 13:21:59.222  1775  2362 D MIUIInput: [FoucsChange]: Display  0 FocusedWindow From Window{40b78d9 mode=1 rootTaskId=1 u0 com.miui.home/com.miui.home.launcher.Launcher}(1,1)  to null(0,0)
+06-21 13:21:59.223  7919  7919 W Zygote  : Unable to open libbeluga.so: dlopen failed: library "libbeluga.so" not found.
+06-21 13:21:59.224  2880  2880 D Launcher.Lifecycle: onWindowFocusChanged:false,UserHandle{0},e6c52f9,true
+06-21 13:21:59.225   827   827 D Zygote  : Forked child process 7919
+06-21 13:21:59.226  1775  1902 I ActivityManager: Start proc 7919:com.yourcompany.pos/u0a1547 for pre-top-activity {com.yourcompany.pos/com.yourcompany.pos.MainActivity} caller=com.android.shell
+06-21 13:21:59.227  1775  2321 I MiuiNetworkPolicy: updateUidState uid = 11547, uidState = 19
+06-21 13:21:59.230  7919  7919 I yourcompany.po: Late-enabling -Xcheck:jni
+06-21 13:21:59.248  7919  7919 I yourcompany.po: Unquickening 20 vdex files!
+06-21 13:21:59.253 11809 11817 I adbd    : jdwp connection from 7919
+06-21 13:21:59.263   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.263   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.263   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.263   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.263   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.263   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for AdaptLaunch
+06-21 13:21:59.263   994  1035 I ANDR-PERF-LM: MetaMeter: isValidAsync() 194: AsyncInfo: hintID = 4225
+06-21 13:21:59.263   994  1035 I ANDR-PERF-LM: hintType: 103
+06-21 13:21:59.263   994  1035 I ANDR-PERF-LM: isPrimary = 0
+06-21 13:21:59.263   994  1035 I ANDR-PERF-LM: MetaMeter: isValidAsync() 203: Invalid (hintID,hintType,appName,duration,appPID,appThreadTID) = (4225, 103,com.yourcompany.pos,7919,1775,2362)
+06-21 13:21:59.263   994  1035 E ANDR-PERF-LM: MetaMeter: handleAsync() 164: AdaptLaunch Invalid Async
+06-21 13:21:59.263   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for AdaptLaunch returned
+06-21 13:21:59.263   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for PreKill
+06-21 13:21:59.264   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for PreKill returned
+06-21 13:21:59.264   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.264   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.265  1775  2362 D CompatibilityInfo: mCompatibilityFlags - 0
+06-21 13:21:59.265  1775  2362 D CompatibilityInfo: applicationDensity - 440
+06-21 13:21:59.265  1775  2362 D CompatibilityInfo: applicationScale - 1.0
+06-21 13:21:59.267  1775  2362 D CompatibilityInfo: mCompatibilityFlags - 0
+06-21 13:21:59.267  1775  2362 D CompatibilityInfo: applicationDensity - 440
+06-21 13:21:59.267  1775  2362 D CompatibilityInfo: applicationScale - 1.0
+06-21 13:21:59.267  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 2
+06-21 13:21:59.267  1001  7272 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 2
+06-21 13:21:59.268 29780 29796 D AutoInstallService: onForegroundInfoChanged: com.yourcompany.pos
+06-21 13:21:59.267  6885 29522 I ProcessMonitor: onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='com.yourcompany.pos', mForegroundUid=11547, mForegroundPid=7919, mLastForegroundPackageName='com.miui.home', mLastForegroundUid=10093, mLastForegroundPid=2880, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+06-21 13:21:59.268  7730  7758 I GST     : forePkg: com.yourcompany.pos, preForePkg: com.miui.home
+06-21 13:21:59.268  7560  9390 D PerfEngineController: ForegroundInfo{mForegroundPackageName='com.yourcompany.pos', mForegroundUid=11547, mForegroundPid=7919, mLastForegroundPackageName='com.miui.home', mLastForegroundUid=10093, mLastForegroundPid=2880, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+06-21 13:21:59.269  7560  7842 I ThermalInfoCollector: collectForgroundAppsInfo
+06-21 13:21:59.270  6885 29522 I GameBoosterService: onForegroundInfoChanged: Cur=com.yourcompany.pos	 last=com.miui.home
+06-21 13:21:59.274  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:59.279  1775  1871 I Timeline: Timeline: App_transition_ready time:22452255
+06-21 13:21:59.282  2593  2593 D StatusBar: disable<e i a s b h r c s > disable2<q i n >
+06-21 13:21:59.284  2593  2896 D MiuiPhoneStatusBarPolicy: updateManagedProfile: secondSpace = false
+06-21 13:21:59.286  6077  6099 D PMonitor:  onForegroundActivitiesChanged:pid = 7919,activity-uid=11547,foregroundActivities=true
+06-21 13:21:59.286  1775  2321 I MiuiNetworkPolicy: updateUidState uid = 11547, uidState = 2
+06-21 13:21:59.287  6885 29522 D GameBoosterService: onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='com.yourcompany.pos', mForegroundUid=11547, mForegroundPid=7919, mLastForegroundPackageName='com.miui.home', mLastForegroundUid=10093, mLastForegroundPid=2880, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+06-21 13:21:59.287  6885 29522 I VideoBoxUtils: isSupportVideoBox: false
+06-21 13:21:59.287  6885 29522 I VideoToolBoxService: vtb is closed!!!
+06-21 13:21:59.298  6885 20493 I SCTaskStackListener: onTaskStackChanged! inSplit = false
+06-21 13:21:59.301  6885 29522 I SCTaskStackListener: onTaskStackChanged! inSplit = false
+06-21 13:21:59.353  1775  2321 D MiuiNetworkPolicy: updateLimit mLimitEnabled=false,enabled=true,mNetworkPriorityMode=0
+06-21 13:21:59.359  7919  7919 I Perf    : Connecting to perf service.
+06-21 13:21:59.364  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: unbindService is called for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiService and for client com.google.android.gms.persistent
+06-21 13:21:59.365  3137  3137 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.libs.gmscorelogger.service.START dat=chimera-action: cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+06-21 13:21:59.369  7919  7919 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: true
+06-21 13:21:59.371  7919  7919 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: true
+06-21 13:21:59.381   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.381   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.381   994   994 D ANDR-PERF-LM: Feature: lookup() 101: Feature Name = AppClassifier, total featuers = 4, featureFound = 1
+06-21 13:21:59.381   994   994 D ANDR-PERF-LM: Feature: getData() 112: data.data = 0
+06-21 13:21:59.381   994   994 I ANDR-PERF-LM: FeedbackAPI: getFeedback() 60: app:com.yourcompany.pos feature:AppClassifier feedback = 0
+06-21 13:21:59.388  1075  1130 W DisplayIdentification: Invalid EDID: falling back to serial number due to missing display name.
+06-21 13:21:59.388  1075  1130 W DisplayIdentification: Invalid EDID: falling back to ASCII text due to missing serial number.
+06-21 13:21:59.393  7919  7919 D AndroidRuntime: Shutting down VM
+--------- beginning of crash
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: FATAL EXCEPTION: main
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: Process: com.yourcompany.pos, PID: 7919
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: java.lang.RuntimeException: Unable to instantiate activity ComponentInfo{com.yourcompany.pos/com.yourcompany.pos.MainActivity}: java.lang.ClassNotFoundException: Didn't find class "com.yourcompany.pos.MainActivity" on path: DexPathList[[zip file "/data/app/~~FdaSjhslmkDojsYxWQBaxg==/com.yourcompany.pos-xBD2J0Ri8W6g5g9hSc6kAA==/base.apk"],nativeLibraryDirectories=[/data/app/~~FdaSjhslmkDojsYxWQBaxg==/com.yourcompany.pos-xBD2J0Ri8W6g5g9hSc6kAA==/lib/arm64, /data/app/~~FdaSjhslmkDojsYxWQBaxg==/com.yourcompany.pos-xBD2J0Ri8W6g5g9hSc6kAA==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3395)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3651)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:85)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2104)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:236)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.ActivityThread.main(ActivityThread.java:7861)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at java.lang.reflect.Method.invoke(Native Method)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:600)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:967)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: Caused by: java.lang.ClassNotFoundException: Didn't find class "com.yourcompany.pos.MainActivity" on path: DexPathList[[zip file "/data/app/~~FdaSjhslmkDojsYxWQBaxg==/com.yourcompany.pos-xBD2J0Ri8W6g5g9hSc6kAA==/base.apk"],nativeLibraryDirectories=[/data/app/~~FdaSjhslmkDojsYxWQBaxg==/com.yourcompany.pos-xBD2J0Ri8W6g5g9hSc6kAA==/lib/arm64, /data/app/~~FdaSjhslmkDojsYxWQBaxg==/com.yourcompany.pos-xBD2J0Ri8W6g5g9hSc6kAA==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:207)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at java.lang.ClassLoader.loadClass(ClassLoader.java:379)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at java.lang.ClassLoader.loadClass(ClassLoader.java:312)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at androidx.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:44)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.Instrumentation.newActivity(Instrumentation.java:1254)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3383)
+06-21 13:21:59.394  7919  7919 E AndroidRuntime: 	... 11 more
+06-21 13:21:59.400  1775  4712 W ActivityTaskManager:   Force finishing activity com.yourcompany.pos/.MainActivity
+06-21 13:21:59.401  2880  2920 D LauncherFsGestureCompat: componentName is com.yourcompany.pos/.MainActivity
+06-21 13:21:59.402  1775  7948 I DropBoxManagerService: add tag=data_app_crash isTagEnabled=true flags=0x2
+06-21 13:21:59.404  1775  7948 W DropBoxManagerService: Dropping: data_app_crash (2730 > 0 bytes)
+06-21 13:21:59.417  1775  4712 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+06-21 13:21:59.417   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.417   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.417   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.417   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.417   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.417   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for GameOptimization
+06-21 13:21:59.417   994  1035 D ANDR-PERF-LM: Feature: lookup() 101: Feature Name = AppClassifier, total featuers = 4, featureFound = 1
+06-21 13:21:59.417  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 3
+06-21 13:21:59.417  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 3
+06-21 13:21:59.417   994  1035 D ANDR-PERF-LM: Feature: getData() 112: data.data = 0
+06-21 13:21:59.417   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for GameOptimization returned
+06-21 13:21:59.417   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.417   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.422  1775  1901 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+06-21 13:21:59.424  7919  7919 I Process : Sending signal. PID: 7919 SIG: 9
+06-21 13:21:59.426  2880  2880 D EventBus: No subscribers registered for event class com.miui.home.recents.messages.TaskSnapshotChangedEvent
+06-21 13:21:59.426  2880  2880 D EventBus: No subscribers registered for event class org.greenrobot.eventbus.NoSubscriberEvent
+06-21 13:21:59.431  1775  4707 D CompatibilityInfo: mCompatibilityFlags - 0
+06-21 13:21:59.431  1775  4707 D CompatibilityInfo: applicationDensity - 440
+06-21 13:21:59.431  1775  4707 D CompatibilityInfo: applicationScale - 1.0
+06-21 13:21:59.432  1775  1870 D EventSequenceValidator: Transition from ACTIVITY_LAUNCHED to ACTIVITY_CANCELLED
+06-21 13:21:59.432  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: startService() is called for servicecom.google.android.gms/.chimera.PersistentIntentOperationService
+06-21 13:21:59.450  1775  4707 D CompatibilityInfo: mCompatibilityFlags - 0
+06-21 13:21:59.450  1775  4707 D CompatibilityInfo: applicationDensity - 440
+06-21 13:21:59.450  1775  4707 D CompatibilityInfo: applicationScale - 1.0
+06-21 13:21:59.450  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: startService() is called for servicecom.google.android.gms/.stats.service.DropBoxEntryAddedService
+06-21 13:21:59.454 11809 11809 I adbd    : Remote process closed the socket (on MSG_PEEK)
+06-21 13:21:59.454  1775  4712 I ActivityManager: Process com.yourcompany.pos (pid 7919) has died: prcp TOP 
+06-21 13:21:59.454  1775  1927 I Process : PerfMonitor : current process killing process group. PID: 7919
+06-21 13:21:59.454   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.454   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.454   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.454   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.455   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.455   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for PreKill
+06-21 13:21:59.455   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for PreKill returned
+06-21 13:21:59.455   827   827 I Zygote  : Process 7919 exited due to signal 9 (Killed)
+06-21 13:21:59.455   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.455   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.456  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: killProcess is called for pid : 7919
+06-21 13:21:59.457  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 9
+06-21 13:21:59.457  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 9
+06-21 13:21:59.457  6077  6099 I com.xiaomi.xms: oneway function results will be dropped but finished with status UNKNOWN_TRANSACTION and parcel size 0
+06-21 13:21:59.457  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 9
+06-21 13:21:59.459   994   994 I ANDR-PERF-LM: LMPerfGlue: perfmodule_submit_request() 132: perfmodule_submit_request()
+06-21 13:21:59.459   994   994 I ANDR-PERF-LM: Core: getInstance() 84: LM getInstance
+06-21 13:21:59.459   994   994 I ANDR-PERF-LM: WQ: push() 59: LMTriggerQ push() size=0
+06-21 13:21:59.459  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 2
+06-21 13:21:59.459   994   994 I ANDR-PERF-LM: WQ: push() 61: LMTriggerQ push() done size=1
+06-21 13:21:59.459   994  1035 I ANDR-PERF-LM: WQ: pop() 42: LMTriggerQ pop() done size=0
+06-21 13:21:59.459   994  1035 I ANDR-PERF-LM: Core: lmMain() 381: Calling runAsync for GameOptimization
+06-21 13:21:59.459   994  1035 D ANDR-PERF-LM: Feature: lookup() 101: Feature Name = AppClassifier, total featuers = 4, featureFound = 1
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: [AppErrors] null InputStream [CONTEXT service_id=254 ]
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: java.io.IOException: null InputStream
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at dnxh.c(:com.google.android.gms@252234022@25.22.34 (150400-769260661):179)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at dnvp.t(:com.google.android.gms@252234022@25.22.34 (150400-769260661):4)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at dnvg.apply(:com.google.android.gms@252234022@25.22.34 (150400-769260661):39)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at ytr.apply(:com.google.android.gms@252234022@25.22.34 (150400-769260661):5)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at yud.apply(:com.google.android.gms@252234022@25.22.34 (150400-769260661):45)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at eklh.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):3)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at euoc.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):13)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcfd.d(:com.google.android.gms@252234022@25.22.34 (150400-769260661):3)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcff.run(:com.google.android.gms@252234022@25.22.34 (150400-769260661):38)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcgr.execute(:com.google.android.gms@252234022@25.22.34 (150400-769260661):1)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fces.f(:com.google.android.gms@252234022@25.22.34 (150400-769260661):1)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fces.hD(:com.google.android.gms@252234022@25.22.34 (150400-769260661):41)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcff.g(:com.google.android.gms@252234022@25.22.34 (150400-769260661):10)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at ekkz.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):20)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at euob.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):13)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcgy.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):20)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcjc.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):3)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcid.run(:com.google.android.gms@252234022@25.22.34 (150400-769260661):19)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcje.run(:com.google.android.gms@252234022@25.22.34 (150400-769260661):5)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcha.run(:com.google.android.gms@252234022@25.22.34 (150400-769260661):53)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcgr.execute(:com.google.android.gms@252234022@25.22.34 (150400-769260661):1)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcha.execute(:com.google.android.gms@252234022@25.22.34 (150400-769260661):76)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fces.f(:com.google.android.gms@252234022@25.22.34 (150400-769260661):1)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fces.hD(:com.google.android.gms@252234022@25.22.34 (150400-769260661):41)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fchc.b(:com.google.android.gms@252234022@25.22.34 (150400-769260661):33)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at ekld.i(:com.google.android.gms@252234022@25.22.34 (150400-769260661):18)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at ekll.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):10)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at euoc.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):13)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcfd.d(:com.google.android.gms@252234022@25.22.34 (150400-769260661):3)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcff.run(:com.google.android.gms@252234022@25.22.34 (150400-769260661):38)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcgr.execute(:com.google.android.gms@252234022@25.22.34 (150400-769260661):1)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fces.f(:com.google.android.gms@252234022@25.22.34 (150400-769260661):1)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fces.hD(:com.google.android.gms@252234022@25.22.34 (150400-769260661):41)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcff.g(:com.google.android.gms@252234022@25.22.34 (150400-769260661):10)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at eklj.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):20)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at euob.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):13)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcgy.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):20)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcjc.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):3)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcid.run(:com.google.android.gms@252234022@25.22.34 (150400-769260661):19)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcje.run(:com.google.android.gms@252234022@25.22.34 (150400-769260661):5)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcha.run(:com.google.android.gms@252234022@25.22.34 (150400-769260661):53)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcgr.execute(:com.google.android.gms@252234022@25.22.34 (150400-769260661):1)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fcha.execute(:com.google.android.gms@252234022@25.22.34 (150400-769260661):76)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fces.f(:com.google.android.gms@252234022@25.22.34 (150400-769260661):1)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fces.hD(:com.google.android.gms@252234022@25.22.34 (150400-769260661):41)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at fchc.b(:com.google.android.gms@252234022@25.22.34 (150400-769260661):33)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at eklr.c(:com.google.android.gms@252234022@25.22.34 (150400-769260661):52)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at eklr.b(:com.google.android.gms@252234022@25.22.34 (150400-769260661):10)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at dnvk.c(:com.google.android.gms@252234022@25.22.34 (150400-769260661):184)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at com.google.android.gms.stats.service.DropBoxEntryAddedChimeraService.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):272)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at com.google.android.gms.framework.tracing.wrapper.TracingIntentService.onHandleIntent(:com.google.android.gms@252234022@25.22.34 (150400-769260661):13)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at ufn.handleMessage(:com.google.android.gms@252234022@25.22.34 (150400-769260661):7)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at android.os.Looper.loop(Looper.java:236)
+06-21 13:21:59.459  3137  7951 E DropBoxUtil: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+06-21 13:21:59.459   994  1035 D ANDR-PERF-LM: Feature: getData() 112: data.data = 1
+06-21 13:21:59.460   994  1035 I ANDR-PERF-LM: Core: lmMain() 391: runAsync for GameOptimization returned
+06-21 13:21:59.460   994  1035 I ANDR-PERF-LM: Core: lmMain() 373: Waiting on trigger Queue
+06-21 13:21:59.460   994  1035 I ANDR-PERF-LM: WQ: pop() 31: LMTriggerQ pop() size=0
+06-21 13:21:59.460  1775  1927 I libprocessgroup: Successfully killed process cgroup uid 11547 pid 7919 in 5ms
+06-21 13:21:59.460  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: Activity state is changed to : 2
+06-21 13:21:59.462  2880  2880 D Launcher.Lifecycle: onResume:UserHandle{0},e6c52f9,false
+06-21 13:21:59.462  2880  3069 D MiBridge: requestCpuHighFreq---- uid: 10093 level: 1 timeoutms:500
+06-21 13:21:59.462  2880  2880 D Launcher_UnlockAnimationStateMachine: setState:IDLE
+06-21 13:21:59.463  2880  3270 I RenderThread: RenderThread resumed
+06-21 13:21:59.463  2880  3270 I RenderThread: All controllers paused.
+06-21 13:21:59.463  2880  3270 I RenderThread: RenderThread paused, waiting for signal
+06-21 13:21:59.463  6885 20493 I ProcessMonitor: onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='com.miui.home', mForegroundUid=10093, mForegroundPid=2880, mLastForegroundPackageName='com.yourcompany.pos', mLastForegroundUid=11547, mLastForegroundPid=7919, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+06-21 13:21:59.463  2880  3012 D StatusBarController: handleMessage: flag 800000  disable false
+06-21 13:21:59.463  7730  7758 I GST     : forePkg: com.miui.home, preForePkg: com.yourcompany.pos
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: [AppDoctor] null InputStream [CONTEXT service_id=254 ]
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: java.io.IOException: null InputStream
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at dnxh.c(:com.google.android.gms@252234022@25.22.34 (150400-769260661):179)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at dnvp.t(:com.google.android.gms@252234022@25.22.34 (150400-769260661):4)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at dnve.apply(:com.google.android.gms@252234022@25.22.34 (150400-769260661):37)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at dnvk.d(:com.google.android.gms@252234022@25.22.34 (150400-769260661):62)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at com.google.android.gms.stats.service.DropBoxEntryAddedChimeraService.a(:com.google.android.gms@252234022@25.22.34 (150400-769260661):277)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at com.google.android.gms.framework.tracing.wrapper.TracingIntentService.onHandleIntent(:com.google.android.gms@252234022@25.22.34 (150400-769260661):13)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at ufn.handleMessage(:com.google.android.gms@252234022@25.22.34 (150400-769260661):7)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at android.os.Looper.loop(Looper.java:236)
+06-21 13:21:59.463  3137  7951 E DropBoxUtil: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+06-21 13:21:59.463 29780 29796 D AutoInstallService: onForegroundInfoChanged: com.miui.home
+06-21 13:21:59.463  7560 10411 D PerfEngineController: ForegroundInfo{mForegroundPackageName='com.miui.home', mForegroundUid=10093, mForegroundPid=2880, mLastForegroundPackageName='com.yourcompany.pos', mLastForegroundUid=11547, mLastForegroundPid=7919, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+06-21 13:21:59.464  6885 20493 I GameBoosterService: onForegroundInfoChanged: Cur=com.miui.home	 last=com.yourcompany.pos
+06-21 13:21:59.464  7560  7842 I ThermalInfoCollector: collectForgroundAppsInfo
+06-21 13:21:59.465  1313  1338 W MiuiBooster: "MiuiBoosterService requestCpuHighFreq: 10093, 1, 500"
+06-21 13:21:59.465  1313  1338 W MiuiBooster: "requestCpuHighFreq,final level:1,final timeoutms:500"
+06-21 13:21:59.465  1313  1338 W MiuiBooster: "perf_hint_hc start"
+06-21 13:21:59.465  1313  1338 W MiuiBooster: "big_core_value[level-1]:4095"
+06-21 13:21:59.465  1313  1338 W MiuiBooster: "little_core_value[level-1]:4095"
+06-21 13:21:59.466  1313  1338 W MiuiBooster: "perf_handle:7312"
+06-21 13:21:59.467  2880  3069 D MiBridge: requestCpuHighFreq handle: 1
+06-21 13:21:59.467  2880  3069 D Launcher_CPUBooster: boostCpuToMax:0
+06-21 13:21:59.470  6885 20493 D GameBoosterService: onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='com.miui.home', mForegroundUid=10093, mForegroundPid=2880, mLastForegroundPackageName='com.yourcompany.pos', mLastForegroundUid=11547, mLastForegroundPid=7919, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+06-21 13:21:59.470  6885 20493 I VideoBoxUtils: isSupportVideoBox: false
+06-21 13:21:59.470  6885 20493 I VideoToolBoxService: vtb is closed!!!
+06-21 13:21:59.472  1775  4712 I Timeline: Timeline: App_transition_ready time:22452448
+06-21 13:21:59.475  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:59.476  2593  2593 D StatusBar: disable<e i a s b h r c s > disable2<q i n >
+06-21 13:21:59.483  2880  2880 D Launcher_WallpaperUtils: changeStatusBarMode:false
+06-21 13:21:59.485  2880  2880 D RecentsImpl: mActivityStateObserver com.miui.home.launcher.Launcher
+06-21 13:21:59.486  2880  2880 W RecentsImpl: onResumed className=com.miui.home.launcher.Launcher   mIsInAnotherPro=false
+06-21 13:21:59.487  1775  2321 I MiuiNetworkPolicy: removeUidState uid = 11547
+06-21 13:21:59.494  2593  2896 D MiuiPhoneStatusBarPolicy: updateManagedProfile: secondSpace = false
+06-21 13:21:59.500  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: bindService is called for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiService and for client com.google.android.gms.persistent
+06-21 13:21:59.501  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: total connections for service : com.google.android.gms/.chimera.PersistentDirectBootAwareApiServiceare :15
+06-21 13:21:59.501  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: total connections for client : com.google.android.gms.persistentare :6
+06-21 13:21:59.506  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: destroyService is called for service : com.google.android.gms/.stats.service.DropBoxEntryAddedService
+06-21 13:21:59.509  1775  1901 W ActivityManager: Scheduling restart of crashed service com.qti.diagservices/.QTIDiagServices in 1000ms for start-requested
+06-21 13:21:59.532  1775  4652 D MIUIInput: [FoucsChange]: Display  0 FocusedWindow From null(0,0)  to Window{40b78d9 mode=1 rootTaskId=1 u0 com.miui.home/com.miui.home.launcher.Launcher}(1,1)
+06-21 13:21:59.533  2880  2880 D Launcher.Lifecycle: onWindowFocusChanged:true,UserHandle{0},e6c52f9,false
+06-21 13:21:59.533  2880  2880 D Launcher_UnlockAnimationStateMachine: onWindowFocus:IDLE
+06-21 13:21:59.675  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:59.676  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:59.683  2880  2880 E RotationHelper: setCurrentTransitionRequest: request=0
+06-21 13:21:59.686  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:21:59.821  1775  1871 I Timeline: Timeline: App_transition_stopped time:22452797
+06-21 13:21:59.875  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:21:59.902  1775  1870 W ActivityTaskManager: Activity top resumed state loss timeout for ActivityRecord{e3c8a6d u0 com.yourcompany.pos/.MainActivity t-1 f}}
+06-21 13:22:00.003  2593  2593 D KeyguardUpdateMonitor: received broadcast android.intent.action.TIME_TICK
+06-21 13:22:00.004  2593  2593 D KeyguardUpdateMonitor: handleTimeUpdate
+06-21 13:22:00.076  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:00.510  1775  1901 W ActivityManager: Scheduling restart of crashed service com.qti.diagservices/.QTIDiagServices in 1000ms for start-requested
+06-21 13:22:03.701  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 18 lines
+06-21 13:22:03.904  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:03.941  2650  5503 D ApfFilter: (wlan0): Ignoring RA RA fe80::1227:f5ff:fe2f:a709 -> ff02::1 0s  which matches RA fe80::1227:f5ff:fe2f:a709 -> ff02::1 0s 
+06-21 13:22:04.106  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:05.112  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 5 lines
+06-21 13:22:05.313  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:05.443  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:05.514  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:05.689  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:05.716  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:05.800  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:05.918  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:06.118  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:06.225  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:06.319  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:06.468  1001  9266 I vendor.qti.hardware.servicetracker@1.2-service: destroyService is called for service : com.google.android.gms/.chimera.PersistentIntentOperationService
+06-21 13:22:06.520  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:06.664 19172 19172 W ThreadPoolForeg: type=1400 audit(0.0:31752): avc: denied { write } for name="traced_producer" dev="tmpfs" ino=536 scontext=u:r:gmscore_app:s0:c512,c768 tcontext=u:object_r:traced_producer_socket:s0 tclass=sock_file permissive=0 app=com.google.android.gms
+06-21 13:22:06.721  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:07.123  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 2 lines
+06-21 13:22:07.324  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:07.419  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:07.422  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:22:07.490  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:07.525  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:07.601  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:07.624  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:07.726  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:07.806  2593  2697 D NetworkController.MobileSignalController(1): onSignalStrengthsChanged signalStrength=SignalStrength:{mCdma=CellSignalStrengthCdma: cdmaDbm=2147483647 cdmaEcio=2147483647 evdoDbm=2147483647 evdoEcio=2147483647 evdoSnr=2147483647 miuiLevel=0 level=0,mGsm=CellSignalStrengthGsm: rssi=2147483647 ber=2147483647 mTa=2147483647 miuiLevel=0 mLevel=0,mWcdma=CellSignalStrengthWcdma: ss=2147483647 ber=2147483647 rscp=2147483647 ecno=2147483647 miuiLevel=0 level=0,mTdscdma=CellSignalStrengthTdscdma: rssi=2147483647 ber=2147483647 rscp=2147483647 miuiLevel=0 level=0,mLte=CellSignalStrengthLte: rssi=-53 rsrp=-93 rsrq=-20 rssnr=-2 cqi=2147483647 ta=2147483647 miuiLevel=5 level=4 parametersUseForLevel=0,mNr=CellSignalStrengthNr:{ csiRsrp = 2147483647 csiRsrq = 2147483647 csiSinr = 2147483647 ssRsrp = 2147483647 ssRsrq = 2147483647 ssSinr = 2147483647 miuiLevel = 0 level = 0 parametersUseForLevel = 0 },primary=CellSignalStrengthLte} level=4
+06-21 13:22:07.807  2593  2697 D NetworkController.MobileSignalController(1): updateTelephonySignalStrength: hasService=true ss=SignalStrength:{mCdma=CellSignalStrengthCdma: cdmaDbm=2147483647 cdmaEcio=2147483647 evdoDbm=2147483647 evdoEcio=2147483647 evdoSnr=2147483647 miuiLevel=0 level=0,mGsm=CellSignalStrengthGsm: rssi=2147483647 ber=2147483647 mTa=2147483647 miuiLevel=0 mLevel=0,mWcdma=CellSignalStrengthWcdma: ss=2147483647 ber=2147483647 rscp=2147483647 ecno=2147483647 miuiLevel=0 level=0,mTdscdma=CellSignalStrengthTdscdma: rssi=2147483647 ber=2147483647 rscp=2147483647 miuiLevel=0 level=0,mLte=CellSignalStrengthLte: rssi=-53 rsrp=-93 rsrq=-20 rssnr=-2 cqi=2147483647 ta=2147483647 miuiLevel=5 level=4 parametersUseForLevel=0,mNr=CellSignalStrengthNr:{ csiRsrp = 2147483647 csiRsrq = 2147483647 csiSinr = 2147483647 ssRsrp = 2147483647 ssRsrq = 2147483647 ssSinr = 2147483647 miuiLevel = 0 level = 0 parametersUseForLevel = 0 },primary=CellSignalStrengthLte} displayInfo=TelephonyDisplayInfo {network=LTE, override=NONE}
+06-21 13:22:07.807  2593  2697 D NetworkController.MobileSignalController(1): NotQcom5G, signal level = 5
+06-21 13:22:07.822  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:07.927  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:08.331  2842  5877 I chatty  : uid=1001(radio) Thread-8 identical 2 lines
+06-21 13:22:08.534  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:08.558  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:08.680  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:22:08.689  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:08.735  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:08.859  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:08.863  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:22:08.893  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:08.936  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:09.040  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:09.044  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:22:09.093  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:09.138  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:09.218  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:09.223  1775  2191 I chatty  : uid=1000(system) SensorService identical 1 line
+06-21 13:22:09.290  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:09.340  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:09.401  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:09.541  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:09.743  2842  5877 I SarService: Receiver polling >>>> Change receiver mode: off
+06-21 13:22:09.823  1775  2191 W SensorService: Failed to write wake lock handled
+06-21 13:22:09.884  3137  3137 W ThreadPoolForeg: type=1400 audit(0.0:31753): avc: denied { write } for name="traced_producer" dev="tmpfs" ino=536 scontext=u:r:gmscore_app:s0:c512,c768 tcontext=u:object_r:traced_producer_socket:s0 tclass=sock_file permissive=0 app=com.google.android.gms

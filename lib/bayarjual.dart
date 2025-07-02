@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import Riverpod
 import 'package:intl/intl.dart';
 
 import 'service.dart';
+import 'var_provider.dart'; // Import file yang berisi saldoProvider
 
-class PaymentDialog extends StatefulWidget {
+class PaymentDialog extends ConsumerStatefulWidget {
   final String notrans;
   final String grandTotal;
   final String totbayar;
   final String username;
   final String varlks;
-  final String varsaldokas;
   final String vartotalbyr;
   final String asal;
-  final void Function(String, String) onPaymentSuccess; // Callback parameter
+  final void Function(String, String) onPaymentSuccess;
 
   PaymentDialog({
     required this.asal,
@@ -21,33 +22,28 @@ class PaymentDialog extends StatefulWidget {
     required this.totbayar,
     required this.username,
     required this.varlks,
-    required this.varsaldokas,
     required this.vartotalbyr,
-    required this.onPaymentSuccess, // Initialize callback parameter
+    required this.onPaymentSuccess,
   });
 
   @override
   _PaymentDialogState createState() => _PaymentDialogState();
 }
 
-class _PaymentDialogState extends State<PaymentDialog> {
+class _PaymentDialogState extends ConsumerState<PaymentDialog> {
   TextEditingController jmluangController = TextEditingController();
   TextEditingController kembaliController = TextEditingController();
   TextEditingController paymentController = TextEditingController();
-
-  bool isProcessing = false; // Tambahkan variabel untuk melacak status pembayaran
+  bool isProcessing = false;
   List<Map<String, dynamic>> kirabayarData = [];
   String? selectedKira;
   String? selectedKdgl;
-
   final NumberFormat formatter = NumberFormat("#,###", "id_ID");
 
   @override
   void initState() {
     super.initState();
     _fetchKirabayarData();
-
-    // Add listener to jmluangController
     jmluangController.addListener(_updatePaymentFields);
   }
 
@@ -62,7 +58,8 @@ class _PaymentDialogState extends State<PaymentDialog> {
 
   Future<void> _fetchKirabayarData() async {
     try {
-      List<Map<String, dynamic>> data = await ApiService.kirabayar(widget.username, widget.varlks);
+      List<Map<String, dynamic>> data =
+          await ApiService.kirabayar(widget.username, widget.varlks);
       setState(() {
         kirabayarData = data;
         if (kirabayarData.isNotEmpty) {
@@ -76,15 +73,14 @@ class _PaymentDialogState extends State<PaymentDialog> {
   }
 
   void _updatePaymentFields() {
-    String grandTotalClean = widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
+    String grandTotalClean =
+        widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
     String totbayarClean = widget.vartotalbyr.replaceAll(RegExp(r'[^0-9]'), '');
-
     int grandTotalInt = int.tryParse(grandTotalClean) ?? 0;
     int totbayarInt = int.tryParse(totbayarClean) ?? 0;
     int hrsbayarInt = grandTotalInt - totbayarInt;
-
-    int jmluangInt = int.tryParse(jmluangController.text.replaceAll(',', '')) ?? 0;
-
+    int jmluangInt =
+        int.tryParse(jmluangController.text.replaceAll(',', '')) ?? 0;
     if (jmluangInt >= hrsbayarInt) {
       kembaliController.text = formatter.format(jmluangInt - hrsbayarInt);
       paymentController.text = formatter.format(hrsbayarInt);
@@ -92,19 +88,20 @@ class _PaymentDialogState extends State<PaymentDialog> {
       kembaliController.text = '0';
       paymentController.text = formatter.format(jmluangInt);
     }
-    setState(() {}); // to update the button state
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    String grandTotalClean = widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
+    // Mengakses saldoProvider menggunakan Riverpod
+    String grandTotalClean =
+        widget.grandTotal.replaceAll(RegExp(r'[^0-9]'), '');
     String totbayarClean = widget.vartotalbyr.replaceAll(RegExp(r'[^0-9]'), '');
-
     int grandTotalInt = int.tryParse(grandTotalClean) ?? 0;
     int totbayarInt = int.tryParse(totbayarClean) ?? 0;
     int hrsbayarInt = grandTotalInt - totbayarInt;
+    final saldoKas = ref.watch(saldoProvider);
     String hrsbayar = formatter.format(hrsbayarInt);
-
     return AlertDialog(
       content: SingleChildScrollView(
         child: Column(
@@ -127,12 +124,14 @@ class _PaymentDialogState extends State<PaymentDialog> {
                   children: [
                     Text(
                       'Total',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(': '),
                     Text(
                       'Rp. ${widget.grandTotal}',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ],
                 ),
@@ -140,12 +139,14 @@ class _PaymentDialogState extends State<PaymentDialog> {
                   children: [
                     Text(
                       'Terbyr',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(': '),
                     Text(
                       'Rp. ${widget.vartotalbyr}',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ],
                 ),
@@ -153,22 +154,27 @@ class _PaymentDialogState extends State<PaymentDialog> {
                   children: [
                     Text(
                       'Kurang',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(': '),
                     Row(
                       children: <Widget>[
                         Text(
                           'Rp. $hrsbayar',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                         GestureDetector(
                           onTap: () {
-                            jmluangController.text = formatter.format(hrsbayarInt);
+                            jmluangController.text =
+                                formatter.format(hrsbayarInt);
                             kembaliController.text = '0';
-                            paymentController.text = formatter.format(hrsbayarInt);
+                            paymentController.text =
+                                formatter.format(hrsbayarInt);
                           },
-                          child: Icon(Icons.add_circle_outline, color: Colors.blue),
+                          child: Icon(Icons.add_circle_outline,
+                              color: Colors.blue),
                         ),
                       ],
                     ),
@@ -248,7 +254,8 @@ class _PaymentDialogState extends State<PaymentDialog> {
                     onChanged: (value) {
                       setState(() {
                         selectedKira = value;
-                        selectedKdgl = kirabayarData.firstWhere((kira) => kira['nmkira'] == value)['kdgl'];
+                        selectedKdgl = kirabayarData.firstWhere(
+                            (kira) => kira['nmkira'] == value)['kdgl'];
                       });
                     },
                   ),
@@ -284,16 +291,15 @@ class _PaymentDialogState extends State<PaymentDialog> {
               ? null
               : () async {
                   setState(() {
-                    isProcessing = true; // Set isProcessing to true saat proses pembayaran dimulai
+                    isProcessing = true;
                   });
-
                   try {
-                    int varsaldokasInt = int.tryParse(widget.varsaldokas.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
-                    int paymentInt = int.tryParse(paymentController.text.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
-                    int totalbyrdulu = int.tryParse(widget.totbayar.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
-
-                    String updatedVarsaldokas = (varsaldokasInt + paymentInt).toString();
-                    String updatedVartotalbyr = (totalbyrdulu + paymentInt).toString();
+                    int paymentInt = int.tryParse(paymentController.text
+                            .replaceAll(RegExp(r'[^\d]'), '')) ??
+                        0;
+                    int totalbyrdulu = int.tryParse(
+                            widget.totbayar.replaceAll(RegExp(r'[^\d]'), '')) ??
+                        0;
 
                     var paymentData = await ApiService.bayarjual(
                       widget.notrans,
@@ -304,13 +310,23 @@ class _PaymentDialogState extends State<PaymentDialog> {
                       widget.asal,
                     );
 
+                    // Perbarui saldo berdasarkan asal
+                    if (widget.asal == 'jual') {
+                      // Jika asalnya jual, tambahkan saldo
+                      ref.read(saldoProvider.notifier).state += paymentInt;
+                    } else if (widget.asal == 'retur') {
+                      // Jika asalnya returjual, kurangi saldo
+                      ref.read(saldoProvider.notifier).state -= paymentInt;
+                    }
+
                     Navigator.of(context).pop();
-                    widget.onPaymentSuccess(updatedVarsaldokas, updatedVartotalbyr);
+                    widget.onPaymentSuccess(saldoKas.toString(),
+                        (totalbyrdulu + paymentInt).toString());
                   } catch (e) {
                     print('Error saat melakukan pembayaran: $e');
                   } finally {
                     setState(() {
-                      isProcessing = false; // Set isProcessing to false setelah proses selesai
+                      isProcessing = false;
                     });
                   }
                 },

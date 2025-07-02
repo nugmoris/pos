@@ -1,54 +1,59 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import 'ganti_pwd.dart';
 import 'login.dart';
-import 'utils/tombol.dart'; // Tambahkan ini
+import 'utils/tombol.dart';
+import 'var_provider.dart';
 
-class HomeSalesPage extends StatefulWidget {
+class HomeSalesPage extends ConsumerStatefulWidget {
   final String varpbuser;
   final String varbagian;
   final String varlks;
   final String varnmlok;
-  String varsaldokas;
   final String myversion1;
   final String currentVersion;
 
-  HomeSalesPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok, this.varsaldokas, this.myversion1, this.currentVersion);
+  HomeSalesPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok,
+      this.myversion1, this.currentVersion);
 
   @override
-  State<HomeSalesPage> createState() => _HomeSalesPageState();
+  ConsumerState<HomeSalesPage> createState() => _HomeSalesPageState();
 }
 
-class _HomeSalesPageState extends State<HomeSalesPage> {
-  late double saldokasku;
-  final NumberFormat numberFormat = NumberFormat.decimalPattern('id_ID'); // Format number
-
-  @override
-  void initState() {
-    super.initState();
-    // Inisialisasi saldo kas dengan menghilangkan karakter non-numerik dan memastikan nilai positif
-    saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '').replaceAll('-', '')) ?? 0.0;
-    // Jika saldo kas bisa negatif, maka periksa dan atur
-    if (double.tryParse(widget.varsaldokas.replaceAll(',', '')) != null) {
-      saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', ''))!;
-    }
-  }
+class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
+  final NumberFormat numberFormat = NumberFormat.decimalPattern('id_ID');
 
   void lapPenjualanFunction() {
-    Navigator.pushNamed(context, '/lapjual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/lapjual', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok
+    ]);
     print("Lap. Penjualan clicked");
   }
 
   void stockFunction() {
-    Navigator.pushNamed(context, '/lapstok', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/lapstok', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok
+    ]);
     print("Stock clicked");
   }
 
   void daftarHargaFunction() {
-    Navigator.pushNamed(context, '/daftarharga', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/daftarharga', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok
+    ]);
     print("Daftar Harga clicked");
   }
 
@@ -57,36 +62,71 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
   }
 
   void setorFunction() {
-    Navigator.pushNamed(context, '/setor', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/setor', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok
+    ]);
     print("Setor clicked");
   }
 
   void penjKaryawanFunction() {
-    Navigator.pushNamed(context, '/penjkary', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/penjkary', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok
+    ]);
     print("Penj. Karyawan clicked");
   }
 
   void lapsetor() {
-    Navigator.pushNamed(context, '/daftarsetor', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/daftarsetor', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok
+    ]);
     print("Lap. Daftar Setor clicked");
   }
 
   void julablmlunas() {
-    Navigator.pushNamed(context, '/daftarblmlunas', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/daftarblmlunas', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok
+    ]);
   }
 
   void laporanFunction() {
-    Navigator.pushNamed(context, '/lapkas', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok]);
+    Navigator.pushNamed(context, '/lapkas', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok
+    ]);
     print("Laporan clicked");
   }
 
   void returjual() {
-    Navigator.pushNamed(context, '/returjual', arguments: [widget.varpbuser, widget.varbagian, widget.varlks, widget.varnmlok, widget.varsaldokas]);
+    Navigator.pushNamed(context, '/returjual', arguments: [
+      widget.varpbuser,
+      widget.varbagian,
+      widget.varlks,
+      widget.varnmlok,
+      saldoProvider.toString(),
+    ]);
     print("Retur Penjualan diklik");
   }
 
   @override
   Widget build(BuildContext context) {
+    final saldoKas = ref.watch(saldoProvider);
+    final saldoKasprov = ref.watch(saldoProvider);
+
+    print('Saldo kas di home : $saldoKasprov');
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.96),
       bottomNavigationBar: BottomNavigationBar(
@@ -103,8 +143,8 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
             children: [
               // Baris pertama
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                //header
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -120,11 +160,13 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                                 title: Text('Ganti Password'),
                                 onTap: () {
                                   Navigator.pop(context);
-                                  Future.delayed(Duration(milliseconds: 10), () {
+                                  Future.delayed(Duration(milliseconds: 10),
+                                      () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => GantiPwdPage(widget.varpbuser),
+                                        builder: (context) =>
+                                            GantiPwdPage(widget.varpbuser),
                                       ),
                                     );
                                   });
@@ -138,7 +180,10 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => LoginPage(myversion1: widget.myversion1, currentVersion: widget.currentVersion),
+                                      builder: (context) => LoginPage(
+                                          myversion1: widget.myversion1,
+                                          currentVersion:
+                                              widget.currentVersion),
                                     ),
                                     (route) => false,
                                   );
@@ -173,7 +218,6 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          //Nama Company
                           Text(
                             'Koperasi Kasih',
                             style: GoogleFonts.leagueSpartan(
@@ -183,7 +227,6 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          // Nama Lokasi
                           Text(
                             widget.varnmlok,
                             style: GoogleFonts.quicksand(
@@ -220,7 +263,8 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
               // Baris kedua
               // Saldo kas
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
                 child: Row(
                   children: [
                     Container(
@@ -245,8 +289,9 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                             textAlign: TextAlign.left,
                           ),
                           Text(
-                            // Jika saldo negatif, tambahkan tanda minus pada format
-                            widget.varsaldokas.contains('-') ? numberFormat.format(-saldokasku) : numberFormat.format(saldokasku),
+                            saldoKas.isNegative
+                                ? numberFormat.format(-saldoKas)
+                                : numberFormat.format(saldoKas),
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 50,
@@ -309,26 +354,31 @@ class _HomeSalesPageState extends State<HomeSalesPage> {
                         widget.varbagian,
                         widget.varlks,
                         widget.varnmlok,
-                        widget.varsaldokas,
+                        saldoKas.toString(),
                       ],
                     );
-                    print('update saldo $updatedSaldo');
-                    if (updatedSaldo != null) {
-                      setState(() {
-                        widget.varsaldokas = updatedSaldo as String;
-                        // Update saldo kas dengan nilai yang diterima
-                        saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '').replaceAll('-', '')) ?? 0.0;
-                      });
-                    }
+                    // print('update saldo $updatedSaldo');
+                    // if (updatedSaldo != null) {
+                    //   setState(() {
+                    //     widget.varsaldokas = updatedSaldo as String;
+                    //     // Update saldo kas dengan nilai yang diterima
+                    //     saldokasku = double.tryParse(widget.varsaldokas
+                    //             .replaceAll(',', '')
+                    //             .replaceAll('-', '')) ??
+                    //         0.0;
+                    //   });
+                    // }
                   },
                   child: Container(
-                    padding: EdgeInsets.all(15), // Ukuran besar padding untuk icon
+                    padding:
+                        EdgeInsets.all(15), // Ukuran besar padding untuk icon
                     decoration: BoxDecoration(
                       color: Colors.blue[700], // Warna latar belakang ikon
                       shape: BoxShape.circle, // Bentuk ikon
                     ),
                     child: Icon(
-                      CupertinoIcons.cart_fill_badge_plus, // Ganti dengan ikon yang diinginkan
+                      CupertinoIcons
+                          .cart_fill_badge_plus, // Ganti dengan ikon yang diinginkan
                       color: Colors.white, // Warna ikon
                       size: 80, // Ukuran ikon
                     ),

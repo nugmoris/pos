@@ -13,14 +13,16 @@ class ReturJualPage extends StatefulWidget {
   final String varnmlok;
   final String varsaldokas;
 
-  ReturJualPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok, this.varsaldokas);
+  ReturJualPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok,
+      this.varsaldokas);
 
   @override
   _ReturJualPageState createState() => _ReturJualPageState();
 }
 
 class _ReturJualPageState extends State<ReturJualPage> {
-  TextEditingController notransController = TextEditingController(text: 'RJL-Baru');
+  TextEditingController notransController =
+      TextEditingController(text: 'RJL-Baru');
   TextEditingController nqtyreturController = TextEditingController();
   TextEditingController nrpreturController = TextEditingController();
   TextEditingController keteranganController = TextEditingController();
@@ -51,6 +53,22 @@ class _ReturJualPageState extends State<ReturJualPage> {
     saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '')) ?? 0.0;
   }
 
+  // void calculateSubtotalRetur() {
+  //   setState(() {
+  //     // Jika kosong, isi dengan 0
+  //     if (nqtyreturController.text.isEmpty) {
+  //       nqtyreturController.text = '0';
+  //     }
+  //     if (nrpreturController.text.isEmpty) {
+  //       nrpreturController.text = '0';
+  //     }
+
+  //     double nqtyretur = double.tryParse(nqtyreturController.text) ?? 0;
+  //     double nrpretur = double.tryParse(nrpreturController.text) ?? 0;
+  //     nsubtotalret = (nqtyretur * nrpretur).toStringAsFixed(2);
+  //   });
+  // }
+
   void showPaymentDialog() async {
     String grandTotal = calculateGrandTotal(); // Mengambil nilai Grand Total
     int totbayarInt = int.tryParse(totbayarku.text) ?? 0;
@@ -66,7 +84,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
           totbayar: currencyFormat.format(totbayarInt),
           username: widget.varpbuser,
           varlks: widget.varlks,
-          varsaldokas: widget.varsaldokas,
+          // varsaldokas: widget.varsaldokas,
           vartotalbyr: currencyFormat.format(totbayarInt),
           onPaymentSuccess: (updatedVarsaldokas, updatedVartotalbyr) {
             setState(() {
@@ -85,7 +103,8 @@ class _ReturJualPageState extends State<ReturJualPage> {
         double bayar = double.tryParse(paymentValue) ?? 0.0;
         // Pastikan totbayar adalah String sebelum melakukan replaceAll
         String totbayarString = totbayar.toString();
-        double currentTotbayar = double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
+        double currentTotbayar =
+            double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
         // Tambahkan bayar ke currentTotbayar jika diperlukan
         currentTotbayar = bayar;
         final formatter = NumberFormat("#,###");
@@ -191,7 +210,9 @@ class _ReturJualPageState extends State<ReturJualPage> {
         final formatter = NumberFormat("#,###");
         nrpjualController.text = formatter.format(int.parse(result['nrp']));
         nqtyjualController.text = result['nqty'];
-        nsubttljualController.text = formatter.format(int.parse(result['subttl']));
+
+        nsubttljualController.text =
+            formatter.format(int.parse(result['subttl']));
         nrpjual = result['nrp']?.toString() ?? '';
         nsubtotal = result['subttl']?.toString() ?? '';
 
@@ -201,6 +222,14 @@ class _ReturJualPageState extends State<ReturJualPage> {
   }
 
   Future<void> addRetur() async {
+    // Pastikan nilai tidak kosong
+    if (nqtyreturController.text.isEmpty) {
+      nqtyreturController.text = '0';
+    }
+    if (nrpreturController.text.isEmpty) {
+      nrpreturController.text = '0';
+    }
+
     final response = await ApiService.returjual(
       notransController.text,
       widget.varlks,
@@ -279,7 +308,8 @@ class _ReturJualPageState extends State<ReturJualPage> {
                     ),
                     style: TextStyle(
                       color: Colors.blue[900],
-                      fontWeight: FontWeight.bold, // Ubah warna font menjadi biru
+                      fontWeight:
+                          FontWeight.bold, // Ubah warna font menjadi biru
                     ),
                     controller: tglreturcontroller,
                   ),
@@ -334,7 +364,8 @@ class _ReturJualPageState extends State<ReturJualPage> {
                     ),
                     style: TextStyle(
                       color: Colors.blue[900],
-                      fontWeight: FontWeight.bold, // Ubah warna font menjadi biru
+                      fontWeight:
+                          FontWeight.bold, // Ubah warna font menjadi biru
                     ),
                     controller: nrpjualController,
                   ),
@@ -351,7 +382,8 @@ class _ReturJualPageState extends State<ReturJualPage> {
                     ),
                     style: TextStyle(
                       color: Colors.blue[900],
-                      fontWeight: FontWeight.bold, // Ubah warna font menjadi biru
+                      fontWeight:
+                          FontWeight.bold, // Ubah warna font menjadi biru
                     ),
                     controller: nqtyjualController,
                   ),
@@ -369,7 +401,8 @@ class _ReturJualPageState extends State<ReturJualPage> {
                     ),
                     style: TextStyle(
                       color: Colors.blue[900],
-                      fontWeight: FontWeight.bold, // Ubah warna font menjadi biru
+                      fontWeight:
+                          FontWeight.bold, // Ubah warna font menjadi biru
                     ),
                     controller: nsubttljualController,
                   ),
@@ -437,12 +470,14 @@ class _ReturJualPageState extends State<ReturJualPage> {
                       icon: Icon(Icons.payment),
                       onPressed: () {
                         //    !transaksiData.any((item) => item['llunas'] == '1') ? showPaymentDialog : null;
-                        if (!transaksiData.any((item) => item['llunas'] == '1')) {
+                        if (!transaksiData
+                            .any((item) => item['llunas'] == '1')) {
                           showPaymentDialog();
                         }
                       },
                     ),
-                    IconButton(icon: Icon(Icons.search), onPressed: openSearchPopup),
+                    IconButton(
+                        icon: Icon(Icons.search), onPressed: openSearchPopup),
                   ],
                 )),
               ],

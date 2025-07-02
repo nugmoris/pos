@@ -16,7 +16,8 @@ class JualPage extends StatefulWidget {
   final String varnmlok;
   final String varsaldokas;
 
-  JualPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok, this.varsaldokas);
+  JualPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok,
+      this.varsaldokas);
   @override
   State<JualPage> createState() => _JualPageState();
 }
@@ -51,6 +52,8 @@ class _JualPageState extends State<JualPage> {
   //double totbayarController = 0.0;
   String varsaldokas = '0';
   String urut = '0';
+  bool isProcessing = false;
+
   @override
   void initState() {
     super.initState();
@@ -90,7 +93,8 @@ class _JualPageState extends State<JualPage> {
   void _updateSubtotalAndTotal() {
     if (hargaController.text.isNotEmpty && jumlahController.text.isNotEmpty) {
       final formatter = NumberFormat("#,###");
-      int hargaJual = int.tryParse(hargaController.text.replaceAll(',', '')) ?? 0;
+      int hargaJual =
+          int.tryParse(hargaController.text.replaceAll(',', '')) ?? 0;
       int jumlah = int.tryParse(jumlahController.text) ?? 0;
       int subtotal = hargaJual * jumlah;
       int diskon = int.tryParse(diskonController.text.replaceAll(',', '')) ?? 0;
@@ -126,23 +130,43 @@ class _JualPageState extends State<JualPage> {
   }
 
   void input() async {
+    if (isProcessing) return; // jika masih proses, abaikan klik
+    setState(() {
+      isProcessing = true;
+    });
+
     try {
       if (barcodeController.text.isNotEmpty &&
           jumlahController.text.isNotEmpty &&
           hargaController.text.isNotEmpty &&
           notransController.text.isNotEmpty) {
+        // Cek apakah barcode dan jumlah yang sama sudah ada
+        bool isDuplicate = transaksiData.any((item) =>
+            item['nama'] == namaController.text &&
+            item['harga'].toString().replaceAll(',', '') ==
+                hargaController.text.replaceAll(',', '') &&
+            item['jumlah'].toString() == jumlahController.text);
+
+        if (isDuplicate) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text("Barang dengan jumlah yang sama sudah diinput")),
+          );
+          return;
+        }
+
         var result = await ApiService.inputtrans3(
             barcodeController.text,
             jumlahController.text,
-            hargaController.text.replaceAll(',', ''), // Hapus koma sebelum mengirim ke API
+            hargaController.text.replaceAll(',', ''),
             widget.varpbuser,
-            kdcustController.text, //kdcust
-            "01", //ntop
-            "keth", //keth
-            "01", //kdsales
+            kdcustController.text,
+            "01",
+            "keth",
+            "01",
             notransController.text,
             widget.varlks,
-            isChecked ? '1' : '0'); // Ubah isChecked menjadi string '1' atau '0'
+            isChecked ? '1' : '0');
 
         setState(() {
           transaksiData = result
@@ -156,28 +180,28 @@ class _JualPageState extends State<JualPage> {
                   })
               .toList();
 
-          // Perbarui notransController dengan notrans dari respons API
           if (result.isNotEmpty && result[0].containsKey('notrans')) {
             notransController.text = result[0]['notrans'];
           }
 
-          // Mengatur ulang nilai controller setelah menambahkan data ke tabel
           barcodeController.clear();
           namaController.clear();
           kdcustController.text = '01';
-          // nmcustController.text = 'Customer Umum';
           hargaController.text = '0';
           jumlahController.text = '0';
           subttlController.text = '0';
           diskonController.text = '0';
           totalController.text = '0';
-          //totbayar = 0.0;
           isChecked = false;
           lmatang = '0';
         });
       }
     } catch (e) {
       print('Error saat input transaksi: $e');
+    } finally {
+      setState(() {
+        isProcessing = false;
+      });
     }
   }
 
@@ -227,7 +251,8 @@ class _JualPageState extends State<JualPage> {
 
   void fetchhasilscan() async {
     try {
-      List<Map<String, dynamic>> result = await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
+      List<Map<String, dynamic>> result =
+          await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
       print(result);
       setState(() {
         if (result.isNotEmpty) {
@@ -284,7 +309,8 @@ class _JualPageState extends State<JualPage> {
 
   void onTransactionSelected(String notran, String nbayar) async {
     try {
-      List<Map<String, dynamic>> result = await ApiService.lapjualperno(widget.varpbuser, notran);
+      List<Map<String, dynamic>> result =
+          await ApiService.lapjualperno(widget.varpbuser, notran);
 
       if (result.isNotEmpty) {
         setState(() {
@@ -313,7 +339,8 @@ class _JualPageState extends State<JualPage> {
 
   Future<void> fetchProductDetails() async {
     try {
-      var details = await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
+      var details =
+          await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
       print('proses cari kode barang 3');
       final formatter = NumberFormat("#,###");
 
@@ -336,7 +363,8 @@ class _JualPageState extends State<JualPage> {
 
   // Widget untuk menampilkan data transaksi dengan kemampuan scroll horizontal
   Widget buildTransaksiTable() {
-    final formatter = NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
+    final formatter =
+        NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -354,9 +382,11 @@ class _JualPageState extends State<JualPage> {
           rows: transaksiData.map((data) {
             return DataRow(cells: [
               DataCell(Text(data['nama'] ?? 'Nama tidak tersedia')),
-              DataCell(Text(formatter.format(int.parse(data['harga'].toString())))),
+              DataCell(
+                  Text(formatter.format(int.parse(data['harga'].toString())))),
               DataCell(Text(data['jumlah'].toString())),
-              DataCell(Text(formatter.format(int.parse(data['subtotal'].toString())))),
+              DataCell(Text(
+                  formatter.format(int.parse(data['subtotal'].toString())))),
               // DataCell(Text(data['llunas'].toString())),
               // DataCell(Text(data['urut'])),
               DataCell(
@@ -390,23 +420,27 @@ class _JualPageState extends State<JualPage> {
   }
 
   String calculateGrandTotal() {
-    final formatter = NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
+    final formatter =
+        NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
     int total = transaksiData.fold(0, (sum, item) {
       int subtotal = int.tryParse(item['subtotal'].toString()) ?? 0;
       return sum + subtotal;
     });
 
-    return formatter.format(total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
+    return formatter.format(
+        total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
   }
 
   String hitungbayar() {
-    final formatter = NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
+    final formatter =
+        NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
     int total = transaksiData.fold(0, (sum, item) {
       int totbayar = int.tryParse(item['nbayar'].toString()) ?? 0;
       return sum + totbayar;
     });
 
-    return formatter.format(total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
+    return formatter.format(
+        total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
   }
 
   void clearTransactionData() {
@@ -429,7 +463,7 @@ class _JualPageState extends State<JualPage> {
           totbayar: currencyFormat.format(totbayar),
           username: widget.varpbuser,
           varlks: widget.varlks,
-          varsaldokas: widget.varsaldokas,
+          // varsaldokas: widget.varsaldokas,
           vartotalbyr: currencyFormat.format(totbayarInt),
           onPaymentSuccess: (updatedVarsaldokas, updatedVartotalbyr) {
             setState(() {
@@ -447,7 +481,8 @@ class _JualPageState extends State<JualPage> {
         double bayar = double.tryParse(paymentValue) ?? 0.0;
         // Pastikan totbayar adalah String sebelum melakukan replaceAll
         String totbayarString = totbayar.toString();
-        double currentTotbayar = double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
+        double currentTotbayar =
+            double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
         // Tambahkan bayar ke currentTotbayar jika diperlukan
         currentTotbayar = bayar;
         final formatter = NumberFormat("#,###");
@@ -637,7 +672,8 @@ class _JualPageState extends State<JualPage> {
 
             SizedBox(height: 5),
             Visibility(
-                visible: matang == true, // Tampilkan checkbox hanya jika lmatang = 1
+                visible:
+                    matang == true, // Tampilkan checkbox hanya jika lmatang = 1
                 child: Row(
                   children: [
                     Checkbox(
@@ -648,9 +684,11 @@ class _JualPageState extends State<JualPage> {
                           if (isChecked) {
                             namaController.text += ' Siap Saji';
 
-                            hargaController.text = nhargamatang1; // Menggunakan harga matang
+                            hargaController.text =
+                                nhargamatang1; // Menggunakan harga matang
                           } else {
-                            namaController.text = namaController.text.replaceAll(' Siap Saji', '');
+                            namaController.text = namaController.text
+                                .replaceAll(' Siap Saji', '');
                             hargaController.text = nhargajual1;
                           }
                         });
@@ -674,7 +712,8 @@ class _JualPageState extends State<JualPage> {
                     controller: hargaController,
                   ),
                 ),
-                SizedBox(width: 10), // Menambahkan sedikit ruang antar TextField
+                SizedBox(
+                    width: 10), // Menambahkan sedikit ruang antar TextField
                 Expanded(
                   flex: 1, // Memberi lebih sedikit ruang untuk QTY
                   child: TextField(
@@ -712,9 +751,9 @@ class _JualPageState extends State<JualPage> {
                     shape: BoxShape.circle, // Bentuk lingkaran
                   ),
                   child: IconButton(
-                    onPressed: input,
+                    onPressed: isProcessing ? null : input,
                     icon: Icon(Icons.add),
-                    color: Colors.black, // Warna ikon
+                    color: Colors.black,
                   ),
                 )),
               ],
@@ -749,7 +788,10 @@ class _JualPageState extends State<JualPage> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.payment),
-                        onPressed: !transaksiData.any((item) => item['llunas'] == '1') ? showPaymentDialog : null,
+                        onPressed:
+                            !transaksiData.any((item) => item['llunas'] == '1')
+                                ? showPaymentDialog
+                                : null,
                       ),
                       IconButton(
                         icon: Icon(Icons.print),
@@ -757,7 +799,8 @@ class _JualPageState extends State<JualPage> {
                       ),
                       IconButton(
                         icon: Icon(Icons.search),
-                        onPressed: searchTransactions, // Panggil fungsi pencarian
+                        onPressed:
+                            searchTransactions, // Panggil fungsi pencarian
                       ),
                     ],
                   ),
