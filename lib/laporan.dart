@@ -15,7 +15,8 @@ class LapPage extends StatefulWidget {
 
 class _LapPageState extends State<LapPage> {
   final NumberFormat numberFormat = NumberFormat.decimalPattern('en');
-  final DateFormat dateFormat = DateFormat('yyyy-MM-dd'); // Date format to show only the date
+  final DateFormat dateFormat =
+      DateFormat('yyyy-MM-dd'); // Date format to show only the date
 
   DateTime? selectedDate1;
   DateTime? selectedDate2;
@@ -34,7 +35,8 @@ class _LapPageState extends State<LapPage> {
       print('cetak lap penjualan');
       setState(() {
         data = fetchedData;
-        nominalTotal = data.fold(0, (sum, item) => sum + int.parse(item['subttl'] ?? '0'));
+        nominalTotal =
+            data.fold(0, (sum, item) => sum + int.parse(item['subttl'] ?? '0'));
       });
     } catch (e) {
       print('Error fetching data: $e');
@@ -112,7 +114,8 @@ class _LapPageState extends State<LapPage> {
                               suffixIcon: Icon(Icons.calendar_today),
                             ),
                             controller: TextEditingController(
-                              text: selectedDate1?.toString().split(' ')[0] ?? '',
+                              text:
+                                  selectedDate1?.toString().split(' ')[0] ?? '',
                             ),
                           ),
                         ),
@@ -129,7 +132,8 @@ class _LapPageState extends State<LapPage> {
                               suffixIcon: Icon(Icons.calendar_today),
                             ),
                             controller: TextEditingController(
-                              text: selectedDate2?.toString().split(' ')[0] ?? '',
+                              text:
+                                  selectedDate2?.toString().split(' ')[0] ?? '',
                             ),
                           ),
                         ),
@@ -170,6 +174,7 @@ class _LapPageState extends State<LapPage> {
                           DataColumn(label: Text('Subttl')),
                           DataColumn(label: Text('Total')),
                           DataColumn(label: Text('Waktu Input')),
+                          DataColumn(label: Text('Keterangan')),
                         ],
                         rows: _buildDataRows(),
                       ),
@@ -199,26 +204,40 @@ class _LapPageState extends State<LapPage> {
       bool isNewTransaction = item['notrans'] != lastNotrans;
 
       if (isNewTransaction) {
-        subttlTotal =
-            data.where((element) => element['notrans'] == item['notrans']).fold(0, (sum, element) => sum + int.parse(element['subttl'] ?? '0'));
+        subttlTotal = data
+            .where((element) => element['notrans'] == item['notrans'])
+            .fold(
+                0, (sum, element) => sum + int.parse(element['subttl'] ?? '0'));
       }
 
-      // Periksa apakah nqty kurang dari 0
+      // Cek apakah qty negatif
       bool isQtyNegative = int.tryParse(item['nqty'] ?? '0')! < 0;
 
-      // Atur warna teks berdasarkan kondisi
-      TextStyle textStyle = TextStyle(color: isQtyNegative ? Colors.red : Colors.black);
+      // Warna teks
+      TextStyle textStyle =
+          TextStyle(color: isQtyNegative ? Colors.red : Colors.black);
 
       rows.add(DataRow(cells: [
-        DataCell(Text(isNewTransaction ? item['notrans'] ?? '' : '', style: textStyle)),
-        DataCell(Text(isNewTransaction ? dateFormat.format(DateTime.parse(item['tgl'])) : '', style: textStyle)),
-        DataCell(Text(isNewTransaction ? item['nmcust'] ?? '' : '', style: textStyle)),
+        DataCell(Text(isNewTransaction ? item['notrans'] ?? '' : '',
+            style: textStyle)),
+        DataCell(Text(
+            isNewTransaction
+                ? dateFormat.format(DateTime.parse(item['tgl']))
+                : '',
+            style: textStyle)),
+        DataCell(Text(isNewTransaction ? item['nmcust'] ?? '' : '',
+            style: textStyle)),
         DataCell(Text(item['nmbarang'] ?? '', style: textStyle)),
         DataCell(Text(item['nqty'] ?? '', style: textStyle)),
-        DataCell(Text(numberFormat.format(int.parse(item['nrp'] ?? '0')), style: textStyle)),
-        DataCell(Text(numberFormat.format(int.parse(item['subttl'] ?? '0')), style: textStyle)),
-        DataCell(Text(isNewTransaction ? numberFormat.format(subttlTotal) : '', style: textStyle)),
+        DataCell(Text(numberFormat.format(int.parse(item['nrp'] ?? '0')),
+            style: textStyle)),
+        DataCell(Text(numberFormat.format(int.parse(item['subttl'] ?? '0')),
+            style: textStyle)),
+        DataCell(Text(isNewTransaction ? numberFormat.format(subttlTotal) : '',
+            style: textStyle)),
         DataCell(Text(item['tgl'] ?? '', style: textStyle)),
+        DataCell(Text(item['lretur'] == '1' ? 'sudah diretur' : '',
+            style: textStyle)), // ✅ Kolom Keterangan
       ]));
 
       lastNotrans = item['notrans'];

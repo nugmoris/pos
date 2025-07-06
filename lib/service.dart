@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 
 class ApiService {
   //static const root = "http://128.199.154.103/tuing_pos";
-  static const root = "http://103.80.96.26/tuing_pos";
-  //static const root = "http://103.80.96.26/pos_coba";
+  //static const root = "http://103.80.96.26/tuing_pos";
+  static const root = "http://103.80.96.26/pos_coba";
 
   static const action = "LOGIN";
 
@@ -37,14 +37,14 @@ class ApiService {
   static Future<Map<String, String>> login2(String username, String password,
       String alamatmac, String myversion1) async {
     final url = '$root/api.php?action=LOGIN3';
-
+    print(url);
     final Map<String, String> jsonData = {
       'user1': username,
       'pass1': password,
       'alamatmac': alamatmac,
       'versi': myversion1,
     };
-
+    print('Login1');
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(jsonData),
@@ -68,6 +68,7 @@ class ApiService {
             'nmlok': varnmlok,
             'saldokas': varsaldokas,
           };
+          print('Login2');
         } else {
           throw Exception('Format JSON tidak valid');
         }

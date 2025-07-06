@@ -35,7 +35,7 @@ class _TransactionSearchPopupState extends State<TransactionSearchPopup> {
     try {
       List<Map<String, dynamic>> result = await ApiService.carijualnow(
           today, today, kondisi1, widget.varlks, cari1);
-      print('coba cari');
+      // print('coba cari');
       setState(() {
         searchResults = result;
       });

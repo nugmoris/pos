@@ -61,7 +61,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final varpbuser = _usernameController.text;
     final password = _passwordController.text;
     alamatmac = _androidId ?? 'Unknown';
-
+    print('Login $varpbuser - $password');
     try {
       final result = await ApiService.login2(
           varpbuser, password, alamatmac, widget.currentVersion ?? '');
