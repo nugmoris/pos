@@ -18,7 +18,7 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion1 = 'POS27';
+String myversion1 = 'POS29';
 String currentVersion = '';
 
 void main() async {
@@ -238,18 +238,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// void tryOtaUpdate(String serverUpdateUrl) async {
-//   try {
-//     final lokupdateku = '$serverUpdateUrl';
-
-//     OtaUpdate()
-//         .execute(
-//           lokupdateku, // Menggunakan serverUpdateUrl sebagai URL
-//           destinationFilename: 'POS1.apk',
-//         )
-//         .listen((OtaEvent event) {});
-//   } catch (e) {
-//     print('Failed to make OTA update. Details: $e');
-//   }
-// }

@@ -61,7 +61,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final varpbuser = _usernameController.text;
     final password = _passwordController.text;
     alamatmac = _androidId ?? 'Unknown';
-    print('Login $varpbuser - $password');
+    // print('Login $varpbuser - $password');
     try {
       final result = await ApiService.login2(
           varpbuser, password, alamatmac, widget.currentVersion ?? '');
@@ -196,7 +196,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ),
             SizedBox(height: 8),
             Text(
-              "Hallo Silahkan Login.. ! ",
+              "Halo Silahkan Login.. ! ",
               style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
             SizedBox(height: 20),

@@ -5,26 +5,55 @@ import 'package:intl/intl.dart';
 
 class ApiService {
   //static const root = "http://128.199.154.103/tuing_pos";
-  //static const root = "http://103.80.96.26/tuing_pos";
-  static const root = "http://103.80.96.26/pos_coba";
+  static const root = "http://103.80.96.26/tuing_pos";
+  //static const root = "http://103.80.96.26/pos_coba";
 
   static const action = "LOGIN";
 
-  static Future<List<Map<String, dynamic>>> carijualnow(String tgl1,
-      String tgl2, String kondisi1, String lks1, String cari1) async {
-    final url = '$root/api.php?action=CARIJUALNOW';
+  static Future<List<Map<String, dynamic>>> setorkascb2(
+      String user1, String lks1, String nrp1, String ket1, String sisa1) async {
+    final url = '$root/api.php?action=SETOR2';
     final Map<String, String> jsonData = {
-      'tgl1': tgl1,
-      'tgl2': tgl2,
-      'kondisi1': kondisi1,
+      'user1': user1,
       'lks1': lks1,
-      'cari1': cari1
+      'nrp1': nrp1,
+      'ket1': ket1,
+      'sisa1': sisa1,
     };
 
-    var response = await http.post(Uri.parse(url),
-        body: jsonEncode(jsonData),
-        headers: {'Content-Type': 'application/json'});
-    //print(jsonData);
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode(jsonData),
+      headers: {'Content-Type': 'application/json'},
+    );
+    print(url);
+    print(jsonData);
+    // debugPrint('response.body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      try {
+        var decoded = jsonDecode(response.body);
+        print(decoded);
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(decoded);
+        } else {
+          throw Exception('Unexpected JSON format: not a list');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse server response');
+      }
+    } else {
+      throw Exception('HTTP error: ${response.statusCode}');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> lapjualpanjang(
+      String tgl1, String tgl2, String kondisi1, String lks1) async {
+    final url =
+        '$root/api.php?action=LAPJUALPANJANG&tgl1=$tgl1&tgl2=$tgl2&kondisi1=$kondisi1&lks1=$lks1';
+
+    var response = await http.get(Uri.parse(url));
+
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
 
@@ -36,25 +65,27 @@ class ApiService {
 
   static Future<Map<String, String>> login2(String username, String password,
       String alamatmac, String myversion1) async {
-    final url = '$root/api.php?action=LOGIN3';
-    print(url);
+    final url = '$root/api.php?action=LOGIN4';
+    //print(url);
     final Map<String, String> jsonData = {
       'user1': username,
       'pass1': password,
       'alamatmac': alamatmac,
       'versi': myversion1,
     };
-    print('Login1');
+    print(url);
+    print(jsonData);
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(jsonData),
       headers: {'Content-Type': 'application/json'},
     );
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       try {
         final jsonResponse = jsonDecode(response.body);
-
+        print(jsonDecode(response.body));
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
           final user = jsonResponse[0];
           final varbagian = user['bagian'];
@@ -112,6 +143,46 @@ class ApiService {
     }
 
     return 'Terjadi kesalahan';
+  }
+
+  static Future<List<Map<String, dynamic>>> carijualnow(String tgl1,
+      String tgl2, String kondisi1, String lks1, String cari1) async {
+    final url = '$root/api.php?action=CARIJUALNOW';
+    final Map<String, String> jsonData = {
+      'tgl1': tgl1,
+      'tgl2': tgl2,
+      'kondisi1': kondisi1,
+      'lks1': lks1,
+      'cari1': cari1
+    };
+
+    var response = await http.post(Uri.parse(url),
+        body: jsonEncode(jsonData),
+        headers: {'Content-Type': 'application/json'});
+    //print(jsonData);
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> lapjualx(
+      String tgl1, String tgl2, String kondisi1, String lks1) async {
+    final url =
+        '$root/api.php?action=LAPJUALX&tgl1=$tgl1&tgl2=$tgl2&kondisi1=$kondisi1&lks1=$lks1';
+
+    var response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
   }
 
   static Future<Map<String, dynamic>> cekversi() async {
@@ -367,22 +438,6 @@ class ApiService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> lapjualx(
-      String tgl1, String tgl2, String kondisi1, String lks1) async {
-    final url =
-        '$root/api.php?action=LAPJUALX&tgl1=$tgl1&tgl2=$tgl2&kondisi1=$kondisi1&lks1=$lks1';
-
-    var response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body);
-
-      return List<Map<String, dynamic>>.from(jsonData);
-    } else {
-      throw Exception('Failed to fetch report data');
-    }
-  }
-
   static Future<List<Map<String, dynamic>>> lapjual(
       String tgl1, String tgl2, String kondisi1, String lks1) async {
     final url = '$root/api.php?action=LAPJUAL';
@@ -535,41 +590,6 @@ class ApiService {
       'lks1': lks1,
       'nrp1': nrp1,
       'ket1': ket1,
-    };
-
-    final response = await http.post(
-      Uri.parse(url),
-      body: jsonEncode(jsonData),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    // debugPrint('response.body: ${response.body}');
-
-    if (response.statusCode == 200) {
-      try {
-        var decoded = jsonDecode(response.body);
-        if (decoded is List) {
-          return List<Map<String, dynamic>>.from(decoded);
-        } else {
-          throw Exception('Unexpected JSON format: not a list');
-        }
-      } catch (e) {
-        throw Exception('Failed to parse server response');
-      }
-    } else {
-      throw Exception('HTTP error: ${response.statusCode}');
-    }
-  }
-
-  static Future<List<Map<String, dynamic>>> setorkascb2(
-      String user1, String lks1, String nrp1, String ket1, String sisa1) async {
-    final url = '$root/api.php?action=SETOR';
-    final Map<String, String> jsonData = {
-      'user1': user1,
-      'lks1': lks1,
-      'nrp1': nrp1,
-      'ket1': ket1,
-      'sisa1': sisa1,
     };
 
     final response = await http.post(

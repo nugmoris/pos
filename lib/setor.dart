@@ -19,6 +19,7 @@ class _SetorState extends State<Setor> {
   final TextEditingController _nilaiSetorController = TextEditingController();
   final TextEditingController _nilaisisa = TextEditingController();
   final TextEditingController _ketSetorController = TextEditingController();
+  final TextEditingController _nsisaController = TextEditingController();
   double saldoKas = 0; // Initial saldo kas
   List<Map<String, dynamic>> hasilApi = [];
   bool isProsesButtonVisible = true;
@@ -57,16 +58,19 @@ class _SetorState extends State<Setor> {
     });
 
     try {
-      List<Map<String, dynamic>> result = await ApiService.setorkascb(
+      List<Map<String, dynamic>> result = await ApiService.setorkascb2(
           widget.varpbuser,
           widget.varlks,
           _nilaiSetorController.text,
-          _ketSetorController.text);
+          _ketSetorController.text,
+          _nilaisisa.text);
+
       setState(() {
         hasilApi = result;
         isProsesButtonVisible = false;
         _nilaiSetorController.clear();
         _ketSetorController.clear();
+        _nsisaController.clear();
         saldoKas = 0;
         _nilaisisa.clear();
       });
@@ -147,55 +151,75 @@ class _SetorState extends State<Setor> {
                 ),
               SizedBox(height: 20),
               hasilApi.isNotEmpty
-                  ? Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            columns: [
-                              DataColumn(label: Text('No Trans')),
-                              DataColumn(label: Text('Ket')),
-                              DataColumn(label: Text('N Debet')),
-                              DataColumn(label: Text('N Kredit')),
-                              DataColumn(label: Text('N Saldo')),
-                            ],
-                            rows: hasilApi.map((data) {
-                              try {
-                                return DataRow(cells: [
-                                  DataCell(
-                                      Text(data['notrans']?.toString() ?? '-')),
-                                  DataCell(
-                                      Text(data['ket']?.toString() ?? '-')),
-                                  DataCell(Text(NumberFormat.decimalPattern()
-                                      .format(double.tryParse(
-                                              data['ndebet'].toString()) ??
-                                          0))),
-                                  DataCell(Text(NumberFormat.decimalPattern()
-                                      .format(double.tryParse(
-                                              data['nkredit'].toString()) ??
-                                          0))),
-                                  DataCell(Text(NumberFormat.decimalPattern()
-                                      .format(double.tryParse(
-                                              data['saldo'].toString()) ??
-                                          0))),
-                                ]);
-                              } catch (e) {
-                                print('Error parsing row: $e');
-                                return DataRow(cells: [
-                                  DataCell(Text('Error')),
-                                  DataCell(Text('')),
-                                  DataCell(Text('')),
-                                  DataCell(Text('')),
-                                  DataCell(Text('')),
-                                ]);
-                              }
-                            }).toList(),
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Divider(thickness: 1),
+                        Text("10 Setoran Terakhir",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(height: 10),
+                        SizedBox(
+                          height: 300,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columns: [
+                                DataColumn(label: Text('No Trans')),
+                                DataColumn(label: Text('Dari')),
+                                DataColumn(label: Text('Ket')),
+                                DataColumn(label: Text('Nominal Setor')),
+                                DataColumn(label: Text('Disisakan')),
+                                DataColumn(label: Text('Waktu')),
+                                DataColumn(label: Text('Saldo by System')),
+                                DataColumn(label: Text('Selisih')),
+                              ],
+                              rows: hasilApi.map((data) {
+                                try {
+                                  return DataRow(cells: [
+                                    DataCell(Text(
+                                        data['notrans']?.toString() ?? '-')),
+                                    DataCell(
+                                        Text(data['dari']?.toString() ?? '-')),
+                                    DataCell(
+                                        Text(data['ket']?.toString() ?? '-')),
+                                    DataCell(Text(NumberFormat.decimalPattern()
+                                        .format(double.tryParse(
+                                                data['nrp'].toString()) ??
+                                            0))),
+                                    DataCell(Text(NumberFormat.decimalPattern()
+                                        .format(double.tryParse(
+                                                data['nrpsaldosisa']
+                                                    .toString()) ??
+                                            0))),
+                                    DataCell(Text(
+                                        data['waktuinput']?.toString() ?? '-')),
+                                    DataCell(Text(NumberFormat.decimalPattern()
+                                        .format(double.tryParse(
+                                                data['nrpsaldosystem']
+                                                    .toString()) ??
+                                            0))),
+                                    DataCell(Text(NumberFormat.decimalPattern()
+                                        .format(double.tryParse(
+                                                data['nrpselisih']
+                                                    .toString()) ??
+                                            0))),
+                                  ]);
+                                } catch (e) {
+                                  return DataRow(cells: [
+                                    DataCell(Text('Error')),
+                                    DataCell(Text('')),
+                                    DataCell(Text('')),
+                                    DataCell(Text('')),
+                                    DataCell(Text('')),
+                                  ]);
+                                }
+                              }).toList(),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     )
-                  : Text('No data available'),
+                  : Text('Tidak ada data setoran hari ini.'),
             ],
           ),
         ),
