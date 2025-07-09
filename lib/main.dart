@@ -18,7 +18,7 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion1 = 'POS29';
+String myversion1 = 'POS30';
 String currentVersion = '';
 
 void main() async {
@@ -31,7 +31,7 @@ void main() async {
 Future<String> getCurrentVersion() async {
   final result1 = await ApiService.cekversi();
 
-  final version = result1['versiku']; // Access the 'versiku' key directly
+  final version = result1['versiku'] ?? ''; // Access the 'versiku' key directly
 
   return version;
 }

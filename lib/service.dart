@@ -10,6 +10,93 @@ class ApiService {
 
   static const action = "LOGIN";
 
+  static Future<List<Map<String, dynamic>>> setorkasFast(
+      String user1, String lks1, String nrp1, String ket1, String sisa1) async {
+    final url = '$root/api.php?action=SETOR_FAST';
+    final Map<String, String> jsonData = {
+      'user1': user1,
+      'lks1': lks1,
+      'nrp1': nrp1,
+      'ket1': ket1,
+      'sisa1': sisa1,
+    };
+    print(url);
+    print(jsonData);
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode(jsonData),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        var decoded = jsonDecode(response.body);
+        print(decoded);
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(decoded);
+        } else {
+          throw Exception('Unexpected JSON format: not a list');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse server response: $e');
+      }
+    } else {
+      throw Exception('HTTP error: ${response.statusCode}');
+    }
+  }
+
+// Get setor history - separate call for table data
+  static Future<List<Map<String, dynamic>>> getSetorHistory(
+      String user1, String lks1) async {
+    final url = '$root/api.php?action=SETOR_HISTORY';
+    final Map<String, String> jsonData = {
+      'user1': user1,
+      'lks1': lks1,
+    };
+
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode(jsonData),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        var decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(decoded);
+        } else {
+          throw Exception('Unexpected JSON format: not a list');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse server response');
+      }
+    } else {
+      throw Exception('HTTP error: ${response.statusCode}');
+    }
+  }
+
+// Background calculation update
+  static Future<void> updateSetorCalculation(
+      String user1, String lks1, String notrans) async {
+    final url = '$root/api.php?action=UPDATE_SETOR_CALC';
+    final Map<String, String> jsonData = {
+      'user1': user1,
+      'lks1': lks1,
+      'notrans': notrans,
+    };
+
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode(jsonData),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('HTTP error: ${response.statusCode}');
+    }
+  }
+
   static Future<List<Map<String, dynamic>>> setorkascb2(
       String user1, String lks1, String nrp1, String ket1, String sisa1) async {
     final url = '$root/api.php?action=SETOR2';
@@ -187,7 +274,7 @@ class ApiService {
 
   static Future<Map<String, dynamic>> cekversi() async {
     final url = '$root/api.php?action=CEKVERSI';
-
+    print(url);
     final response =
         await http.get(Uri.parse(url)); // Fetch the response from the API
 
