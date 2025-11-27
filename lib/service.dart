@@ -5,9 +5,10 @@ import 'package:intl/intl.dart';
 
 class ApiService {
   //static const root = "http://128.199.154.103/tuing_pos";
-  static const root = "http://103.80.96.26/tuing_pos";
-  //static const root = "http://103.80.96.26/pos_coba";
-
+  //static const root = "http://103.80.96.26/tuing_pos";
+  // static const root = "http://103.80.96.26/pos_coba";
+  static const root = "http://192.168.110.125/tuing_pos_api";
+  //static const root = "http://192.168.100.12/tuing_pos_api";
   static const action = "LOGIN";
 
   static Future<List<Map<String, dynamic>>> setorkasFast(
@@ -20,8 +21,8 @@ class ApiService {
       'ket1': ket1,
       'sisa1': sisa1,
     };
-    print(url);
-    print(jsonData);
+    // print(url);
+    // print(jsonData);
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(jsonData),
@@ -42,6 +43,162 @@ class ApiService {
       }
     } else {
       throw Exception('HTTP error: ${response.statusCode}');
+    }
+  }
+
+  // Tambahkan method ini ke dalam class ApiService di service.dart
+
+  static Future<List<Map<String, dynamic>>> inputJualJson(
+      String lks1,
+      String kdcust1,
+      String user1,
+      String keth1,
+      int ntop1,
+      String kdsales1,
+      String notrans1,
+      List<Map<String, dynamic>> items) async {
+    final url = '$root/api.php?action=INPUTJLJSON';
+    print(url);
+    final Map<String, dynamic> jsonData = {
+      'lks1': lks1,
+      'kdcust1': kdcust1,
+      'user1': '$user1.INPUTJLJSON',
+      'keth1': keth1,
+      'ntop1': ntop1,
+      'kdsales1': kdsales1,
+      'notrans1': notrans1,
+      'items': items, // Array of items
+    };
+
+    // print('Sending data to server:');
+    print(jsonEncode(jsonData));
+
+    var response = await http.post(Uri.parse(url),
+        body: jsonEncode(jsonData),
+        headers: {'Content-Type': 'application/json'});
+
+    //  print('Response status: ${response.statusCode}');
+    //  print('Response body service.inputJualJson : ${response.body}');
+
+    if (response.statusCode == 200) {
+      try {
+        var decoded = jsonDecode(response.body);
+
+        // Check if error
+        if (decoded is Map && decoded.containsKey('error')) {
+          throw Exception('Server error: ${decoded['error']}');
+        }
+
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(decoded);
+        } else {
+          throw Exception('Unexpected JSON format: not a list');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse server response: $e');
+      }
+    } else {
+      throw Exception('HTTP error: ${response.statusCode}');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> inputtrans3(
+      String kdbarang,
+      String nqty,
+      String nrp,
+      String user,
+      String kdcust,
+      String ntop,
+      String keth,
+      String kdsales,
+      String notrans,
+      String lks1,
+      String lmatang) async {
+    final url = '$root/api.php?action=INPUTJL3';
+    final Map<String, String> jsonData = {
+      'lks1': lks1,
+      'kdbarang1': kdbarang,
+      'nqty1': nqty,
+      'nrp1': nrp,
+      'user1': user,
+      'kdcust1': kdcust,
+      'ntop1': ntop,
+      'keth1': keth,
+      'kdsales1': kdsales,
+      'notrans1': notrans,
+      'lmatang1': lmatang,
+    };
+
+    var response = await http.post(Uri.parse(url),
+        body: jsonEncode(jsonData),
+        headers: {'Content-Type': 'application/json'});
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+
+      return List<Map<String, dynamic>>.from(jsonData);
+    } else {
+      throw Exception('Failed to fetch report data');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> bayarjual(
+    String nojual1,
+    String nrp1,
+    String user1,
+    String lks1,
+    String kdgl1,
+    String asal,
+  ) async {
+    final url = '$root/api.php?action=BAYARJL2';
+    final Map<String, String> jsonData = {
+      'lks1': lks1,
+      'nojual1': nojual1,
+      'kdgl1': kdgl1,
+      'nrp1': nrp1,
+      'user1': user1,
+      'asal1': asal,
+    };
+
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        body: jsonEncode(jsonData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Connection': 'keep-alive',
+        },
+      ).timeout(
+        Duration(seconds: 30),
+        onTimeout: () {
+          throw Exception('Request timeout');
+        },
+      );
+
+      if (response.statusCode == 200) {
+        try {
+          List<dynamic> jsonData = jsonDecode(response.body);
+
+          if (jsonData.isEmpty) {
+            throw Exception('Response kosong dari server');
+          }
+
+          // Check for error response
+          if (jsonData[0] is Map && jsonData[0].containsKey('error')) {
+            throw Exception(jsonData[0]['error']);
+          }
+
+          return List<Map<String, dynamic>>.from(jsonData);
+        } catch (e) {
+          throw Exception('Gagal parsing response: $e');
+        }
+      } else if (response.statusCode == 504) {
+        throw Exception('Gateway timeout - server terlalu lama merespon');
+      } else {
+        throw Exception('HTTP error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in bayarjual: $e');
+      rethrow;
     }
   }
 
@@ -167,11 +324,13 @@ class ApiService {
       body: jsonEncode(jsonData),
       headers: {'Content-Type': 'application/json'},
     );
+    print('response.statusCode: ');
     print(response.statusCode);
 
     if (response.statusCode == 200) {
       try {
         final jsonResponse = jsonDecode(response.body);
+        print('hasil login2');
         print(jsonDecode(response.body));
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
           final user = jsonResponse[0];
@@ -384,10 +543,13 @@ class ApiService {
       'cari1': cari1,
       'kondisi1': kondisi1,
     };
-
+    print(url);
+    print(jsonData);
     var response3 = await http.post(Uri.parse(url),
         body: jsonEncode(jsonData),
         headers: {'Content-Type': 'application/json'});
+    print(jsonData);
+    // print(response3.body);
     if (response3.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response3.body);
 
@@ -446,76 +608,6 @@ class ApiService {
     var response = await http.post(Uri.parse(url),
         body: jsonEncode(jsonData),
         headers: {'Content-Type': 'application/json'});
-    if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body);
-
-      return List<Map<String, dynamic>>.from(jsonData);
-    } else {
-      throw Exception('Failed to fetch report data');
-    }
-  }
-
-  static Future<List<Map<String, dynamic>>> inputtrans3(
-      String kdbarang,
-      String nqty,
-      String nrp,
-      String user,
-      String kdcust,
-      String ntop,
-      String keth,
-      String kdsales,
-      String notrans,
-      String lks1,
-      String lmatang) async {
-    final url = '$root/api.php?action=INPUTJL3';
-    final Map<String, String> jsonData = {
-      'lks1': lks1,
-      'kdbarang1': kdbarang,
-      'nqty1': nqty,
-      'nrp1': nrp,
-      'user1': user,
-      'kdcust1': kdcust,
-      'ntop1': ntop,
-      'keth1': keth,
-      'kdsales1': kdsales,
-      'notrans1': notrans,
-      'lmatang1': lmatang,
-    };
-
-    var response = await http.post(Uri.parse(url),
-        body: jsonEncode(jsonData),
-        headers: {'Content-Type': 'application/json'});
-    if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body);
-
-      return List<Map<String, dynamic>>.from(jsonData);
-    } else {
-      throw Exception('Failed to fetch report data');
-    }
-  }
-
-  static Future<List<Map<String, dynamic>>> bayarjual(
-    String nojual1,
-    String nrp1,
-    String user1,
-    String lks1,
-    String kdgl1,
-    String asal,
-  ) async {
-    final url = '$root/api.php?action=BAYARJL2';
-    final Map<String, String> jsonData = {
-      'lks1': lks1,
-      'nojual1': nojual1,
-      'kdgl1': kdgl1,
-      'nrp1': nrp1,
-      'user1': user1,
-      'asal1': asal,
-    };
-
-    var response = await http.post(Uri.parse(url),
-        body: jsonEncode(jsonData),
-        headers: {'Content-Type': 'application/json'});
-
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
 
@@ -726,17 +818,18 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> carijual(
       String user1, String cari1, String kondisi1, String caritgl1) async {
     final url = '$root/api.php?action=CARIJUAL';
-
+    print('service.dart.carijual 1');
     final Map<String, String> jsonData = {
       'user1': user1,
       'cari1': cari1,
       'kondisi1': kondisi1,
       'caritgl1': caritgl1,
     };
+    print(jsonData);
     var response = await http.post(Uri.parse(url),
         body: jsonEncode(jsonData),
         headers: {'Content-Type': 'application/json'});
-
+    print('service.dart.carijual 2');
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
 

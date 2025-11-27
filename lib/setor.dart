@@ -24,11 +24,18 @@ class _SetorState extends State<Setor> {
   List<Map<String, dynamic>> hasilApi = [];
   bool isProsesButtonVisible = true;
   bool isProcessing = false; // Tambahan untuk disable tombol saat proses
+  bool isInputValid = false;
 
   @override
   void initState() {
     super.initState();
     _fetchSaldoKas();
+    _nilaiSetorController.addListener(() {
+      final nilai = double.tryParse(_nilaiSetorController.text) ?? 0;
+      setState(() {
+        isInputValid = nilai > 0;
+      });
+    });
   }
 
   Future<void> _fetchSaldoKas() async {
@@ -145,6 +152,15 @@ class _SetorState extends State<Setor> {
       print('Background fetch failed: $e');
       // Could show a subtle notification that data is being updated
     }
+  }
+
+  @override
+  void dispose() {
+    _nilaiSetorController.dispose();
+    _nilaisisa.dispose();
+    _ketSetorController.dispose();
+    _nsisaController.dispose();
+    super.dispose();
   }
 
   Widget _buildDataTable() {
@@ -274,7 +290,8 @@ class _SetorState extends State<Setor> {
               SizedBox(height: 20),
               if (isProsesButtonVisible)
                 ElevatedButton(
-                  onPressed: (isProcessing) ? null : _prosesSetor,
+                  onPressed:
+                      (!isInputValid || isProcessing) ? null : _prosesSetor,
                   child: isProcessing
                       ? SizedBox(
                           width: 24,

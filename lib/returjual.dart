@@ -136,7 +136,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
         '3',
         notrans,
       );
-      print('nbayar = $nbayar');
+
       if (result.isNotEmpty) {
         setState(() {
           notransController.text = result[0]['notrans'] ?? '';
@@ -198,7 +198,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
       context,
       MaterialPageRoute(builder: (context) => CarijualPage(widget.varpbuser)),
     );
-
+    print('void searchTransaction');
     if (result != null) {
       setState(() {
         nojual = result['notrans'] ?? '';

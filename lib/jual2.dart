@@ -9,23 +9,24 @@ import 'report.dart';
 import 'service.dart';
 import 'transaction_search_popup.dart';
 
-class JualPage extends StatefulWidget {
+class JualPage2 extends StatefulWidget {
   final String varpbuser;
   final String varbagian;
   final String varlks;
   final String varnmlok;
   final String varsaldokas;
 
-  JualPage(this.varpbuser, this.varbagian, this.varlks, this.varnmlok,
+  JualPage2(this.varpbuser, this.varbagian, this.varlks, this.varnmlok,
       this.varsaldokas);
   @override
-  State<JualPage> createState() => _JualPageState();
+  State<JualPage2> createState() => _JualPage2State();
 }
 
-class _JualPageState extends State<JualPage> {
+class _JualPage2State extends State<JualPage2> {
   String barcodeResult = "";
   TextEditingController barcodeController = TextEditingController();
   TextEditingController namaController = TextEditingController();
+  TextEditingController kodecontroller = TextEditingController();
   TextEditingController hargaController = TextEditingController();
   TextEditingController jumlahController = TextEditingController();
   TextEditingController subttlController = TextEditingController();
@@ -36,8 +37,12 @@ class _JualPageState extends State<JualPage> {
   TextEditingController nmcustController = TextEditingController();
   TextEditingController totbayarku = TextEditingController();
 
-  // Tambahkan variabel untuk menyimpan data transaksi
+  // List untuk menyimpan item lokal sebelum disimpan ke server
+  List<Map<String, dynamic>> localItems = [];
+
+  // List untuk menampilkan data transaksi dari server (setelah simpan)
   List<Map<String, dynamic>> transaksiData = [];
+
   final NumberFormat currencyFormat = NumberFormat("#,##0", "en_US");
   double totbayar = 0.0;
 
@@ -45,23 +50,22 @@ class _JualPageState extends State<JualPage> {
   String lmatang = '0';
   String nhargamatang1 = '0';
   String nhargajual1 = '0';
-  bool matang = false; // This should be set based on your search result
-  bool isChecked = false; // To track the state of the checkbox
+  bool matang = false;
+  bool isChecked = false;
   double hrsbayar = 0.0;
   double saldokasku = 0.0;
-  //double totbayarController = 0.0;
   String varsaldokas = '0';
   String urut = '0';
   bool isProcessing = false;
+  bool isSaved = false; // Flag untuk menandai apakah transaksi sudah disimpan
 
   @override
   void initState() {
     super.initState();
     jumlahController.addListener(_updateSubtotalAndTotal);
-    notransController.text = 'Transaksi Baru..jual.dart';
+    notransController.text = 'Transaksi Baru';
     kdcustController.text = '01';
     nmcustController.text = 'Customer Umum';
-    // totBayarController = 0.0;
     totbayarku.text = '0';
     saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '')) ?? 0.0;
   }
@@ -69,10 +73,10 @@ class _JualPageState extends State<JualPage> {
   @override
   void dispose() {
     jumlahController.removeListener(_updateSubtotalAndTotal);
-    //jumlahFocusNode.dispose();
     jumlahController.dispose();
     barcodeController.dispose();
     namaController.dispose();
+    kodecontroller.dispose();
     hargaController.dispose();
     subttlController.dispose();
     totalController.dispose();
@@ -80,7 +84,6 @@ class _JualPageState extends State<JualPage> {
     notransController.dispose();
     kdcustController.dispose();
     nmcustController.dispose();
-    // totBayarController.dispose();
     super.dispose();
   }
 
@@ -118,57 +121,110 @@ class _JualPageState extends State<JualPage> {
         ),
       ),
     );
-    print('transaksiData: $transaksiData');
   }
 
-  // Pastikan untuk memanggil fungsi ini ketika mempersiapkan halaman atau setelah scan barcode
-  void prepareTransaction() {
-    // Contoh sederhana untuk mengatur No Trans, ganti dengan logika yang sesuai
-    if (notransController.text.isEmpty) {
-      notransController.text = "NT-${DateTime.now().millisecondsSinceEpoch}";
+  // Tambah item ke list lokal
+  void addItemToLocal() {
+    if (barcodeController.text.isEmpty ||
+        jumlahController.text.isEmpty ||
+        hargaController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Lengkapi data barang terlebih dahulu")),
+      );
+      return;
     }
+
+    // Cek duplikat
+    bool isDuplicate = localItems.any((item) =>
+        item['kdbarang'] == barcodeController.text &&
+        item['nrp'].toString() == hargaController.text.replaceAll(',', '') &&
+        item['lmatang'] == (isChecked ? '1' : '0'));
+
+    if (isDuplicate) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Barang dengan harga yang sama sudah diinput")),
+      );
+      return;
+    }
+
+    setState(() {
+      int qty = int.tryParse(jumlahController.text) ?? 0;
+      int harga = int.tryParse(hargaController.text.replaceAll(',', '')) ?? 0;
+
+      localItems.add({
+        'kdbarang': kodecontroller.text,
+        'nama': namaController.text,
+        'nqty': qty,
+        'nrp': harga,
+        'lmatang': isChecked ? '1' : '0',
+        'subtotal': qty * harga,
+      });
+
+      // Clear form
+      barcodeController.clear();
+      kodecontroller.clear();
+      ;
+      namaController.clear();
+      hargaController.text = '0';
+      jumlahController.text = '0';
+      subttlController.text = '0';
+      diskonController.text = '0';
+      totalController.text = '0';
+      isChecked = false;
+      lmatang = '0';
+    });
   }
 
-  void input() async {
-    if (isProcessing) return; // jika masih proses, abaikan klik
+  // Hapus item dari list lokal
+  void deleteLocalItem(int index) {
+    setState(() {
+      localItems.removeAt(index);
+    });
+  }
+
+  // Simpan semua item ke server
+  void saveToServer() async {
+    if (isProcessing) return;
+
+    if (localItems.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Tidak ada item untuk disimpan")),
+      );
+      return;
+    }
+
     setState(() {
       isProcessing = true;
     });
 
     try {
-      if (barcodeController.text.isNotEmpty &&
-          jumlahController.text.isNotEmpty &&
-          hargaController.text.isNotEmpty &&
-          notransController.text.isNotEmpty) {
-        // Cek apakah barcode dan jumlah yang sama sudah ada
-        bool isDuplicate = transaksiData.any((item) =>
-            item['nama'] == namaController.text &&
-            item['harga'].toString().replaceAll(',', '') ==
-                hargaController.text.replaceAll(',', '') &&
-            item['jumlah'].toString() == jumlahController.text);
+      // Konversi localItems ke format yang dibutuhkan API
+      List<Map<String, dynamic>> itemsForApi = localItems.map((item) {
+        return {
+          'kdbarang': item['kdbarang'],
+          'nqty': item['nqty'],
+          'nrp': item['nrp'],
+          'lmatang': item['lmatang'],
+        };
+      }).toList();
 
-        if (isDuplicate) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text("Barang dengan jumlah yang sama sudah diinput")),
-          );
-          return;
-        }
+      // Panggil API dengan format JSON
+      var result = await ApiService.inputJualJson(
+        widget.varlks,
+        kdcustController.text,
+        widget.varpbuser,
+        'Input Penjualan', // keterangan
+        1, // ntop
+        '01', // kdsales
+        notransController.text == 'Transaksi Baru - 2'
+            ? ''
+            : notransController.text,
+        itemsForApi,
+      );
 
-        var result = await ApiService.inputtrans3(
-            barcodeController.text,
-            jumlahController.text,
-            hargaController.text.replaceAll(',', ''),
-            widget.varpbuser,
-            kdcustController.text,
-            "01",
-            "keth",
-            "01",
-            notransController.text,
-            widget.varlks,
-            isChecked ? '1' : '0');
-
+      if (result.isNotEmpty) {
         setState(() {
+          // Update transaksiData dengan hasil dari server
           transaksiData = result
               .map((item) => {
                     'nama': item['nama'],
@@ -180,24 +236,24 @@ class _JualPageState extends State<JualPage> {
                   })
               .toList();
 
-          if (result.isNotEmpty && result[0].containsKey('notrans')) {
+          // Update notrans
+          if (result[0].containsKey('notrans')) {
             notransController.text = result[0]['notrans'];
           }
 
-          barcodeController.clear();
-          namaController.clear();
-          kdcustController.text = '01';
-          hargaController.text = '0';
-          jumlahController.text = '0';
-          subttlController.text = '0';
-          diskonController.text = '0';
-          totalController.text = '0';
-          isChecked = false;
-          lmatang = '0';
+          // Clear local items setelah berhasil disimpan
+          localItems.clear();
+          isSaved = true;
         });
+
+        // Langsung tampilkan dialog pembayaran
+        showPaymentDialog();
       }
     } catch (e) {
-      print('Error saat input transaksi: $e');
+      print('Error saat simpan transaksi: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal menyimpan transaksi: $e")),
+      );
     } finally {
       setState(() {
         isProcessing = false;
@@ -205,8 +261,8 @@ class _JualPageState extends State<JualPage> {
     }
   }
 
+  // Hapus item dari server (untuk transaksi yang sudah disimpan)
   void hapus(String urut) async {
-    print('hapus : $urut');
     try {
       if (urut.isNotEmpty) {
         var result = await ApiService.hapustran(
@@ -237,10 +293,8 @@ class _JualPageState extends State<JualPage> {
       setState(() {
         barcodeResult = result.rawContent;
         barcodeController.text = barcodeResult;
-        print('proses scan barcode 1');
       });
       fetchhasilscan();
-      print('proses scan barcode 2');
     } catch (e) {
       setState(() {
         barcodeResult = 'Kesalahan dalam memindai barcode: $e';
@@ -252,39 +306,24 @@ class _JualPageState extends State<JualPage> {
   void fetchhasilscan() async {
     try {
       List<Map<String, dynamic>> result =
-          await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
-      print(result);
+          await ApiService.crbarang3(widget.varpbuser, barcodeResult, '4');
       setState(() {
         if (result.isNotEmpty) {
           final item = result[0];
-          // Set namaController dengan nama barang
           namaController.text = item['nama'];
-
-          // Cek apakah barang matang atau tidak
+          kodecontroller.text = item['kode'];
           if (item['lmatang'] == '1') {
-            // Jika matang, set harga dengan harga matang
             hargaController.text = item['nhargajual'].toString();
-
             matang = true;
-
-            // isChecked = true; // Centang checkbox secara otomatis
           } else {
-            // Jika tidak matang, set harga dengan harga jual asli
             hargaController.text = item['nhargajual'].toString();
             matang = false;
-
-            //isChecked = false; // Checkbox tidak dicentang
           }
 
-          //hargaController.text = formatter.format(int.parse(nhargajual));
           jumlahController.text = '';
-          // subttlController.text = formatter.format(int.parse(nhargajual));
           lmatang = lmatang;
           nhargamatang1 = item['nhargamatang'];
           nhargajual1 = item['nhargajual'];
-          // jumlahController.text = '0';
-          // diskonController.text = '0';
-          // subttlController.text = hargaController.text * int.parse(jumlahController.text);
         }
       });
     } catch (e) {
@@ -298,7 +337,7 @@ class _JualPageState extends State<JualPage> {
       builder: (BuildContext context) {
         return TransactionSearchPopup(
           varpbuser: widget.varpbuser,
-          varlks: widget.varlks, // Menambahkan varlks disini
+          varlks: widget.varlks,
           onTransactionSelected: (notrans, nbayar) {
             onTransactionSelected(notrans, nbayar);
           },
@@ -319,6 +358,7 @@ class _JualPageState extends State<JualPage> {
           nmcustController.text = result[0]['nmcust'] ?? '';
           totbayar = double.parse(nbayar.replaceAll(',', ''));
           totbayarku.text = nbayar;
+          isSaved = true; // Transaksi dari server sudah tersimpan
 
           transaksiData = result
               .map((item) => {
@@ -337,122 +377,10 @@ class _JualPageState extends State<JualPage> {
     }
   }
 
-  Future<void> fetchProductDetails() async {
-    try {
-      var details =
-          await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
-      print('proses cari kode barang 3');
-      final formatter = NumberFormat("#,###");
-
-      setState(() {
-        jumlahController.text = '0';
-        diskonController.text = '0';
-      });
-    } catch (e) {
-      setState(() {
-        print('Error fetching product details: $e');
-        namaController.text = 'Gagal memuat data';
-        hargaController.text = 'Gagal memuat data';
-        subttlController.text = '0';
-        jumlahController.text = '0';
-        diskonController.text = '0';
-        totalController.text = '0';
-      });
-    }
-  }
-
-  // Widget untuk menampilkan data transaksi dengan kemampuan scroll horizontal
-  Widget buildTransaksiTable() {
-    final formatter =
-        NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: DataTable(
-          columns: const [
-            DataColumn(label: Text('Nama Barang')),
-            DataColumn(label: Text('Harga')),
-            DataColumn(label: Text('Jumlah')),
-            DataColumn(label: Text('Subtotal')),
-            // DataColumn(label: Text('urut')),
-            DataColumn(label: Text(' ')),
-          ],
-          rows: transaksiData.map((data) {
-            return DataRow(cells: [
-              DataCell(Text(data['nama'] ?? 'Nama tidak tersedia')),
-              DataCell(
-                  Text(formatter.format(int.parse(data['harga'].toString())))),
-              DataCell(Text(data['jumlah'].toString())),
-              DataCell(Text(
-                  formatter.format(int.parse(data['subtotal'].toString())))),
-              // DataCell(Text(data['llunas'].toString())),
-              // DataCell(Text(data['urut'])),
-              DataCell(
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Visibility(
-                    visible: data['llunas'] == '0',
-                    child: RawMaterialButton(
-                      onPressed: () {
-                        hapus(data['urut'].toString());
-                        print('proses del1 ');
-                      },
-                      elevation: 2.0,
-                      fillColor: Colors.white70, // Warna latar belakang tombol
-                      shape: CircleBorder(), // Membuat bentuk lingkaran
-                      padding: const EdgeInsets.all(15.0), // Ukuran tombol
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.red[400], // Warna ikon dalam tombol
-                        size: 20.0,
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            ]);
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
-  String calculateGrandTotal() {
-    final formatter =
-        NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
-    int total = transaksiData.fold(0, (sum, item) {
-      int subtotal = int.tryParse(item['subtotal'].toString()) ?? 0;
-      return sum + subtotal;
-    });
-
-    return formatter.format(
-        total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
-  }
-
-  String hitungbayar() {
-    final formatter =
-        NumberFormat("#,###", "id_ID"); // Menggunakan locale Indonesia
-    int total = transaksiData.fold(0, (sum, item) {
-      int totbayar = int.tryParse(item['nbayar'].toString()) ?? 0;
-      return sum + totbayar;
-    });
-
-    return formatter.format(
-        total); // Format total dengan pemisah ribuan dan kembalikan sebagai String
-  }
-
-  void clearTransactionData() {
-    setState(() {
-      transaksiData.clear(); // Mengosongkan list transaksiData
-    });
-  }
-
   void showPaymentDialog() async {
-    String grandTotal = calculateGrandTotal(); // Mengambil nilai Grand Total
-    int totbayarInt = int.tryParse(totbayarku.text) ?? 0;
-    // Menunggu nilai yang dikembalikan dari bayarjual.dart
+    String grandTotal = calculateGrandTotal();
+    int totbayarInt = int.tryParse(totbayarku.text.replaceAll(',', '')) ?? 0;
+
     final paymentValue = await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -463,7 +391,6 @@ class _JualPageState extends State<JualPage> {
           totbayar: currencyFormat.format(totbayar),
           username: widget.varpbuser,
           varlks: widget.varlks,
-          // varsaldokas: widget.varsaldokas,
           vartotalbyr: currencyFormat.format(totbayarInt),
           onPaymentSuccess: (updatedVarsaldokas, updatedVartotalbyr) {
             setState(() {
@@ -475,17 +402,13 @@ class _JualPageState extends State<JualPage> {
       },
     );
 
-// Pastikan paymentValue tidak null dan lakukan update yang diperlukan
     if (paymentValue != null) {
       setState(() {
         double bayar = double.tryParse(paymentValue) ?? 0.0;
-        // Pastikan totbayar adalah String sebelum melakukan replaceAll
         String totbayarString = totbayar.toString();
         double currentTotbayar =
             double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
-        // Tambahkan bayar ke currentTotbayar jika diperlukan
         currentTotbayar = bayar;
-        final formatter = NumberFormat("#,###");
         totbayar = currentTotbayar;
       });
     }
@@ -497,18 +420,18 @@ class _JualPageState extends State<JualPage> {
       builder: (BuildContext context) {
         return ItemSearchPopup(
           varpbuser: widget.varpbuser,
-          onItemSelected: (kode, nama, nhargajual, lmatang, nhargamatang) {
+          onItemSelected:
+              (kode, nama, nhargajual, lmatang, nhargamatang, kodebarcode) {
             setState(() {
               final formatter = NumberFormat("#,###");
-              barcodeController.text = kode;
+              barcodeController.text = kodebarcode;
               namaController.text = nama;
+              kodecontroller.text = kode;
               hargaController.text = formatter.format(int.parse(nhargajual));
               jumlahController.text = '';
               subttlController.text = formatter.format(int.parse(nhargajual));
               lmatang = lmatang;
               nhargamatang1 = nhargamatang;
-              // nhargamatang1 = formatter.format(int.parse(nhargamatang));
-              //nhargajual1 = nhargajual;
               nhargajual1 = formatter.format(int.parse(nhargajual));
               matang = lmatang == '1' ? true : false;
             });
@@ -535,16 +458,158 @@ class _JualPageState extends State<JualPage> {
     );
   }
 
+  // Widget untuk menampilkan local items (belum disimpan)
+  Widget buildLocalItemsTable() {
+    final formatter = NumberFormat("#,###", "id_ID");
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Item Belum Disimpan:',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            columns: const [
+              DataColumn(label: Text('Nama Barang')),
+              DataColumn(label: Text('Harga')),
+              DataColumn(label: Text('Jumlah')),
+              DataColumn(label: Text('Subtotal')),
+              DataColumn(label: Text(' ')),
+            ],
+            rows: localItems.asMap().entries.map((entry) {
+              int index = entry.key;
+              Map<String, dynamic> data = entry.value;
+              return DataRow(cells: [
+                DataCell(Text(data['nama'] ?? 'Nama tidak tersedia')),
+                DataCell(Text(formatter.format(data['nrp']))),
+                DataCell(Text(data['nqty'].toString())),
+                DataCell(Text(formatter.format(data['subtotal']))),
+                DataCell(
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => deleteLocalItem(index),
+                  ),
+                ),
+              ]);
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Widget untuk menampilkan data transaksi dari server (sudah disimpan)
+  Widget buildTransaksiTable() {
+    final formatter = NumberFormat("#,###", "id_ID");
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Item Tersimpan:',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Nama Barang')),
+                DataColumn(label: Text('Harga')),
+                DataColumn(label: Text('Jumlah')),
+                DataColumn(label: Text('Subtotal')),
+                DataColumn(label: Text(' ')),
+              ],
+              rows: transaksiData.map((data) {
+                return DataRow(cells: [
+                  DataCell(Text(data['nama'] ?? 'Nama tidak tersedia')),
+                  DataCell(Text(
+                      formatter.format(int.parse(data['harga'].toString())))),
+                  DataCell(Text(data['jumlah'].toString())),
+                  DataCell(Text(formatter
+                      .format(int.parse(data['subtotal'].toString())))),
+                  DataCell(
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Visibility(
+                        visible: data['llunas'] == '0',
+                        child: RawMaterialButton(
+                          onPressed: () {
+                            hapus(data['urut'].toString());
+                          },
+                          elevation: 2.0,
+                          fillColor: Colors.white70,
+                          shape: CircleBorder(),
+                          padding: const EdgeInsets.all(15.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.red[400],
+                            size: 20.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ]);
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String calculateGrandTotal() {
+    final formatter = NumberFormat("#,###", "id_ID");
+    int total = 0;
+
+    // Hitung dari local items jika belum disimpan
+    if (!isSaved && localItems.isNotEmpty) {
+      total = localItems.fold(0, (sum, item) {
+        int subtotal = item['subtotal'] ?? 0;
+        return sum + subtotal;
+      });
+    } else {
+      // Hitung dari transaksiData jika sudah disimpan
+      total = transaksiData.fold(0, (sum, item) {
+        int subtotal = int.tryParse(item['subtotal'].toString()) ?? 0;
+        return sum + subtotal;
+      });
+    }
+
+    return formatter.format(total);
+  }
+
+  void clearTransactionData() {
+    setState(() {
+      transaksiData.clear();
+      localItems.clear();
+      isSaved = false;
+      notransController.text = 'Transaksi Baru';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isTransactionPaid =
+        transaksiData.any((item) => item['llunas'] == '1');
     return Scaffold(
         appBar: AppBar(
-          title: Text("Penjualan (1)"),
+          title: Text("Penjualan (Batch 2)"),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context, varsaldokas.toString());
-              print('saldo yang dikembalikan ke home $varsaldokas');
             },
           ),
         ),
@@ -559,19 +624,20 @@ class _JualPageState extends State<JualPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             Divider(
-              color: Colors.black, // Warna garis
-              thickness: 2, // Ketebalan garis
-              indent: 10, // Jarak dari awal garis ke tepi kiri
-              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
+              color: Colors.black,
+              thickness: 2,
+              indent: 10,
+              endIndent: 10,
             ),
             SizedBox(height: 5),
             Row(
               children: [
                 IconButton(
                   icon: Icon(Icons.search),
-                  onPressed: _searchCustomer,
+                  onPressed: (isProcessing || isTransactionPaid)
+                      ? null
+                      : _searchCustomer,
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
@@ -583,9 +649,7 @@ class _JualPageState extends State<JualPage> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 5,
-                ),
+                SizedBox(width: 5),
                 Text(
                   ' - ',
                   style: TextStyle(
@@ -607,12 +671,11 @@ class _JualPageState extends State<JualPage> {
               ],
             ),
             SizedBox(height: 5),
-
             Divider(
-              color: Colors.black, // Warna garis
-              thickness: 2, // Ketebalan garis
-              indent: 10, // Jarak dari awal garis ke tepi kiri
-              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
+              color: Colors.black,
+              thickness: 2,
+              indent: 10,
+              endIndent: 10,
             ),
             SizedBox(height: 5),
             Row(
@@ -620,7 +683,7 @@ class _JualPageState extends State<JualPage> {
                 Expanded(
                   flex: 2,
                   child: TextField(
-                    readOnly: true,
+                    readOnly: isSaved,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Kode',
@@ -631,78 +694,94 @@ class _JualPageState extends State<JualPage> {
                 SizedBox(width: 5),
                 IconButton(
                   icon: Icon(Icons.camera_alt),
-                  onPressed: scanBarcode,
+                  onPressed:
+                      (isProcessing || isTransactionPaid) ? null : scanBarcode,
                 ),
                 IconButton(
                   icon: Icon(Icons.search),
-                  onPressed: caribrgmanual, // Panggil fungsi pencarian
+                  onPressed: (isProcessing || isTransactionPaid)
+                      ? null
+                      : caribrgmanual,
                 ),
                 IconButton(
                   icon: Icon(Icons.refresh),
-                  onPressed: () {
-                    barcodeController.clear();
-                    namaController.clear();
-                    hargaController.text = '0';
-                    jumlahController.text = '0';
-                    subttlController.text = '0';
-                    diskonController.text = '0';
-                    totalController.text = '0';
-                    notransController.text = 'baru';
-                    kdcustController.text = '01';
-                    nmcustController.text = 'Customer Umum';
-                    totbayar = 0.0;
-                    totbayarku.text = '0';
-                    matang = false;
-                    clearTransactionData(); // Mengosongkan transaksiData
-                  },
+                  onPressed: isProcessing
+                      ? null
+                      : () {
+                          barcodeController.clear();
+                          namaController.clear();
+                          kodecontroller.clear();
+                          hargaController.text = '0';
+                          jumlahController.text = '0';
+                          subttlController.text = '0';
+                          diskonController.text = '0';
+                          totalController.text = '0';
+                          notransController.text = 'Transaksi Baru';
+                          kdcustController.text = '01';
+                          nmcustController.text = 'Customer Umum';
+                          totbayar = 0.0;
+                          totbayarku.text = '0';
+                          matang = false;
+                          clearTransactionData();
+                        },
                 ),
               ],
             ),
             SizedBox(height: 5),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                namaController.text,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    kodecontroller.text.isEmpty
+                        ? ''
+                        : '${kodecontroller.text} - ',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    namaController.text,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
-
             SizedBox(height: 5),
             Visibility(
-                visible:
-                    matang == true, // Tampilkan checkbox hanya jika lmatang = 1
+                visible: matang == true,
                 child: Row(
                   children: [
                     Checkbox(
                       value: isChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isChecked = value ?? false;
-                          if (isChecked) {
-                            namaController.text += ' Siap Saji';
-
-                            hargaController.text =
-                                nhargamatang1; // Menggunakan harga matang
-                          } else {
-                            namaController.text = namaController.text
-                                .replaceAll(' Siap Saji', '');
-                            hargaController.text = nhargajual1;
-                          }
-                        });
-                      },
+                      onChanged: isSaved
+                          ? null
+                          : (bool? value) {
+                              setState(() {
+                                isChecked = value ?? false;
+                                if (isChecked) {
+                                  namaController.text += ' Siap Saji';
+                                  hargaController.text = nhargamatang1;
+                                } else {
+                                  namaController.text = namaController.text
+                                      .replaceAll(' Siap Saji', '');
+                                  hargaController.text = nhargajual1;
+                                }
+                              });
+                            },
                     ),
                     Text('Siap saji'),
                   ],
                 )),
-
             SizedBox(height: 5),
             Row(
               children: [
                 Expanded(
-                  flex: 2, // Memberi lebih banyak ruang untuk harga jual
+                  flex: 2,
                   child: TextField(
                     readOnly: true,
                     decoration: InputDecoration(
@@ -712,12 +791,11 @@ class _JualPageState extends State<JualPage> {
                     controller: hargaController,
                   ),
                 ),
-                SizedBox(
-                    width: 10), // Menambahkan sedikit ruang antar TextField
+                SizedBox(width: 10),
                 Expanded(
-                  flex: 1, // Memberi lebih sedikit ruang untuk QTY
+                  flex: 1,
                   child: TextField(
-                    //  focusNode: jumlahFocusNode,
+                    readOnly: isSaved,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
@@ -728,7 +806,6 @@ class _JualPageState extends State<JualPage> {
                 ),
               ],
             ),
-
             SizedBox(height: 5),
             Row(
               children: [
@@ -747,60 +824,74 @@ class _JualPageState extends State<JualPage> {
                 Expanded(
                     child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[500], // Warna abu-abu
-                    shape: BoxShape.circle, // Bentuk lingkaran
+                    color: isSaved ? Colors.grey[300] : Colors.grey[500],
+                    shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    onPressed: isProcessing ? null : input,
+                    onPressed: (isProcessing || isTransactionPaid)
+                        ? null
+                        : addItemToLocal,
                     icon: Icon(Icons.add),
                     color: Colors.black,
                   ),
                 )),
               ],
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              // Bagian A
-              Expanded(
-                child: Text(
-                  'Grand Total : ${calculateGrandTotal()}',
-                  textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ),
-            ]),
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Bagian A
+                Expanded(
+                  child: Text(
+                    'Grand Total : ${calculateGrandTotal()}',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 Expanded(
                   child: TextField(
                     controller: totbayarku,
                     decoration: InputDecoration(
                       labelText: 'Total Bayar',
                     ),
+                    readOnly: true,
                   ),
                 ),
-
-                // Bagian B
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.payment),
-                        onPressed:
-                            !transaksiData.any((item) => item['llunas'] == '1')
-                                ? showPaymentDialog
-                                : null,
-                      ),
+                      // Tombol Simpan (hanya muncul jika belum disimpan dan ada item lokal)
+                      if (!isSaved && localItems.isNotEmpty)
+                        IconButton(
+                          icon: Icon(Icons.save),
+                          onPressed: isProcessing ? null : saveToServer,
+                          tooltip: 'Simpan',
+                        ),
+                      // Tombol Bayar (hanya muncul jika sudah disimpan dan belum lunas)
+                      if (isSaved)
+                        IconButton(
+                          icon: Icon(Icons.payment),
+                          onPressed: !transaksiData
+                                  .any((item) => item['llunas'] == '1')
+                              ? showPaymentDialog
+                              : null,
+                          tooltip: 'Bayar',
+                        ),
                       IconButton(
                         icon: Icon(Icons.print),
-                        onPressed: printData,
+                        onPressed: isSaved ? printData : null,
+                        tooltip: 'Print',
                       ),
                       IconButton(
                         icon: Icon(Icons.search),
-                        onPressed:
-                            searchTransactions, // Panggil fungsi pencarian
+                        onPressed: isProcessing ? null : searchTransactions,
+                        tooltip: 'Cari Transaksi',
                       ),
                     ],
                   ),
@@ -808,12 +899,15 @@ class _JualPageState extends State<JualPage> {
               ],
             ),
             Divider(
-              color: Colors.black, // Warna garis
-              thickness: 2, // Ketebalan garis
-              indent: 10, // Jarak dari awal garis ke tepi kiri
-              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
+              color: Colors.black,
+              thickness: 2,
+              indent: 10,
+              endIndent: 10,
             ),
-            buildTransaksiTable(), // Tambahkan widget tabel di UI
+            // Tampilkan local items jika belum disimpan
+            if (!isSaved && localItems.isNotEmpty) buildLocalItemsTable(),
+            // Tampilkan transaksi dari server jika sudah disimpan
+            if (isSaved && transaksiData.isNotEmpty) buildTransaksiTable(),
           ]),
         )));
   }

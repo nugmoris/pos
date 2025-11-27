@@ -4,7 +4,7 @@ import 'service.dart';
 
 class ItemSearchPopup extends StatefulWidget {
   final String varpbuser;
-  final Function(String, String, String, String, String) onItemSelected;
+  final Function(String, String, String, String, String, String) onItemSelected;
 
   ItemSearchPopup({required this.varpbuser, required this.onItemSelected});
 
@@ -23,7 +23,8 @@ class _ItemSearchPopupState extends State<ItemSearchPopup> {
 
   void _searchInitialItems() async {
     try {
-      List<Map<String, dynamic>> result = await ApiService.crbarang3(widget.varpbuser, '', '2');
+      List<Map<String, dynamic>> result =
+          await ApiService.crbarang3(widget.varpbuser, '', '2');
       setState(() {
         searchResults = result;
       });
@@ -34,7 +35,8 @@ class _ItemSearchPopupState extends State<ItemSearchPopup> {
 
   void _searchItems() async {
     try {
-      List<Map<String, dynamic>> result = await ApiService.crbarang3(widget.varpbuser, searchController.text, '3');
+      List<Map<String, dynamic>> result = await ApiService.crbarang3(
+          widget.varpbuser, searchController.text, '3');
       setState(() {
         searchResults = result;
       });
@@ -77,7 +79,13 @@ class _ItemSearchPopupState extends State<ItemSearchPopup> {
                             DataCell(
                               Text(data['nama']),
                               onTap: () {
-                                widget.onItemSelected(data['kode'], data['nama'], data['nhargajual'], data['lmatang'], data['nhargamatang']);
+                                widget.onItemSelected(
+                                    data['kode'],
+                                    data['nama'],
+                                    data['nhargajual'],
+                                    data['lmatang'],
+                                    data['nhargamatang'],
+                                    data['kodebarcode']);
                                 Navigator.of(context).pop();
                               },
                             ),
@@ -86,7 +94,13 @@ class _ItemSearchPopupState extends State<ItemSearchPopup> {
                                 data['nhargajual'] ?? '0',
                               ),
                               onTap: () {
-                                widget.onItemSelected(data['kode'], data['nama'], data['nhargajual'], data['lmatang'], data['nhargamatang']);
+                                widget.onItemSelected(
+                                    data['kode'],
+                                    data['nama'],
+                                    data['nhargajual'],
+                                    data['lmatang'],
+                                    data['nhargamatang'],
+                                    data['kodebarcode']);
                                 Navigator.of(context).pop();
                               },
                             ),

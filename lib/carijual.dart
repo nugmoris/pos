@@ -16,7 +16,10 @@ class _CarijualPageState extends State<CarijualPage> {
   List<Map<String, dynamic>> searchResults = [];
 
   Future<void> searchTransactions() async {
-    final response = await ApiService.carijual(widget.varpbuser, searchController.text, '4', '2024-01-01');
+    print('searchTransactions 1 di dalam carijual.dart');
+    final response = await ApiService.carijual(
+        widget.varpbuser, searchController.text, '4', '2024-01-01');
+    print('searchTransactions 2 di dalam carijual.dart');
     setState(() {
       searchResults = response;
     });

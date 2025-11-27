@@ -4,8 +4,8 @@ import 'package:android_id/android_id.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_file_plus/open_file_plus.dart';
-import 'package:pos/main.dart' show getCurrentVersion, getserverupdate;
+import 'package:open_file/open_file.dart';
+import 'package:pos/main.dart';
 import 'package:pos/utils/textisi.dart';
 import 'package:pos/var_provider.dart';
 
@@ -64,7 +64,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     // print('Login $varpbuser - $password');
     try {
       final result = await ApiService.login2(
-          varpbuser, password, alamatmac, widget.currentVersion ?? '');
+          varpbuser, password, alamatmac, widget.myversion1 ?? '');
 
       if (result.isNotEmpty) {
         final varbagian = result['bagian'];

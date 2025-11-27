@@ -61,7 +61,8 @@ class _PenjkaryState extends State<Penjkary> {
 
       setState(() {
         laporanPenjualan = result;
-        grandTotal = result.fold(0.0, (sum, item) => sum + double.parse(item['subtotal']));
+        grandTotal = result.fold(
+            0.0, (sum, item) => sum + double.parse(item['subtotal']));
       });
     } catch (e) {
       print('Error fetching report data: $e');
@@ -98,7 +99,8 @@ class _PenjkaryState extends State<Penjkary> {
                       );
                       if (picked != null) {
                         setState(() {
-                          tgl1Controller.text = DateFormat('yyyy-MM-dd').format(picked);
+                          tgl1Controller.text =
+                              DateFormat('yyyy-MM-dd').format(picked);
                         });
                       }
                     },
@@ -119,7 +121,8 @@ class _PenjkaryState extends State<Penjkary> {
                       );
                       if (picked != null) {
                         setState(() {
-                          tgl2Controller.text = DateFormat('yyyy-MM-dd').format(picked);
+                          tgl2Controller.text =
+                              DateFormat('yyyy-MM-dd').format(picked);
                         });
                       }
                     },
@@ -194,7 +197,8 @@ class _PenjkaryState extends State<Penjkary> {
                             builder: (context) {
                               return ItemSearchPopup(
                                 varpbuser: widget.varpbuser,
-                                onItemSelected: (kode, nama, harga, lmatang, nhargamatang) {
+                                onItemSelected: (kode, nama, harga, lmatang,
+                                    nhargamatang, kodebarcode) {
                                   setState(() {
                                     kodeBarangController.text = kode;
                                     namaBarangController.text = nama;
@@ -244,8 +248,12 @@ class _PenjkaryState extends State<Penjkary> {
                                 DataCell(Text(data['nmcust'])),
                                 DataCell(Text(data['nmbarang'])),
                                 DataCell(Text(data['nqty'])),
-                                DataCell(Text(NumberFormat.currency(locale: 'id', symbol: '').format(int.parse(data['nrp'])))),
-                                DataCell(Text(NumberFormat.currency(locale: 'id', symbol: '').format(int.parse(data['subtotal'])))),
+                                DataCell(Text(NumberFormat.currency(
+                                        locale: 'id', symbol: '')
+                                    .format(int.parse(data['nrp'])))),
+                                DataCell(Text(NumberFormat.currency(
+                                        locale: 'id', symbol: '')
+                                    .format(int.parse(data['subtotal'])))),
                               ],
                             );
                           }).toList(),

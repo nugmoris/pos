@@ -8,7 +8,7 @@ import 'daftablmbyr.dart';
 import 'daftarharga.dart';
 import 'daftarsetor.dart';
 import 'home.dart';
-import 'jual.dart';
+import 'jual2.dart';
 import 'lapkas.dart';
 import 'laporan.dart';
 import 'lapstok.dart';
@@ -51,15 +51,6 @@ Future<void> checkAndUpdateApp() async {
     // Karena belum ada context di sini, update akan dicek ulang di halaman LoginPage
   }
 }
-
-// void tryOtaUpdateIfNeeded() async {
-//   if (currentVersion != myversion1) {
-//     final serverUpdateUrlx = await getserverupdate();
-//     final serverupdateUrl = '$serverUpdateUrlx/$currentVersion.apk';
-//     tryOtaUpdate(
-//         serverupdateUrl); // Memanggil tryOtaUpdate() dengan serverUpdateUrl
-//   }
-// }
 
 class MyApp extends StatelessWidget {
   @override
@@ -105,7 +96,7 @@ class MyApp extends StatelessWidget {
               args?.isNotEmpty == true ? args![3] as String? : null;
           final varsaldokas =
               args?.isNotEmpty == true ? args![4] as String? : null;
-          return JualPage(
+          return JualPage2(
               varpbuser!, varbagian!, varlks!, varnmlok!, varsaldokas!);
         },
         '/lapjual': (context) {
