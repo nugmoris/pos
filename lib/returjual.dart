@@ -53,27 +53,10 @@ class _ReturJualPageState extends State<ReturJualPage> {
     saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '')) ?? 0.0;
   }
 
-  // void calculateSubtotalRetur() {
-  //   setState(() {
-  //     // Jika kosong, isi dengan 0
-  //     if (nqtyreturController.text.isEmpty) {
-  //       nqtyreturController.text = '0';
-  //     }
-  //     if (nrpreturController.text.isEmpty) {
-  //       nrpreturController.text = '0';
-  //     }
-
-  //     double nqtyretur = double.tryParse(nqtyreturController.text) ?? 0;
-  //     double nrpretur = double.tryParse(nrpreturController.text) ?? 0;
-  //     nsubtotalret = (nqtyretur * nrpretur).toStringAsFixed(2);
-  //   });
-  // }
-
   void showPaymentDialog() async {
-    String grandTotal = calculateGrandTotal(); // Mengambil nilai Grand Total
+    String grandTotal = calculateGrandTotal();
     int totbayarInt = int.tryParse(totbayarku.text) ?? 0;
 
-    // Menunggu nilai yang dikembalikan dari bayarjual.dart
     final paymentValue = await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -84,7 +67,6 @@ class _ReturJualPageState extends State<ReturJualPage> {
           totbayar: currencyFormat.format(totbayarInt),
           username: widget.varpbuser,
           varlks: widget.varlks,
-          // varsaldokas: widget.varsaldokas,
           vartotalbyr: currencyFormat.format(totbayarInt),
           onPaymentSuccess: (updatedVarsaldokas, updatedVartotalbyr) {
             setState(() {
@@ -97,15 +79,12 @@ class _ReturJualPageState extends State<ReturJualPage> {
       },
     );
 
-// Pastikan paymentValue tidak null dan lakukan update yang diperlukan
     if (paymentValue != null) {
       setState(() {
         double bayar = double.tryParse(paymentValue) ?? 0.0;
-        // Pastikan totbayar adalah String sebelum melakukan replaceAll
         String totbayarString = totbayar.toString();
         double currentTotbayar =
             double.tryParse(totbayarString.replaceAll(',', '')) ?? 0.0;
-        // Tambahkan bayar ke currentTotbayar jika diperlukan
         currentTotbayar = bayar;
         final formatter = NumberFormat("#,###");
         totbayar = currentTotbayar;
@@ -145,9 +124,9 @@ class _ReturJualPageState extends State<ReturJualPage> {
               .map((item) => {
                     'kdbarang': item['kdbarang'],
                     'nmbarang': item['nmbarang'],
-                    'nrpretur': item['nrp'],
-                    'nqtyretur': item['nqty'],
-                    'nsubtotal': item['nsubttl'],
+                    'nrpretur': item['nrpretur'],
+                    'nqtyretur': item['nqtyretur'],
+                    'nsubtotal': item['nsubtotal'],
                     'llunas': item['llunas'],
                     'notrans': item['notrans'],
                     'nojual': item['nojual'],
@@ -172,7 +151,6 @@ class _ReturJualPageState extends State<ReturJualPage> {
       nqtyjual = '';
       nrpjual = '';
       nsubtotal = '';
-      //nmbarangController.clear();
       nqtyreturController.clear();
       nrpreturController.clear();
       nqtyjualController.clear();
@@ -222,7 +200,6 @@ class _ReturJualPageState extends State<ReturJualPage> {
   }
 
   Future<void> addRetur() async {
-    // Pastikan nilai tidak kosong
     if (nqtyreturController.text.isEmpty) {
       nqtyreturController.text = '0';
     }
@@ -244,7 +221,6 @@ class _ReturJualPageState extends State<ReturJualPage> {
     setState(() {
       if (response.isNotEmpty) {
         notransController.text = response.first['notrans'] ?? 'RJL-Baru';
-        // Pastikan untuk membersihkan dan menambahkan data baru ke transaksiData
         transaksiData.clear();
         transaksiData.addAll(response);
         kdbarang = '';
@@ -270,254 +246,663 @@ class _ReturJualPageState extends State<ReturJualPage> {
     final formatter = NumberFormat("#,###", "id_ID");
 
     int total = transaksiData.fold(0, (sum, detail) {
-      // Ambil subtotal dari transaksiData dan pastikan itu bisa diparsing menjadi int
       int subtotal = int.tryParse(detail['nsubttl'].toString()) ?? 0;
       return sum + subtotal;
     });
 
-    return formatter.format(total); // Format total
+    return formatter.format(total);
+  }
+
+  Widget _buildModernTextField({
+    required TextEditingController controller,
+    required String label,
+    bool readOnly = false,
+    TextInputType? keyboardType,
+    Function(String)? onChanged,
+    IconData? prefixIcon,
+    Color? textColor,
+    FontWeight? fontWeight,
+  }) {
+    return TextField(
+      controller: controller,
+      readOnly: readOnly,
+      keyboardType: keyboardType,
+      onChanged: onChanged,
+      style: TextStyle(
+        color: textColor ?? Color(0xFF1F2937),
+        fontWeight: fontWeight ?? FontWeight.normal,
+        fontSize: 14,
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(
+          color: Colors.grey[600],
+          fontSize: 14,
+        ),
+        prefixIcon: prefixIcon != null
+            ? Icon(prefixIcon, color: Color(0xFF6366F1), size: 20)
+            : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFF6366F1), width: 2),
+        ),
+        filled: true,
+        fillColor: readOnly ? Colors.grey[50] : Colors.white,
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+    required Color color,
+    String? tooltip,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: color),
+        onPressed: onPressed,
+        tooltip: tooltip,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF9FAFB),
       appBar: AppBar(
-        title: Text('Retur Penjualan'),
+        title: Text(
+          'Retur Penjualan',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Color(0xFFEF4444),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: TextField(
-                    readOnly: true,
-                    controller: notransController,
-                    decoration: InputDecoration(labelText: 'No. Transaksi'),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Tanggal Retur',
-                    ),
-                    style: TextStyle(
-                      color: Colors.blue[900],
-                      fontWeight:
-                          FontWeight.bold, // Ubah warna font menjadi biru
-                    ),
-                    controller: tglreturcontroller,
-                  ),
-                ),
-                SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(Icons.refresh),
-                  onPressed: updateNotrans,
-                ),
-              ],
-            ),
-            Divider(
-              color: Colors.black, // Warna garis
-              thickness: 2, // Ketebalan garis
-              indent: 10, // Jarak dari awal garis ke tepi kiri
-              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
-            ),
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: searchTransaction,
-                ),
-                SizedBox(width: 8),
-                Text('No. Jual: $nojual'),
-              ],
-            ),
-            SizedBox(height: 8),
-            Text('$nmcustomer - $tgljual'),
-            SizedBox(height: 15),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '$kdbarang - $nmbarang',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue[900],
-                ),
-              ),
-            ),
-            SizedBox(height: 15),
-            Row(
-              children: [
-                Expanded(
-                  flex: 3, // Memberi lebih banyak ruang untuk harga jual
-                  child: TextField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Harga Jual',
-                    ),
-                    style: TextStyle(
-                      color: Colors.blue[900],
-                      fontWeight:
-                          FontWeight.bold, // Ubah warna font menjadi biru
-                    ),
-                    controller: nrpjualController,
-                  ),
-                ),
-                SizedBox(width: 5), // Menambahkan sedikit ruang antar TextField
-                Expanded(
-                  flex: 1, // Memberi lebih sedikit ruang untuk QTY
-                  child: TextField(
-                    readOnly: true,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'QTY',
-                    ),
-                    style: TextStyle(
-                      color: Colors.blue[900],
-                      fontWeight:
-                          FontWeight.bold, // Ubah warna font menjadi biru
-                    ),
-                    controller: nqtyjualController,
-                  ),
-                ),
-                SizedBox(width: 5),
-                Expanded(
-                  flex: 3, // Memberi lebih sedikit ruang untuk QTY
-                  child: TextField(
-                    //  focusNode: jumlahFocusNode,
-                    readOnly: true,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Sub Total',
-                    ),
-                    style: TextStyle(
-                      color: Colors.blue[900],
-                      fontWeight:
-                          FontWeight.bold, // Ubah warna font menjadi biru
-                    ),
-                    controller: nsubttljualController,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: nqtyreturController,
-                    decoration: InputDecoration(labelText: 'Qty Retur'),
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) => calculateSubtotalRetur(),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: nrpreturController,
-                    decoration: InputDecoration(labelText: 'Harga Retur'),
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) => calculateSubtotalRetur(),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            Text('Subtotal: $nsubtotalret'),
-            TextField(
-              controller: keteranganController,
-              decoration: InputDecoration(labelText: 'Keterangan'),
-            ),
-            SizedBox(height: 16),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              Expanded(
-                child: Text(
-                  'Grand Total : ${calculateGrandTotal()}',
-                  textAlign: TextAlign.left, // Menyelaraskan teks ke kiri
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ),
-            ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Bagian A
-                Expanded(
-                  child: TextField(
-                    controller: totbayarku,
-                    decoration: InputDecoration(
-                      labelText: 'Total Bayar',
-                    ),
-                  ),
-                ),
-                Expanded(
-                    child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: addRetur,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.payment),
-                      onPressed: () {
-                        //    !transaksiData.any((item) => item['llunas'] == '1') ? showPaymentDialog : null;
-                        if (!transaksiData
-                            .any((item) => item['llunas'] == '1')) {
-                          showPaymentDialog();
-                        }
-                      },
-                    ),
-                    IconButton(
-                        icon: Icon(Icons.search), onPressed: openSearchPopup),
-                  ],
-                )),
-              ],
-            ),
-            Divider(
-              color: Colors.black, // Warna garis
-              thickness: 2, // Ketebalan garis
-              indent: 10, // Jarak dari awal garis ke tepi kiri
-              endIndent: 10, // Jarak dari akhir garis ke tepi kanan
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('Kode Barang')),
-                  DataColumn(label: Text('Nama Barang')),
-                  DataColumn(label: Text('Qty Retur')),
-                  DataColumn(label: Text('Harga Retur')),
-                  DataColumn(label: Text('Subtotal')),
-                  DataColumn(label: Text('No. Transaksi')),
-                  DataColumn(label: Text('No. Penjualan')),
-                ],
-                rows: transaksiData.map((detail) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(detail['kdbarang'] ?? '')),
-                      DataCell(Text(detail['nmbarang'] ?? '')),
-                      DataCell(Text(detail['nqtyretur'].toString() ?? '')),
-                      DataCell(Text(detail['nrpretur'].toString() ?? '')),
-                      DataCell(Text(detail['nsubtotal'].toString() ?? '')),
-                      DataCell(Text(detail['notrans'] ?? '')),
-                      DataCell(Text(detail['nojual'] ?? '')),
+                // Card Header Transaksi
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
                     ],
-                  );
-                }).toList(),
-              ),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildModernTextField(
+                              controller: notransController,
+                              label: 'No. Transaksi',
+                              readOnly: true,
+                              prefixIcon: Icons.receipt_long,
+                              textColor: Color(0xFFEF4444),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: _buildModernTextField(
+                              controller: tglreturcontroller,
+                              label: 'Tanggal Retur',
+                              readOnly: true,
+                              prefixIcon: Icons.calendar_today,
+                              textColor: Color(0xFF6366F1),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          _buildActionButton(
+                            icon: Icons.refresh,
+                            onPressed: updateNotrans,
+                            color: Color(0xFF10B981),
+                            tooltip: 'Reset',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 16),
+
+                // Card Info Penjualan
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          _buildActionButton(
+                            icon: Icons.search,
+                            onPressed: searchTransaction,
+                            color: Color(0xFF6366F1),
+                            tooltip: 'Cari Transaksi',
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            'No. Jual: ',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Text(
+                            nojual,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1F2937),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12),
+                      if (nmcustomer.isNotEmpty)
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFF3F4F6),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.person_outline,
+                                  size: 18, color: Colors.grey[700]),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  '$nmcustomer - $tgljual',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF374151),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (kdbarang.isNotEmpty) ...[
+                        SizedBox(height: 12),
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF6366F1).withOpacity(0.1),
+                                Color(0xFF8B5CF6).withOpacity(0.1)
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.inventory_2_outlined,
+                                  size: 18, color: Color(0xFF6366F1)),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  '$kdbarang - $nmbarang',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF6366F1),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: _buildModernTextField(
+                              controller: nrpjualController,
+                              label: 'Harga Jual',
+                              readOnly: true,
+                              textColor: Color(0xFF6366F1),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            flex: 1,
+                            child: _buildModernTextField(
+                              controller: nqtyjualController,
+                              label: 'QTY',
+                              readOnly: true,
+                              textColor: Color(0xFF6366F1),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            flex: 3,
+                            child: _buildModernTextField(
+                              controller: nsubttljualController,
+                              label: 'Sub Total',
+                              readOnly: true,
+                              textColor: Color(0xFF6366F1),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 16),
+
+                // Card Input Retur
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Form Retur',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1F2937),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildModernTextField(
+                              controller: nqtyreturController,
+                              label: 'Qty Retur',
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) => calculateSubtotalRetur(),
+                              prefixIcon: Icons.shopping_cart_outlined,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: _buildModernTextField(
+                              controller: nrpreturController,
+                              label: 'Harga Retur',
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) => calculateSubtotalRetur(),
+                              prefixIcon: Icons.payments_outlined,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12),
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFEF3C7),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Color(0xFFF59E0B)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Subtotal Retur:',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF92400E),
+                              ),
+                            ),
+                            Text(
+                              nsubtotalret,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF92400E),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      _buildModernTextField(
+                        controller: keteranganController,
+                        label: 'Keterangan',
+                        prefixIcon: Icons.note_alt_outlined,
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 16),
+
+                // Card Summary & Actions
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Grand Total:',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              calculateGrandTotal(),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildModernTextField(
+                              controller: totbayarku,
+                              label: 'Total Bayar',
+                              prefixIcon: Icons.account_balance_wallet,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          _buildActionButton(
+                            icon: Icons.add_circle,
+                            onPressed: addRetur,
+                            color: Color(0xFF10B981),
+                            tooltip: 'Tambah',
+                          ),
+                          SizedBox(width: 8),
+                          _buildActionButton(
+                            icon: Icons.search,
+                            onPressed: openSearchPopup,
+                            color: Color(0xFF6366F1),
+                            tooltip: 'Cari',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 16),
+
+                // Card Data Table
+                if (transaksiData.isNotEmpty)
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.list_alt,
+                                color: Color(0xFFEF4444), size: 24),
+                            SizedBox(width: 12),
+                            Text(
+                              'Daftar Retur',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1F2937),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            headingRowColor:
+                                MaterialStateProperty.all(Color(0xFFF3F4F6)),
+                            headingRowHeight: 48,
+                            dataRowHeight: 56,
+                            columnSpacing: 16,
+                            horizontalMargin: 12,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[200]!),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            columns: [
+                              DataColumn(
+                                label: Text(
+                                  'Kode Barang',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF374151),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Nama Barang',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF374151),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Qty Retur',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF374151),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Harga Retur',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF374151),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Subtotal',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF374151),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'No. Transaksi',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF374151),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'No. Penjualan',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF374151),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ],
+                            rows: transaksiData.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              Map<String, dynamic> detail = entry.value;
+
+                              return DataRow(
+                                color: MaterialStateProperty.all(
+                                  index % 2 == 0
+                                      ? Colors.white
+                                      : Color(0xFFFAFAFA),
+                                ),
+                                cells: [
+                                  DataCell(Text(
+                                    detail['kdbarang'] ?? '',
+                                    style: TextStyle(
+                                      color: Color(0xFF6B7280),
+                                      fontSize: 13,
+                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    detail['nmbarang'] ?? '',
+                                    style: TextStyle(
+                                      color: Color(0xFF6B7280),
+                                      fontSize: 13,
+                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    detail['nqtyretur'].toString() ?? '',
+                                    style: TextStyle(
+                                      color: Color(0xFF059669),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    detail['nrpretur'].toString() ?? '',
+                                    style: TextStyle(
+                                      color: Color(0xFF6B7280),
+                                      fontSize: 13,
+                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    detail['nsubtotal'].toString() ?? '',
+                                    style: TextStyle(
+                                      color: Color(0xFFEF4444),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    detail['notrans'] ?? '',
+                                    style: TextStyle(
+                                      color: Color(0xFF6B7280),
+                                      fontSize: 13,
+                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    detail['nojual'] ?? '',
+                                    style: TextStyle(
+                                      color: Color(0xFF6B7280),
+                                      fontSize: 13,
+                                    ),
+                                  )),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
-          ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

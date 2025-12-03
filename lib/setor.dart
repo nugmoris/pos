@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // For thousand separator formatting
+import 'package:intl/intl.dart';
 
-import 'service.dart'; // Assuming the ApiService is defined here
+import 'service.dart';
 
 class Setor extends StatefulWidget {
   final String varpbuser;
@@ -20,10 +20,10 @@ class _SetorState extends State<Setor> {
   final TextEditingController _nilaisisa = TextEditingController();
   final TextEditingController _ketSetorController = TextEditingController();
   final TextEditingController _nsisaController = TextEditingController();
-  double saldoKas = 0; // Initial saldo kas
+  double saldoKas = 0;
   List<Map<String, dynamic>> hasilApi = [];
   bool isProsesButtonVisible = true;
-  bool isProcessing = false; // Tambahan untuk disable tombol saat proses
+  bool isProcessing = false;
   bool isInputValid = false;
 
   @override
@@ -65,26 +65,30 @@ class _SetorState extends State<Setor> {
     });
 
     try {
-      // 1. Optimistic UI Update - Show success immediately
       setState(() {
-        // Clear form immediately
         double nilaiSetor = double.tryParse(_nilaiSetorController.text) ?? 0;
         double sisaSetor = double.tryParse(_nilaisisa.text) ?? 0;
 
-        // Update saldo kas immediately (optimistic)
         saldoKas = sisaSetor;
 
-        // Show temporary success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Setor berhasil diproses!'),
-            backgroundColor: Colors.green,
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 12),
+                Text('Setor berhasil diproses!'),
+              ],
+            ),
+            backgroundColor: Colors.green[600],
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             duration: Duration(seconds: 2),
           ),
         );
       });
 
-      // 2. Call fast API for initial insert
       final fastResponse = await ApiService.setorkasFast(
         widget.varpbuser,
         widget.varlks,
@@ -93,30 +97,26 @@ class _SetorState extends State<Setor> {
         _nilaisisa.text.isEmpty ? "0" : _nilaisisa.text,
       );
 
-// Ambil notrans
       String notrans = "";
       if (fastResponse is List && fastResponse.isNotEmpty) {
         notrans = fastResponse[0]['notrans'] ?? "";
       }
 
-// Panggil hitung selisih manual (jaga2)
       if (notrans.isNotEmpty) {
         await ApiService.updateSetorCalculation(
             widget.varpbuser, widget.varlks, notrans);
       }
+
       setState(() {
         _nilaiSetorController.clear();
         _ketSetorController.clear();
         _nsisaController.clear();
         _nilaisisa.clear();
-
         isProcessing = false;
       });
 
-      // 3. Background processing - fetch complete data
       _fetchCompleteSetorData();
     } catch (e) {
-      // Revert optimistic changes on error
       setState(() {
         isProcessing = false;
         isProsesButtonVisible = true;
@@ -124,19 +124,26 @@ class _SetorState extends State<Setor> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal memproses setor: $e'),
-          backgroundColor: Colors.red,
+          content: Row(
+            children: [
+              Icon(Icons.error, color: Colors.white),
+              SizedBox(width: 12),
+              Text('Gagal memproses setor: $e'),
+            ],
+          ),
+          backgroundColor: Colors.red[600],
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       );
 
-      // Refresh saldo kas
       _fetchSaldoKas();
     }
   }
 
   Future<void> _fetchCompleteSetorData() async {
     try {
-      // This runs in background after user sees success
       List<Map<String, dynamic>> result = await ApiService.getSetorHistory(
         widget.varpbuser,
         widget.varlks,
@@ -146,11 +153,9 @@ class _SetorState extends State<Setor> {
         hasilApi = result;
       });
 
-      // Update saldo kas with real data
       _fetchSaldoKas();
     } catch (e) {
       print('Background fetch failed: $e');
-      // Could show a subtle notification that data is being updated
     }
   }
 
@@ -163,214 +168,510 @@ class _SetorState extends State<Setor> {
     super.dispose();
   }
 
-  Widget _buildDataTable() {
-    if (hasilApi.isEmpty) {
-      return Container(
-        height: 100,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildInfoCard() {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF6366F1).withOpacity(0.3),
+            blurRadius: 12,
+            offset: Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+              Icon(Icons.location_on, color: Colors.white70, size: 18),
+              SizedBox(width: 8),
+              Text(
+                widget.varnmlok,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(Icons.calendar_today, color: Colors.white70, size: 18),
+              SizedBox(width: 8),
+              Text(
+                DateFormat('dd MMMM yyyy').format(DateTime.now()),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSaldoCard() {
+    String formattedSaldoKas = NumberFormat.decimalPattern().format(saldoKas);
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Saldo Kas Saat Ini',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               SizedBox(height: 8),
-              Text('Memuat data terbaru...', style: TextStyle(fontSize: 12)),
+              Text(
+                'Rp $formattedSaldoKas',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1F2937),
+                ),
+              ),
+            ],
+          ),
+          GestureDetector(
+            onTap: _isiNilaiSetor,
+            child: Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Color(0xFF6366F1).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.add_circle_outline,
+                color: Color(0xFF6366F1),
+                size: 28,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputCard() {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Form Setor Kas',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1F2937),
+            ),
+          ),
+          SizedBox(height: 20),
+          TextField(
+            controller: _ketSetorController,
+            decoration: InputDecoration(
+              labelText: 'Keterangan',
+              labelStyle: TextStyle(color: Colors.grey[600]),
+              prefixIcon:
+                  Icon(Icons.note_alt_outlined, color: Color(0xFF6366F1)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Color(0xFF6366F1), width: 2),
+              ),
+              filled: true,
+              fillColor: Colors.grey[50],
+            ),
+          ),
+          SizedBox(height: 16),
+          TextField(
+            controller: _nilaiSetorController,
+            decoration: InputDecoration(
+              labelText: 'Nilai Setor',
+              labelStyle: TextStyle(color: Colors.grey[600]),
+              prefixIcon:
+                  Icon(Icons.payments_outlined, color: Color(0xFF6366F1)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Color(0xFF6366F1), width: 2),
+              ),
+              filled: true,
+              fillColor: Colors.grey[50],
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 16),
+          TextField(
+            controller: _nilaisisa,
+            decoration: InputDecoration(
+              labelText: 'Saldo yang disisakan',
+              labelStyle: TextStyle(color: Colors.grey[600]),
+              prefixIcon: Icon(Icons.account_balance_wallet_outlined,
+                  color: Color(0xFF6366F1)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Color(0xFF6366F1), width: 2),
+              ),
+              filled: true,
+              fillColor: Colors.grey[50],
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 24),
+          if (isProsesButtonVisible)
+            SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: ElevatedButton(
+                onPressed:
+                    (!isInputValid || isProcessing) ? null : _prosesSetor,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF6366F1),
+                  disabledBackgroundColor: Colors.grey[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                ),
+                child: isProcessing
+                    ? SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        'Proses Setor',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHistoryCard() {
+    if (hasilApi.isEmpty) {
+      return Container(
+        padding: EdgeInsets.all(40),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Column(
+            children: [
+              CircularProgressIndicator(
+                color: Color(0xFF6366F1),
+                strokeWidth: 3,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Memuat data terbaru...',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
             ],
           ),
         ),
       );
     }
 
-    return SizedBox(
-      height: 300,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: [
-            DataColumn(label: Text('No Trans')),
-            DataColumn(label: Text('Dari')),
-            DataColumn(label: Text('Ket')),
-            DataColumn(label: Text('Nominal Setor')),
-            DataColumn(label: Text('Disisakan')),
-            DataColumn(label: Text('Waktu')),
-            DataColumn(label: Text('Saldo by System')),
-            DataColumn(label: Text('Selisih')),
-          ],
-          rows: hasilApi.map((data) {
-            try {
-              return DataRow(cells: [
-                DataCell(Text(data['notrans']?.toString() ?? '-')),
-                DataCell(Text(data['dari']?.toString() ?? '-')),
-                DataCell(Text(data['ket']?.toString() ?? '-')),
-                DataCell(Text(NumberFormat.decimalPattern()
-                    .format(double.tryParse(data['nrp'].toString()) ?? 0))),
-                DataCell(Text(NumberFormat.decimalPattern().format(
-                    double.tryParse(data['nrpsaldosisa'].toString()) ?? 0))),
-                DataCell(Text(data['waktuinput']?.toString() ?? '-')),
-                DataCell(Text(NumberFormat.decimalPattern().format(
-                    double.tryParse(data['nrpsaldosystem'].toString()) ?? 0))),
-                DataCell(Text(NumberFormat.decimalPattern().format(
-                    double.tryParse(data['nrpselisih'].toString()) ?? 0))),
-              ]);
-            } catch (e) {
-              return DataRow(cells: [
-                DataCell(Text('Error')),
-                DataCell(Text('')),
-                DataCell(Text('')),
-                DataCell(Text('')),
-                DataCell(Text('')),
-                DataCell(Text('')),
-                DataCell(Text('')),
-                DataCell(Text('')),
-              ]);
-            }
-          }).toList(),
-        ),
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.history, color: Color(0xFF6366F1), size: 24),
+              SizedBox(width: 12),
+              Text(
+                '10 Setoran Terakhir',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1F2937),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16),
+          SizedBox(
+            height: 300,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                headingRowColor: MaterialStateProperty.all(Color(0xFFF3F4F6)),
+                headingRowHeight: 48,
+                dataRowHeight: 56,
+                columnSpacing: 24,
+                horizontalMargin: 16,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[200]!),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                columns: [
+                  DataColumn(
+                    label: Text(
+                      'No Trans',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Dari',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Ket',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Nominal Setor',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Disisakan',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Waktu',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Saldo by System',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Selisih',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF374151),
+                      ),
+                    ),
+                  ),
+                ],
+                rows: hasilApi.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  Map<String, dynamic> data = entry.value;
+
+                  try {
+                    return DataRow(
+                      color: MaterialStateProperty.all(
+                        index % 2 == 0 ? Colors.white : Color(0xFFFAFAFA),
+                      ),
+                      cells: [
+                        DataCell(Text(
+                          data['notrans']?.toString() ?? '-',
+                          style: TextStyle(color: Color(0xFF6B7280)),
+                        )),
+                        DataCell(Text(
+                          data['dari']?.toString() ?? '-',
+                          style: TextStyle(color: Color(0xFF6B7280)),
+                        )),
+                        DataCell(Text(
+                          data['ket']?.toString() ?? '-',
+                          style: TextStyle(color: Color(0xFF6B7280)),
+                        )),
+                        DataCell(Text(
+                          NumberFormat.decimalPattern().format(
+                              double.tryParse(data['nrp'].toString()) ?? 0),
+                          style: TextStyle(
+                            color: Color(0xFF059669),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )),
+                        DataCell(Text(
+                          NumberFormat.decimalPattern().format(double.tryParse(
+                                  data['nrpsaldosisa'].toString()) ??
+                              0),
+                          style: TextStyle(color: Color(0xFF6B7280)),
+                        )),
+                        DataCell(Text(
+                          data['waktuinput']?.toString() ?? '-',
+                          style: TextStyle(color: Color(0xFF6B7280)),
+                        )),
+                        DataCell(Text(
+                          NumberFormat.decimalPattern().format(double.tryParse(
+                                  data['nrpsaldosystem'].toString()) ??
+                              0),
+                          style: TextStyle(color: Color(0xFF6B7280)),
+                        )),
+                        DataCell(Text(
+                          NumberFormat.decimalPattern().format(
+                              double.tryParse(data['nrpselisih'].toString()) ??
+                                  0),
+                          style: TextStyle(
+                            color: Color(0xFFDC2626),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )),
+                      ],
+                    );
+                  } catch (e) {
+                    return DataRow(cells: [
+                      DataCell(
+                          Text('Error', style: TextStyle(color: Colors.red))),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                    ]);
+                  }
+                }).toList(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    String formattedSaldoKas = NumberFormat.decimalPattern().format(saldoKas);
     return Scaffold(
+      backgroundColor: Color(0xFFF9FAFB),
       appBar: AppBar(
-        title: Text('Setor Kas Cabang'),
+        title: Text(
+          'Setor Kas Cabang',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Color(0xFF6366F1),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Lokasi: ${widget.varnmlok}'),
-              SizedBox(height: 5),
-              Text(
-                  'Tanggal: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}'),
-              SizedBox(height: 10),
-              TextField(
-                controller: _ketSetorController,
-                decoration: InputDecoration(
-                  labelText: 'Keterangan',
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              _buildInfoCard(),
               SizedBox(height: 20),
-              Row(
-                children: [
-                  Text('Saldo Kas: $formattedSaldoKas'),
-                  SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: _isiNilaiSetor,
-                    child: Icon(Icons.add_circle_outline, color: Colors.blue),
-                  ),
-                ],
-              ),
+              _buildSaldoCard(),
               SizedBox(height: 20),
-              TextField(
-                controller: _nilaiSetorController,
-                decoration: InputDecoration(
-                  labelText: 'Nilai Setor',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-              ),
+              _buildInputCard(),
               SizedBox(height: 20),
-              TextField(
-                controller: _nilaisisa,
-                decoration: InputDecoration(
-                  labelText: 'Saldo yang disisakan',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 20),
-              if (isProsesButtonVisible)
-                ElevatedButton(
-                  onPressed:
-                      (!isInputValid || isProcessing) ? null : _prosesSetor,
-                  child: isProcessing
-                      ? SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white))
-                      : Text('Proses'),
-                ),
-              SizedBox(height: 20),
-              hasilApi.isNotEmpty
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Divider(thickness: 1),
-                        Text("10 Setoran Terakhir",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        SizedBox(height: 10),
-                        SizedBox(
-                          height: 300,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: DataTable(
-                              columns: [
-                                DataColumn(label: Text('No Trans')),
-                                DataColumn(label: Text('Dari')),
-                                DataColumn(label: Text('Ket')),
-                                DataColumn(label: Text('Nominal Setor')),
-                                DataColumn(label: Text('Disisakan')),
-                                DataColumn(label: Text('Waktu')),
-                                DataColumn(label: Text('Saldo by System')),
-                                DataColumn(label: Text('Selisih')),
-                              ],
-                              rows: hasilApi.map((data) {
-                                try {
-                                  return DataRow(cells: [
-                                    DataCell(Text(
-                                        data['notrans']?.toString() ?? '-')),
-                                    DataCell(
-                                        Text(data['dari']?.toString() ?? '-')),
-                                    DataCell(
-                                        Text(data['ket']?.toString() ?? '-')),
-                                    DataCell(Text(NumberFormat.decimalPattern()
-                                        .format(double.tryParse(
-                                                data['nrp'].toString()) ??
-                                            0))),
-                                    DataCell(Text(NumberFormat.decimalPattern()
-                                        .format(double.tryParse(
-                                                data['nrpsaldosisa']
-                                                    .toString()) ??
-                                            0))),
-                                    DataCell(Text(
-                                        data['waktuinput']?.toString() ?? '-')),
-                                    DataCell(Text(NumberFormat.decimalPattern()
-                                        .format(double.tryParse(
-                                                data['nrpsaldosystem']
-                                                    .toString()) ??
-                                            0))),
-                                    DataCell(Text(NumberFormat.decimalPattern()
-                                        .format(double.tryParse(
-                                                data['nrpselisih']
-                                                    .toString()) ??
-                                            0))),
-                                  ]);
-                                } catch (e) {
-                                  return DataRow(cells: [
-                                    DataCell(Text('Error')),
-                                    DataCell(Text('')),
-                                    DataCell(Text('')),
-                                    DataCell(Text('')),
-                                    DataCell(Text('')),
-                                  ]);
-                                }
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Text('Tidak ada data setoran hari ini.'),
+              if (hasilApi.isNotEmpty || isProcessing) _buildHistoryCard(),
             ],
           ),
         ),

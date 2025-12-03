@@ -27,6 +27,8 @@ class _JualPage2State extends State<JualPage2> {
   TextEditingController barcodeController = TextEditingController();
   TextEditingController namaController = TextEditingController();
   TextEditingController kodecontroller = TextEditingController();
+  TextEditingController dppController = TextEditingController();
+  TextEditingController ppnController = TextEditingController();
   TextEditingController hargaController = TextEditingController();
   TextEditingController jumlahController = TextEditingController();
   TextEditingController subttlController = TextEditingController();
@@ -37,10 +39,7 @@ class _JualPage2State extends State<JualPage2> {
   TextEditingController nmcustController = TextEditingController();
   TextEditingController totbayarku = TextEditingController();
 
-  // List untuk menyimpan item lokal sebelum disimpan ke server
   List<Map<String, dynamic>> localItems = [];
-
-  // List untuk menampilkan data transaksi dari server (setelah simpan)
   List<Map<String, dynamic>> transaksiData = [];
 
   final NumberFormat currencyFormat = NumberFormat("#,##0", "en_US");
@@ -50,6 +49,11 @@ class _JualPage2State extends State<JualPage2> {
   String lmatang = '0';
   String nhargamatang1 = '0';
   String nhargajual1 = '0';
+  String dppmatang1 = '0';
+  String ppnmatang1 = '0';
+  String dppnormal1 = '0';
+  String ppnnormal1 = '0';
+
   bool matang = false;
   bool isChecked = false;
   double hrsbayar = 0.0;
@@ -57,7 +61,7 @@ class _JualPage2State extends State<JualPage2> {
   String varsaldokas = '0';
   String urut = '0';
   bool isProcessing = false;
-  bool isSaved = false; // Flag untuk menandai apakah transaksi sudah disimpan
+  bool isSaved = false;
 
   @override
   void initState() {
@@ -67,6 +71,8 @@ class _JualPage2State extends State<JualPage2> {
     kdcustController.text = '01';
     nmcustController.text = 'Customer Umum';
     totbayarku.text = '0';
+    dppController.text = _formatNumber(0);
+    ppnController.text = _formatNumber(0);
     saldokasku = double.tryParse(widget.varsaldokas.replaceAll(',', '')) ?? 0.0;
   }
 
@@ -77,6 +83,8 @@ class _JualPage2State extends State<JualPage2> {
     barcodeController.dispose();
     namaController.dispose();
     kodecontroller.dispose();
+    dppController.dispose();
+    ppnController.dispose();
     hargaController.dispose();
     subttlController.dispose();
     totalController.dispose();
@@ -110,6 +118,20 @@ class _JualPage2State extends State<JualPage2> {
     }
   }
 
+  String _formatNumber(dynamic value) {
+    final formatter = NumberFormat("#,###");
+    if (value == null) return '0';
+    final sanitized = value.toString().replaceAll(',', '');
+    final number = double.tryParse(sanitized) ?? 0;
+    return formatter.format(number);
+  }
+
+  double _parseToDouble(dynamic value) {
+    if (value == null) return 0;
+    if (value is num) return value.toDouble();
+    return double.tryParse(value.toString().replaceAll(',', '')) ?? 0;
+  }
+
   void printData() async {
     Navigator.push(
       context,
@@ -123,18 +145,21 @@ class _JualPage2State extends State<JualPage2> {
     );
   }
 
-  // Tambah item ke list lokal
   void addItemToLocal() {
     if (barcodeController.text.isEmpty ||
         jumlahController.text.isEmpty ||
         hargaController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Lengkapi data barang terlebih dahulu")),
+        SnackBar(
+          content: Text("Lengkapi data barang terlebih dahulu"),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
       );
       return;
     }
 
-    // Cek duplikat
     bool isDuplicate = localItems.any((item) =>
         item['kdbarang'] == barcodeController.text &&
         item['nrp'].toString() == hargaController.text.replaceAll(',', '') &&
@@ -142,7 +167,12 @@ class _JualPage2State extends State<JualPage2> {
 
     if (isDuplicate) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Barang dengan harga yang sama sudah diinput")),
+        SnackBar(
+          content: Text("Barang dengan harga yang sama sudah diinput"),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
       );
       return;
     }
@@ -150,6 +180,8 @@ class _JualPage2State extends State<JualPage2> {
     setState(() {
       int qty = int.tryParse(jumlahController.text) ?? 0;
       int harga = int.tryParse(hargaController.text.replaceAll(',', '')) ?? 0;
+      int dpp = int.tryParse(dppController.text.replaceAll(',', '')) ?? 0;
+      int ppn = int.tryParse(ppnController.text.replaceAll(',', '')) ?? 0;
 
       localItems.add({
         'kdbarang': kodecontroller.text,
@@ -157,38 +189,45 @@ class _JualPage2State extends State<JualPage2> {
         'nqty': qty,
         'nrp': harga,
         'lmatang': isChecked ? '1' : '0',
+        'dpp': dpp,
+        'ppn': ppn,
+        'ndpp': dpp,
+        'nppn': ppn,
         'subtotal': qty * harga,
       });
 
-      // Clear form
       barcodeController.clear();
       kodecontroller.clear();
-      ;
       namaController.clear();
-      hargaController.text = '0';
+      hargaController.text = _formatNumber(0);
       jumlahController.text = '0';
-      subttlController.text = '0';
+      subttlController.text = _formatNumber(0);
       diskonController.text = '0';
-      totalController.text = '0';
+      totalController.text = _formatNumber(0);
+      dppController.text = _formatNumber(0);
+      ppnController.text = _formatNumber(0);
       isChecked = false;
       lmatang = '0';
     });
   }
 
-  // Hapus item dari list lokal
   void deleteLocalItem(int index) {
     setState(() {
       localItems.removeAt(index);
     });
   }
 
-  // Simpan semua item ke server
   void saveToServer() async {
     if (isProcessing) return;
-
+    print('jual2.saveToServer');
     if (localItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Tidak ada item untuk disimpan")),
+        SnackBar(
+          content: Text("Tidak ada item untuk disimpan"),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
       );
       return;
     }
@@ -198,24 +237,24 @@ class _JualPage2State extends State<JualPage2> {
     });
 
     try {
-      // Konversi localItems ke format yang dibutuhkan API
       List<Map<String, dynamic>> itemsForApi = localItems.map((item) {
         return {
           'kdbarang': item['kdbarang'],
           'nqty': item['nqty'],
           'nrp': item['nrp'],
           'lmatang': item['lmatang'],
+          'ndpp': item['ndpp'] ?? item['dpp'] ?? 0,
+          'nppn': item['nppn'] ?? item['ppn'] ?? 0,
         };
       }).toList();
 
-      // Panggil API dengan format JSON
       var result = await ApiService.inputJualJson(
         widget.varlks,
         kdcustController.text,
         widget.varpbuser,
-        'Input Penjualan', // keterangan
-        1, // ntop
-        '01', // kdsales
+        'Input Penjualan',
+        1,
+        '01',
         notransController.text == 'Transaksi Baru - 2'
             ? ''
             : notransController.text,
@@ -224,35 +263,38 @@ class _JualPage2State extends State<JualPage2> {
 
       if (result.isNotEmpty) {
         setState(() {
-          // Update transaksiData dengan hasil dari server
           transaksiData = result
               .map((item) => {
                     'nama': item['nama'],
                     'harga': item['nrp'],
                     'jumlah': item['nqty'],
                     'subtotal': item['subtotal'],
+                    'dpp': item['dpp'] ?? item['ndpp'] ?? 0,
+                    'ppn': item['ppn'] ?? item['nppn'] ?? 0,
                     'llunas': item['llunas'],
                     'urut': item['urut']
                   })
               .toList();
 
-          // Update notrans
           if (result[0].containsKey('notrans')) {
             notransController.text = result[0]['notrans'];
           }
 
-          // Clear local items setelah berhasil disimpan
           localItems.clear();
           isSaved = true;
         });
 
-        // Langsung tampilkan dialog pembayaran
         showPaymentDialog();
       }
     } catch (e) {
       print('Error saat simpan transaksi: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Gagal menyimpan transaksi: $e")),
+        SnackBar(
+          content: Text("Gagal menyimpan transaksi: $e"),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
       );
     } finally {
       setState(() {
@@ -261,7 +303,6 @@ class _JualPage2State extends State<JualPage2> {
     }
   }
 
-  // Hapus item dari server (untuk transaksi yang sudah disimpan)
   void hapus(String urut) async {
     try {
       if (urut.isNotEmpty) {
@@ -276,6 +317,8 @@ class _JualPage2State extends State<JualPage2> {
                     'harga': item['nrp'],
                     'jumlah': item['nqty'],
                     'subtotal': item['subtotal'],
+                    'dpp': item['dpp'] ?? item['ndpp'] ?? 0,
+                    'ppn': item['ppn'] ?? item['nppn'] ?? 0,
                     'llunas': item['llunas'],
                     'urut': item['urut']
                   })
@@ -306,17 +349,19 @@ class _JualPage2State extends State<JualPage2> {
   void fetchhasilscan() async {
     try {
       List<Map<String, dynamic>> result =
-          await ApiService.crbarang3(widget.varpbuser, barcodeResult, '4');
+          await ApiService.crbarang3(widget.varpbuser, barcodeResult, '1');
       setState(() {
         if (result.isNotEmpty) {
           final item = result[0];
           namaController.text = item['nama'];
           kodecontroller.text = item['kode'];
+          dppController.text = _formatNumber(item['dpp']);
+          ppnController.text = _formatNumber(item['ppn']);
           if (item['lmatang'] == '1') {
-            hargaController.text = item['nhargajual'].toString();
+            hargaController.text = _formatNumber(item['nhargajual']);
             matang = true;
           } else {
-            hargaController.text = item['nhargajual'].toString();
+            hargaController.text = _formatNumber(item['nhargajual']);
             matang = false;
           }
 
@@ -324,6 +369,10 @@ class _JualPage2State extends State<JualPage2> {
           lmatang = lmatang;
           nhargamatang1 = item['nhargamatang'];
           nhargajual1 = item['nhargajual'];
+          dppmatang1 = item['dppmatang'] ?? '0';
+          ppnmatang1 = item['ppnmatang'] ?? '0';
+          dppnormal1 = item['dpp'] ?? '0';
+          ppnnormal1 = item['ppn'] ?? '0';
         }
       });
     } catch (e) {
@@ -358,7 +407,7 @@ class _JualPage2State extends State<JualPage2> {
           nmcustController.text = result[0]['nmcust'] ?? '';
           totbayar = double.parse(nbayar.replaceAll(',', ''));
           totbayarku.text = nbayar;
-          isSaved = true; // Transaksi dari server sudah tersimpan
+          isSaved = true;
 
           transaksiData = result
               .map((item) => {
@@ -366,6 +415,8 @@ class _JualPage2State extends State<JualPage2> {
                     'harga': item['nrp'],
                     'jumlah': item['nqty'],
                     'subtotal': item['subtotal'],
+                    'dpp': item['dpp'] ?? item['ndpp'] ?? 0,
+                    'ppn': item['ppn'] ?? item['nppn'] ?? 0,
                     'llunas': item['llunas'],
                     'urut': item['urut']
                   })
@@ -420,8 +471,8 @@ class _JualPage2State extends State<JualPage2> {
       builder: (BuildContext context) {
         return ItemSearchPopup(
           varpbuser: widget.varpbuser,
-          onItemSelected:
-              (kode, nama, nhargajual, lmatang, nhargamatang, kodebarcode) {
+          onItemSelected: (kode, nama, nhargajual, lmatang, nhargamatang,
+              kodebarcode, dpp, ppn, dppmatang, ppnmatang) {
             setState(() {
               final formatter = NumberFormat("#,###");
               barcodeController.text = kodebarcode;
@@ -432,8 +483,15 @@ class _JualPage2State extends State<JualPage2> {
               subttlController.text = formatter.format(int.parse(nhargajual));
               lmatang = lmatang;
               nhargamatang1 = nhargamatang;
-              nhargajual1 = formatter.format(int.parse(nhargajual));
+              dppmatang1 = dppmatang;
+              ppnmatang1 = ppnmatang;
+
+              nhargajual1 = nhargajual;
+              dppnormal1 = dpp;
+              ppnnormal1 = ppn;
               matang = lmatang == '1' ? true : false;
+              dppController.text = _formatNumber(dpp);
+              ppnController.text = _formatNumber(ppn);
             });
           },
         );
@@ -458,114 +516,185 @@ class _JualPage2State extends State<JualPage2> {
     );
   }
 
-  // Widget untuk menampilkan local items (belum disimpan)
   Widget buildLocalItemsTable() {
     final formatter = NumberFormat("#,###", "id_ID");
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Item Belum Disimpan:',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columns: const [
-              DataColumn(label: Text('Nama Barang')),
-              DataColumn(label: Text('Harga')),
-              DataColumn(label: Text('Jumlah')),
-              DataColumn(label: Text('Subtotal')),
-              DataColumn(label: Text(' ')),
-            ],
-            rows: localItems.asMap().entries.map((entry) {
-              int index = entry.key;
-              Map<String, dynamic> data = entry.value;
-              return DataRow(cells: [
-                DataCell(Text(data['nama'] ?? 'Nama tidak tersedia')),
-                DataCell(Text(formatter.format(data['nrp']))),
-                DataCell(Text(data['nqty'].toString())),
-                DataCell(Text(formatter.format(data['subtotal']))),
-                DataCell(
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => deleteLocalItem(index),
+    return Card(
+      margin: EdgeInsets.all(12),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.shopping_cart_outlined,
+                    color: Colors.blue.shade700, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  'Item Belum Disimpan',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: Colors.blue.shade900,
                   ),
                 ),
-              ]);
-            }).toList(),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
-  }
-
-  // Widget untuk menampilkan data transaksi dari server (sudah disimpan)
-  Widget buildTransaksiTable() {
-    final formatter = NumberFormat("#,###", "id_ID");
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Item Tersimpan:',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
             child: DataTable(
+              headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
               columns: const [
-                DataColumn(label: Text('Nama Barang')),
-                DataColumn(label: Text('Harga')),
-                DataColumn(label: Text('Jumlah')),
-                DataColumn(label: Text('Subtotal')),
+                DataColumn(
+                    label: Text('Nama Barang',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                DataColumn(
+                    label: Text('Harga',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                DataColumn(
+                    label: Text('Jumlah',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                DataColumn(
+                    label: Text('DPP',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                DataColumn(
+                    label: Text('PPN',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                DataColumn(
+                    label: Text('Subtotal',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
                 DataColumn(label: Text(' ')),
               ],
-              rows: transaksiData.map((data) {
+              rows: localItems.asMap().entries.map((entry) {
+                int index = entry.key;
+                Map<String, dynamic> data = entry.value;
                 return DataRow(cells: [
                   DataCell(Text(data['nama'] ?? 'Nama tidak tersedia')),
-                  DataCell(Text(
-                      formatter.format(int.parse(data['harga'].toString())))),
-                  DataCell(Text(data['jumlah'].toString())),
+                  DataCell(Text(formatter.format(data['nrp']))),
+                  DataCell(Text(data['nqty'].toString())),
                   DataCell(Text(formatter
-                      .format(int.parse(data['subtotal'].toString())))),
+                      .format((data['dpp'] ?? 0) * (data['nqty'] ?? 0)))),
+                  DataCell(Text(formatter
+                      .format((data['ppn'] ?? 0) * (data['nqty'] ?? 0)))),
+                  DataCell(Text(formatter.format(data['subtotal']))),
                   DataCell(
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Visibility(
-                        visible: data['llunas'] == '0',
-                        child: RawMaterialButton(
-                          onPressed: () {
-                            hapus(data['urut'].toString());
-                          },
-                          elevation: 2.0,
-                          fillColor: Colors.white70,
-                          shape: CircleBorder(),
-                          padding: const EdgeInsets.all(15.0),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.red[400],
-                            size: 20.0,
-                          ),
-                        ),
-                      ),
+                    IconButton(
+                      icon: Icon(Icons.delete_outline,
+                          color: Colors.red.shade400),
+                      onPressed: () => deleteLocalItem(index),
                     ),
-                  )
+                  ),
                 ]);
               }).toList(),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+
+  Widget buildTransaksiTable() {
+    final formatter = NumberFormat("#,###", "id_ID");
+
+    return Card(
+      margin: EdgeInsets.all(12),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.check_circle_outline,
+                    color: Colors.green.shade700, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  'Item Tersimpan',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: Colors.green.shade900,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: DataTable(
+                headingRowColor:
+                    MaterialStateProperty.all(Colors.grey.shade100),
+                columns: const [
+                  DataColumn(
+                      label: Text('Nama Barang',
+                          style: TextStyle(fontWeight: FontWeight.w600))),
+                  DataColumn(
+                      label: Text('Harga',
+                          style: TextStyle(fontWeight: FontWeight.w600))),
+                  DataColumn(
+                      label: Text('Jumlah',
+                          style: TextStyle(fontWeight: FontWeight.w600))),
+                  DataColumn(
+                      label: Text('DPP',
+                          style: TextStyle(fontWeight: FontWeight.w600))),
+                  DataColumn(
+                      label: Text('PPN',
+                          style: TextStyle(fontWeight: FontWeight.w600))),
+                  DataColumn(
+                      label: Text('Subtotal',
+                          style: TextStyle(fontWeight: FontWeight.w600))),
+                  DataColumn(label: Text(' ')),
+                ],
+                rows: transaksiData.map((data) {
+                  return DataRow(cells: [
+                    DataCell(Text(data['nama'] ?? 'Nama tidak tersedia')),
+                    DataCell(Text(
+                        formatter.format(int.parse(data['harga'].toString())))),
+                    DataCell(Text(data['jumlah'].toString())),
+                    DataCell(Text(formatter.format(_parseToDouble(data['dpp']) *
+                        (int.tryParse(data['jumlah'].toString()) ?? 0)))),
+                    DataCell(Text(formatter.format(_parseToDouble(data['ppn']) *
+                        (int.tryParse(data['jumlah'].toString()) ?? 0)))),
+                    DataCell(Text(formatter
+                        .format(int.parse(data['subtotal'].toString())))),
+                    DataCell(
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Visibility(
+                          visible: data['llunas'] == '0',
+                          child: IconButton(
+                            icon: Icon(Icons.delete_outline,
+                                color: Colors.red.shade400),
+                            onPressed: () {
+                              hapus(data['urut'].toString());
+                            },
+                          ),
+                        ),
+                      ),
+                    )
+                  ]);
+                }).toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -573,14 +702,12 @@ class _JualPage2State extends State<JualPage2> {
     final formatter = NumberFormat("#,###", "id_ID");
     int total = 0;
 
-    // Hitung dari local items jika belum disimpan
     if (!isSaved && localItems.isNotEmpty) {
       total = localItems.fold(0, (sum, item) {
         int subtotal = item['subtotal'] ?? 0;
         return sum + subtotal;
       });
     } else {
-      // Hitung dari transaksiData jika sudah disimpan
       total = transaksiData.fold(0, (sum, item) {
         int subtotal = int.tryParse(item['subtotal'].toString()) ?? 0;
         return sum + subtotal;
@@ -603,312 +730,693 @@ class _JualPage2State extends State<JualPage2> {
   Widget build(BuildContext context) {
     final bool isTransactionPaid =
         transaksiData.any((item) => item['llunas'] == '1');
+
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Penjualan (Batch 2)"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context, varsaldokas.toString());
-            },
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text(
+          "Penjualan (PPN)",
+          style: TextStyle(
+            color: Colors.grey.shade800,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        body: SafeArea(
-            child: SingleChildScrollView(
-          child: Column(children: [
-            SizedBox(height: 5),
-            Text(
-              notransController.text,
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Divider(
-              color: Colors.black,
-              thickness: 2,
-              indent: 10,
-              endIndent: 10,
-            ),
-            SizedBox(height: 5),
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: (isProcessing || isTransactionPaid)
-                      ? null
-                      : _searchCustomer,
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    kdcustController.text,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.grey.shade800),
+          onPressed: () {
+            Navigator.pop(context, varsaldokas.toString());
+          },
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header Card - Transaction Info
+              Container(
+                margin: EdgeInsets.all(12),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: Offset(0, 2),
                     ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  ' - ',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    nmcustController.text,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-              ],
-            ),
-            SizedBox(height: 5),
-            Divider(
-              color: Colors.black,
-              thickness: 2,
-              indent: 10,
-              endIndent: 10,
-            ),
-            SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    readOnly: isSaved,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Kode',
-                    ),
-                    controller: barcodeController,
-                  ),
-                ),
-                SizedBox(width: 5),
-                IconButton(
-                  icon: Icon(Icons.camera_alt),
-                  onPressed:
-                      (isProcessing || isTransactionPaid) ? null : scanBarcode,
-                ),
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: (isProcessing || isTransactionPaid)
-                      ? null
-                      : caribrgmanual,
-                ),
-                IconButton(
-                  icon: Icon(Icons.refresh),
-                  onPressed: isProcessing
-                      ? null
-                      : () {
-                          barcodeController.clear();
-                          namaController.clear();
-                          kodecontroller.clear();
-                          hargaController.text = '0';
-                          jumlahController.text = '0';
-                          subttlController.text = '0';
-                          diskonController.text = '0';
-                          totalController.text = '0';
-                          notransController.text = 'Transaksi Baru';
-                          kdcustController.text = '01';
-                          nmcustController.text = 'Customer Umum';
-                          totbayar = 0.0;
-                          totbayarku.text = '0';
-                          matang = false;
-                          clearTransactionData();
-                        },
-                ),
-              ],
-            ),
-            SizedBox(height: 5),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                children: [
-                  Text(
-                    kodecontroller.text.isEmpty
-                        ? ''
-                        : '${kodecontroller.text} - ',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    namaController.text,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 5),
-            Visibility(
-                visible: matang == true,
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: isChecked,
-                      onChanged: isSaved
-                          ? null
-                          : (bool? value) {
-                              setState(() {
-                                isChecked = value ?? false;
-                                if (isChecked) {
-                                  namaController.text += ' Siap Saji';
-                                  hargaController.text = nhargamatang1;
-                                } else {
-                                  namaController.text = namaController.text
-                                      .replaceAll(' Siap Saji', '');
-                                  hargaController.text = nhargajual1;
-                                }
-                              });
-                            },
-                    ),
-                    Text('Siap saji'),
                   ],
-                )),
-            SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Harga Jual',
-                    ),
-                    controller: hargaController,
-                  ),
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 1,
-                  child: TextField(
-                    readOnly: isSaved,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'QTY',
-                    ),
-                    controller: jumlahController,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Total',
-                    ),
-                    controller: totalController,
-                  ),
-                ),
-                SizedBox(width: 5),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    color: isSaved ? Colors.grey[300] : Colors.grey[500],
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: (isProcessing || isTransactionPaid)
-                        ? null
-                        : addItemToLocal,
-                    icon: Icon(Icons.add),
-                    color: Colors.black,
-                  ),
-                )),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    'Grand Total : ${calculateGrandTotal()}',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: totbayarku,
-                    decoration: InputDecoration(
-                      labelText: 'Total Bayar',
-                    ),
-                    readOnly: true,
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // Tombol Simpan (hanya muncul jika belum disimpan dan ada item lokal)
-                      if (!isSaved && localItems.isNotEmpty)
-                        IconButton(
-                          icon: Icon(Icons.save),
-                          onPressed: isProcessing ? null : saveToServer,
-                          tooltip: 'Simpan',
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.receipt_long,
+                            color: Colors.blue.shade600, size: 20),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            notransController.text,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
                         ),
-                      // Tombol Bayar (hanya muncul jika sudah disimpan dan belum lunas)
-                      if (isSaved)
-                        IconButton(
-                          icon: Icon(Icons.payment),
-                          onPressed: !transaksiData
-                                  .any((item) => item['llunas'] == '1')
-                              ? showPaymentDialog
-                              : null,
-                          tooltip: 'Bayar',
+                      ],
+                    ),
+                    Divider(height: 24),
+                    Row(
+                      children: [
+                        Material(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: (isProcessing || isTransactionPaid)
+                                ? null
+                                : _searchCustomer,
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Icon(
+                                Icons.search,
+                                size: 20,
+                                color: (isProcessing || isTransactionPaid)
+                                    ? Colors.grey
+                                    : Colors.blue.shade700,
+                              ),
+                            ),
+                          ),
                         ),
-                      IconButton(
-                        icon: Icon(Icons.print),
-                        onPressed: isSaved ? printData : null,
-                        tooltip: 'Print',
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.search),
-                        onPressed: isProcessing ? null : searchTransactions,
-                        tooltip: 'Cari Transaksi',
-                      ),
-                    ],
-                  ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Customer',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                '${kdcustController.text} - ${nmcustController.text}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Divider(
-              color: Colors.black,
-              thickness: 2,
-              indent: 10,
-              endIndent: 10,
-            ),
-            // Tampilkan local items jika belum disimpan
-            if (!isSaved && localItems.isNotEmpty) buildLocalItemsTable(),
-            // Tampilkan transaksi dari server jika sudah disimpan
-            if (isSaved && transaksiData.isNotEmpty) buildTransaksiTable(),
-          ]),
-        )));
+              ),
+
+              // Item Input Card
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Barcode Input Row
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: TextField(
+                            readOnly: isSaved,
+                            controller: barcodeController,
+                            decoration: InputDecoration(
+                              labelText: 'Kode Barang',
+                              labelStyle: TextStyle(fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: Colors.blue.shade400, width: 2),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 14),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Material(
+                          color: (isProcessing || isTransactionPaid)
+                              ? Colors.grey.shade200
+                              : Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: (isProcessing || isTransactionPaid)
+                                ? null
+                                : scanBarcode,
+                            child: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Icon(
+                                Icons.qr_code_scanner,
+                                color: (isProcessing || isTransactionPaid)
+                                    ? Colors.grey
+                                    : Colors.blue.shade700,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Material(
+                          color: (isProcessing || isTransactionPaid)
+                              ? Colors.grey.shade200
+                              : Colors.green.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: (isProcessing || isTransactionPaid)
+                                ? null
+                                : caribrgmanual,
+                            child: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Icon(
+                                Icons.search,
+                                color: (isProcessing || isTransactionPaid)
+                                    ? Colors.grey
+                                    : Colors.green.shade700,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Material(
+                          color: isProcessing
+                              ? Colors.grey.shade200
+                              : Colors.orange.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: isProcessing
+                                ? null
+                                : () {
+                                    barcodeController.clear();
+                                    namaController.clear();
+                                    kodecontroller.clear();
+                                    hargaController.text = _formatNumber(0);
+                                    jumlahController.text = '0';
+                                    subttlController.text = _formatNumber(0);
+                                    diskonController.text = '0';
+                                    totalController.text = _formatNumber(0);
+                                    dppController.text = _formatNumber(0);
+                                    ppnController.text = _formatNumber(0);
+                                    notransController.text = 'Transaksi Baru';
+                                    kdcustController.text = '01';
+                                    nmcustController.text = 'Customer Umum';
+                                    totbayar = 0.0;
+                                    totbayarku.text = '0';
+                                    matang = false;
+                                    clearTransactionData();
+                                  },
+                            child: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Icon(
+                                Icons.refresh,
+                                color: isProcessing
+                                    ? Colors.grey
+                                    : Colors.orange.shade700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+
+                    // Item Name Display
+                    if (namaController.text.isNotEmpty)
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.inventory_2_outlined,
+                                color: Colors.blue.shade700, size: 18),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                kodecontroller.text.isEmpty
+                                    ? namaController.text
+                                    : '${kodecontroller.text} - ${namaController.text}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.blue.shade900,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (namaController.text.isNotEmpty) SizedBox(height: 16),
+
+                    // Checkbox Siap Saji
+                    if (matang)
+                      Container(
+                        margin: EdgeInsets.only(bottom: 16),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: isSaved
+                                ? null
+                                : () {
+                                    setState(() {
+                                      isChecked = !isChecked;
+                                      if (isChecked) {
+                                        namaController.text += ' Siap Saji';
+                                        hargaController.text =
+                                            _formatNumber(nhargamatang1);
+                                        dppController.text =
+                                            _formatNumber(dppmatang1);
+                                        ppnController.text =
+                                            _formatNumber(ppnmatang1);
+                                      } else {
+                                        namaController.text = namaController
+                                            .text
+                                            .replaceAll(' Siap Saji', '');
+                                        hargaController.text =
+                                            _formatNumber(nhargajual1);
+                                        dppController.text =
+                                            _formatNumber(dppnormal1);
+                                        ppnController.text =
+                                            _formatNumber(ppnnormal1);
+                                      }
+                                    });
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      _updateSubtotalAndTotal();
+                                    });
+                                  },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    value: isChecked,
+                                    onChanged: isSaved
+                                        ? null
+                                        : (bool? value) {
+                                            setState(() {
+                                              isChecked = value ?? false;
+                                              if (isChecked) {
+                                                namaController.text +=
+                                                    ' Siap Saji';
+                                                hargaController.text =
+                                                    _formatNumber(
+                                                        nhargamatang1);
+                                                dppController.text =
+                                                    _formatNumber(dppmatang1);
+                                                ppnController.text =
+                                                    _formatNumber(ppnmatang1);
+                                              } else {
+                                                namaController.text =
+                                                    namaController
+                                                        .text
+                                                        .replaceAll(
+                                                            ' Siap Saji', '');
+                                                hargaController.text =
+                                                    _formatNumber(nhargajual1);
+                                                dppController.text =
+                                                    _formatNumber(dppnormal1);
+                                                ppnController.text =
+                                                    _formatNumber(ppnnormal1);
+                                              }
+                                            });
+                                            WidgetsBinding.instance
+                                                .addPostFrameCallback((_) {
+                                              _updateSubtotalAndTotal();
+                                            });
+                                          },
+                                  ),
+                                  Text(
+                                    'Siap Saji',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    // Price & Quantity Row
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: TextField(
+                            readOnly: true,
+                            controller: hargaController,
+                            decoration: InputDecoration(
+                              labelText: 'Harga Jual',
+                              labelStyle: TextStyle(fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade50,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 14),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          flex: 1,
+                          child: TextField(
+                            readOnly: isSaved,
+                            controller: jumlahController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'QTY',
+                              labelStyle: TextStyle(fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: Colors.blue.shade400, width: 2),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+
+                    // DPP & PPN Row
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: TextField(
+                            readOnly: true,
+                            controller: dppController,
+                            decoration: InputDecoration(
+                              labelText: 'DPP',
+                              labelStyle: TextStyle(fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade50,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 14),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          flex: 1,
+                          child: TextField(
+                            readOnly: true,
+                            controller: ppnController,
+                            decoration: InputDecoration(
+                              labelText: 'PPN',
+                              labelStyle: TextStyle(fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade50,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+
+                    // Total & Add Button Row
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: TextField(
+                            readOnly: true,
+                            controller: totalController,
+                            decoration: InputDecoration(
+                              labelText: 'Total',
+                              labelStyle: TextStyle(fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade50,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 14),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Material(
+                          color: (isProcessing || isTransactionPaid)
+                              ? Colors.grey.shade200
+                              : Colors.blue.shade600,
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: (isProcessing || isTransactionPaid)
+                                ? null
+                                : addItemToLocal,
+                            child: Container(
+                              padding: EdgeInsets.all(14),
+                              child: Icon(
+                                Icons.add,
+                                color: (isProcessing || isTransactionPaid)
+                                    ? Colors.grey
+                                    : Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Grand Total & Actions Card
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Grand Total',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                        Text(
+                          calculateGrandTotal(),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    TextField(
+                      controller: totbayarku,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Total Bayar',
+                        labelStyle: TextStyle(fontSize: 14),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Action Buttons
+                    Row(
+                      children: [
+                        if (!isSaved && localItems.isNotEmpty)
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: isProcessing ? null : saveToServer,
+                              icon: Icon(Icons.save, size: 18),
+                              label: Text('Simpan'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue.shade600,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                        if (isSaved) ...[
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: !transaksiData
+                                      .any((item) => item['llunas'] == '1')
+                                  ? showPaymentDialog
+                                  : null,
+                              icon: Icon(Icons.payment, size: 18),
+                              label: Text('Bayar'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green.shade600,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: isSaved ? printData : null,
+                              icon: Icon(Icons.print, size: 18),
+                              label: Text('Print'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.blue.shade700,
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                                side: BorderSide(color: Colors.blue.shade300),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        SizedBox(width: 8),
+                        Material(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: isProcessing ? null : searchTransactions,
+                            child: Padding(
+                              padding: EdgeInsets.all(14),
+                              child: Icon(
+                                Icons.search,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Tables
+              if (!isSaved && localItems.isNotEmpty) buildLocalItemsTable(),
+              if (isSaved && transaksiData.isNotEmpty) buildTransaksiTable(),
+              SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

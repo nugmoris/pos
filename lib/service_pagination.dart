@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const root = "http://103.80.96.26/tuing_pos";
+  //  static const root = "http://103.80.96.26/tuing_pos";
+  static const root = "http://103.80.96.26/pos_copy";
+  //  static const root = "http://103.80.96.26/pos_coba";
   static const action = "LOGIN";
 
   // Cache untuk menyimpan data sementara

@@ -37,6 +37,8 @@ class _ReportPageState extends material.State<ReportPage> {
   String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
   final NumberFormat numberFormat = NumberFormat.decimalPattern('id_ID');
   int totalNrpku = 0;
+  double totalDppku = 0;
+  double totalPpnku = 0;
 
   @override
   void initState() {
@@ -47,14 +49,29 @@ class _ReportPageState extends material.State<ReportPage> {
 
   void _calculateTotals() {
     totalNrpku = 0;
+    totalDppku = 0;
+    totalPpnku = 0;
     for (int i = 0; i < widget.reportData.length; i++) {
-      var nrp = widget.reportData[i]['subtotal'];
-      if (nrp is int) {
-        totalNrpku += nrp;
-      } else if (nrp is String) {
-        totalNrpku += int.tryParse(nrp) ?? 0;
+      final item = widget.reportData[i];
+      final subtotal = item['subtotal'];
+      if (subtotal is int) {
+        totalNrpku += subtotal;
+      } else if (subtotal is String) {
+        totalNrpku += int.tryParse(subtotal) ?? 0;
+      } else if (subtotal is num) {
+        totalNrpku += subtotal.toInt();
       }
+
+      final qty = int.tryParse(item['jumlah']?.toString() ?? '0') ?? 0;
+      totalDppku += _parseToDouble(item['dpp']) * qty;
+      totalPpnku += _parseToDouble(item['ppn']) * qty;
     }
+  }
+
+  double _parseToDouble(dynamic value) {
+    if (value == null) return 0;
+    if (value is num) return value.toDouble();
+    return double.tryParse(value.toString().replaceAll(',', '')) ?? 0;
   }
 
   void _listenBluetooth() {
@@ -83,7 +100,8 @@ class _ReportPageState extends material.State<ReportPage> {
   Future<void> _printReceipt() async {
     if (_selectedDevice == null || !_isConnected) {
       material.ScaffoldMessenger.of(context).showSnackBar(
-        material.SnackBar(content: material.Text('Harap sambungkan printer terlebih dahulu')),
+        material.SnackBar(
+            content: material.Text('Harap sambungkan printer terlebih dahulu')),
       );
       return;
     }
@@ -122,15 +140,18 @@ class _ReportPageState extends material.State<ReportPage> {
         addCommand([0x1B, 0x45, 0x01]); // Bold on
         addText('$nmbarang\n');
         addCommand([0x1B, 0x45, 0x00]); // Bold off
-        addText('${numberFormat.format(nqty)} x Rp.${numberFormat.format(harga)} = Rp.${numberFormat.format(subtotal)}\n');
+        addText(
+            '${numberFormat.format(nqty)} x Rp.${numberFormat.format(harga)} = Rp.${numberFormat.format(subtotal)}\n');
       }
 
       // Center for separator
       addCommand([0x1B, 0x61, 0x01]); // Center
       addText('----------------------------\n');
 
-      // Right for total
+      // Right for tax breakdown & total
       addCommand([0x1B, 0x61, 0x02]); // Right
+      addText('DPP : Rp.${numberFormat.format(totalDppku.round())}\n');
+      addText('PPN : Rp.${numberFormat.format(totalPpnku.round())}\n');
       addCommand([0x1B, 0x45, 0x01]); // Bold on
       addText('Total: Rp.${numberFormat.format(totalNrpku)}\n');
       addCommand([0x1B, 0x45, 0x00]); // Bold off
@@ -185,16 +206,20 @@ class _ReportPageState extends material.State<ReportPage> {
                 child: material.Column(
                   crossAxisAlignment: material.CrossAxisAlignment.start,
                   children: [
-                    material.Text('Tanggal: $currentDate', style: const material.TextStyle(fontSize: 16)),
-                    material.Text('No. Transaksi: ${widget.varnotrans}', style: const material.TextStyle(fontSize: 16)),
+                    material.Text('Tanggal: $currentDate',
+                        style: const material.TextStyle(fontSize: 16)),
+                    material.Text('No. Transaksi: ${widget.varnotrans}',
+                        style: const material.TextStyle(fontSize: 16)),
                     const material.SizedBox(height: 16),
                     const material.Divider(),
                     ...widget.reportData.map((item) {
                       final int nqty = int.tryParse(item['jumlah'] ?? '0') ?? 0;
                       final int harga = int.tryParse(item['harga'] ?? '0') ?? 0;
-                      final int subtotal = int.tryParse(item['subtotal'] ?? '0') ?? 0;
+                      final int subtotal =
+                          int.tryParse(item['subtotal'] ?? '0') ?? 0;
                       return material.Padding(
-                        padding: const material.EdgeInsets.symmetric(vertical: 8.0),
+                        padding:
+                            const material.EdgeInsets.symmetric(vertical: 8.0),
                         child: material.Column(
                           crossAxisAlignment: material.CrossAxisAlignment.start,
                           children: [
@@ -207,10 +232,13 @@ class _ReportPageState extends material.State<ReportPage> {
                             ),
                             const material.SizedBox(height: 4),
                             material.Row(
-                              mainAxisAlignment: material.MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment:
+                                  material.MainAxisAlignment.spaceBetween,
                               children: [
-                                material.Text('${numberFormat.format(nqty)} x Rp.${numberFormat.format(harga)}'),
-                                material.Text('Rp.${numberFormat.format(subtotal)}'),
+                                material.Text(
+                                    '${numberFormat.format(nqty)} x Rp.${numberFormat.format(harga)}'),
+                                material.Text(
+                                    'Rp.${numberFormat.format(subtotal)}'),
                               ],
                             ),
                             const material.Divider(),
@@ -220,12 +248,22 @@ class _ReportPageState extends material.State<ReportPage> {
                     }).toList(),
                     material.Align(
                       alignment: material.Alignment.centerRight,
-                      child: material.Text(
-                        'Total: Rp.${numberFormat.format(totalNrpku)}',
-                        style: const material.TextStyle(
-                          fontWeight: material.FontWeight.bold,
-                          fontSize: 18,
-                        ),
+                      child: material.Column(
+                        crossAxisAlignment: material.CrossAxisAlignment.end,
+                        children: [
+                          material.Text(
+                              'DPP: Rp.${numberFormat.format(totalDppku.round())}'),
+                          material.Text(
+                              'PPN: Rp.${numberFormat.format(totalPpnku.round())}'),
+                          const material.SizedBox(height: 4),
+                          material.Text(
+                            'Total: Rp.${numberFormat.format(totalNrpku)}',
+                            style: const material.TextStyle(
+                              fontWeight: material.FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -248,12 +286,14 @@ class _ReportPageState extends material.State<ReportPage> {
                     items: _devices
                         .map((device) => material.DropdownMenuItem<String>(
                               value: device.address,
-                              child: material.Text("${device.name} (${device.address})"),
+                              child: material.Text(
+                                  "${device.name} (${device.address})"),
                             ))
                         .toList(),
                     onChanged: (address) {
                       setState(() {
-                        _selectedDevice = _devices.firstWhere((d) => d.address == address);
+                        _selectedDevice =
+                            _devices.firstWhere((d) => d.address == address);
                       });
                     },
                     hint: const material.Text('Pilih Printer'),
@@ -268,10 +308,14 @@ class _ReportPageState extends material.State<ReportPage> {
                           ? null
                           : () async {
                               if (_selectedDevice != null) {
-                                await BluetoothPrintPlus.connect(_selectedDevice!);
+                                await BluetoothPrintPlus.connect(
+                                    _selectedDevice!);
                               } else {
-                                material.ScaffoldMessenger.of(context).showSnackBar(
-                                  material.SnackBar(content: material.Text('Pilih printer terlebih dahulu')),
+                                material.ScaffoldMessenger.of(context)
+                                    .showSnackBar(
+                                  material.SnackBar(
+                                      content: material.Text(
+                                          'Pilih printer terlebih dahulu')),
                                 );
                               }
                             },
@@ -289,11 +333,13 @@ class _ReportPageState extends material.State<ReportPage> {
                 ),
                 const material.SizedBox(height: 16),
                 material.ElevatedButton(
-                  onPressed: _isConnected && !_isPrinting ? _printReceipt : null,
+                  onPressed:
+                      _isConnected && !_isPrinting ? _printReceipt : null,
                   style: material.ElevatedButton.styleFrom(
                     minimumSize: const material.Size(double.infinity, 50),
                   ),
-                  child: material.Text(_isPrinting ? 'Sedang Mencetak...' : 'Cetak Nota'),
+                  child: material.Text(
+                      _isPrinting ? 'Sedang Mencetak...' : 'Cetak Nota'),
                 ),
               ],
             ),

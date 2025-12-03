@@ -4,7 +4,8 @@ import 'service.dart';
 
 class ItemSearchPopup extends StatefulWidget {
   final String varpbuser;
-  final Function(String, String, String, String, String, String) onItemSelected;
+  final Function(String, String, String, String, String, String, String, String,
+      String, String) onItemSelected;
 
   ItemSearchPopup({required this.varpbuser, required this.onItemSelected});
 
@@ -27,6 +28,7 @@ class _ItemSearchPopupState extends State<ItemSearchPopup> {
           await ApiService.crbarang3(widget.varpbuser, '', '2');
       setState(() {
         searchResults = result;
+        print('Initial item data: $searchResults');
       });
     } catch (e) {
       print('Error fetching initial item data: $e');
@@ -85,7 +87,12 @@ class _ItemSearchPopupState extends State<ItemSearchPopup> {
                                     data['nhargajual'],
                                     data['lmatang'],
                                     data['nhargamatang'],
-                                    data['kodebarcode']);
+                                    data['kodebarcode'] ?? '',
+                                    data['dpp'] ?? '0',
+                                    data['ppn'] ?? '0',
+                                    data['dppmatang'] ?? '0',
+                                    data['ppnmatang'] ?? '0');
+
                                 Navigator.of(context).pop();
                               },
                             ),
@@ -100,7 +107,11 @@ class _ItemSearchPopupState extends State<ItemSearchPopup> {
                                     data['nhargajual'],
                                     data['lmatang'],
                                     data['nhargamatang'],
-                                    data['kodebarcode']);
+                                    data['kodebarcode'],
+                                    data['dpp'] ?? '0',
+                                    data['ppn'] ?? '0',
+                                    data['dppmatang'] ?? '0',
+                                    data['ppnmatang'] ?? '0');
                                 Navigator.of(context).pop();
                               },
                             ),

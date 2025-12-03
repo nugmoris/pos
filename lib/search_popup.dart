@@ -92,40 +92,40 @@ class _SearchPopupState extends State<SearchPopup> {
                               DataCell(
                                 Text(data['notrans']),
                                 onTap: () {
-                                  widget.onItemSelected(
-                                      data['notrans'], data['nbayar'] ?? 0);
+                                  widget.onItemSelected(data['notrans'] ?? '',
+                                      data['nbayar'] ?? '0');
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['tanggal']),
                                 onTap: () {
-                                  widget.onItemSelected(
-                                      data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(data['notrans'] ?? '',
+                                      data['nbayar'] ?? '0'.toString());
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['nojual']),
                                 onTap: () {
-                                  widget.onItemSelected(
-                                      data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(data['notrans'] ?? '',
+                                      data['nbayar'].toString() ?? '0');
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
                                 Text(data['nmbarang']),
                                 onTap: () {
-                                  widget.onItemSelected(
-                                      data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(data['notrans'] ?? '',
+                                      data['nbayar'] ?? '0'.toString());
                                   Navigator.of(context).pop();
                                 },
                               ),
                               DataCell(
-                                Text(data['nbayar']),
+                                Text(data['nbayar'] ?? '0'.toString()),
                                 onTap: () {
-                                  widget.onItemSelected(
-                                      data['notrans'], data['nbayar']);
+                                  widget.onItemSelected(data['notrans'] ?? ' ',
+                                      data['nbayar'] ?? '0'.toString());
                                   Navigator.of(context).pop();
                                 },
                               ),

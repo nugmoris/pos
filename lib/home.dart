@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'ganti_pwd.dart';
 import 'login.dart';
-import 'utils/tombol.dart';
 import 'var_provider.dart';
 
 class HomeSalesPage extends ConsumerStatefulWidget {
@@ -34,7 +33,6 @@ class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
       widget.varlks,
       widget.varnmlok
     ]);
-    print("Lap. Penjualan clicked");
   }
 
   void stockFunction() {
@@ -44,7 +42,6 @@ class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
       widget.varlks,
       widget.varnmlok
     ]);
-    print("Stock clicked");
   }
 
   void daftarHargaFunction() {
@@ -54,11 +51,6 @@ class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
       widget.varlks,
       widget.varnmlok
     ]);
-    print("Daftar Harga clicked");
-  }
-
-  void penjualanFunction() {
-    print("Penjualan clicked");
   }
 
   void setorFunction() {
@@ -68,7 +60,6 @@ class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
       widget.varlks,
       widget.varnmlok
     ]);
-    print("Setor clicked");
   }
 
   void penjKaryawanFunction() {
@@ -78,7 +69,6 @@ class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
       widget.varlks,
       widget.varnmlok
     ]);
-    print("Penj. Karyawan clicked");
   }
 
   void lapsetor() {
@@ -88,7 +78,6 @@ class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
       widget.varlks,
       widget.varnmlok
     ]);
-    print("Lap. Daftar Setor clicked");
   }
 
   void julablmlunas() {
@@ -107,7 +96,6 @@ class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
       widget.varlks,
       widget.varnmlok
     ]);
-    print("Laporan clicked");
   }
 
   void returjual() {
@@ -118,316 +106,359 @@ class _HomeSalesPageState extends ConsumerState<HomeSalesPage> {
       widget.varnmlok,
       saldoProvider.toString(),
     ]);
-    print("Retur Penjualan diklik");
   }
 
   @override
   Widget build(BuildContext context) {
     final saldoKas = ref.watch(saldoProvider);
-    final saldoKasprov = ref.watch(saldoProvider);
 
-    print('Saldo kas di home : $saldoKasprov');
     return Scaffold(
-      backgroundColor: Colors.white.withOpacity(0.96),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.cable), label: ""),
-        ],
-      ),
+      backgroundColor: Color(0xFFF8F9FA),
       body: SafeArea(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              // Baris pertama
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showMenu(
-                          color: Colors.white70,
-                          context: context,
-                          position: RelativeRect.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                          items: [
-                            PopupMenuItem(
-                              child: ListTile(
-                                title: Text('Ganti Password'),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Future.delayed(Duration(milliseconds: 10),
-                                      () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            GantiPwdPage(widget.varpbuser),
-                                      ),
-                                    );
-                                  });
-                                },
-                              ),
-                            ),
-                            PopupMenuItem(
-                              child: ListTile(
-                                title: Text('Logout'),
-                                onTap: () {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => LoginPage(
-                                          myversion1: widget.myversion1,
-                                          currentVersion:
-                                              widget.currentVersion),
-                                    ),
-                                    (route) => false,
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                      child: Container(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.menu,
-                              color: Colors.blue[700],
-                            ),
-                            Text(
-                              '${widget.myversion1} / ${widget.currentVersion}',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.blue[700],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+        child: CustomScrollView(
+          slivers: [
+            // App Bar
+            SliverAppBar(
+              floating: true,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              title: Column(
+                children: [
+                  Text(
+                    'Koperasi Kasih',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Color(0xFF1A1A1A),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Container(
-                      width: 250,
-                      height: 60,
-                      color: Colors.transparent,
+                  ),
+                  Text(
+                    widget.varnmlok,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Color(0xFF6B7280),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              leading: IconButton(
+                icon: Icon(Icons.menu_rounded, color: Color(0xFF1A1A1A)),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    builder: (context) => Container(
+                      padding: EdgeInsets.symmetric(vertical: 20),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            'Koperasi Kasih',
-                            style: GoogleFonts.leagueSpartan(
-                              color: Colors.blue[700],
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
+                          ListTile(
+                            leading: Icon(Icons.lock_outline,
+                                color: Color(0xFF1A1A1A)),
+                            title: Text('Ganti Password',
+                                style: GoogleFonts.plusJakartaSans()),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      GantiPwdPage(widget.varpbuser),
+                                ),
+                              );
+                            },
                           ),
-                          Text(
-                            widget.varnmlok,
-                            style: GoogleFonts.quicksand(
-                              color: Colors.blue[700],
-                              fontSize: 16,
-                            ),
-                            textAlign: TextAlign.center,
+                          ListTile(
+                            leading: Icon(Icons.logout, color: Colors.red),
+                            title: Text('Logout',
+                                style: GoogleFonts.plusJakartaSans(
+                                    color: Colors.red)),
+                            onTap: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginPage(
+                                      myversion1: widget.myversion1,
+                                      currentVersion: widget.currentVersion),
+                                ),
+                                (route) => false,
+                              );
+                            },
                           ),
                         ],
                       ),
                     ),
-                    GestureDetector(
-                      child: Container(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.person,
-                              color: Colors.blue[700],
-                            ),
-                            Text(
-                              widget.varpbuser,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.blue[700],
-                              ),
-                            ),
-                          ],
+                  );
+                },
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        widget.varpbuser,
+                        style: GoogleFonts.plusJakartaSans(
+                          color: Color(0xFF1A1A1A),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ),
-              // Baris kedua
-              // Saldo kas
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-                child: Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width - 10,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: AssetImage('assets/biru2.png'),
-                          fit: BoxFit.cover,
+                      Text(
+                        'v${widget.currentVersion}',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: Color(0xFF9CA3AF),
+                          fontSize: 10,
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            // Content
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Saldo Card
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF3B82F6).withOpacity(0.3),
+                            blurRadius: 20,
+                            offset: Offset(0, 10),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Saldo Kas',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.left,
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(
+                                    Icons.account_balance_wallet_outlined,
+                                    color: Colors.white,
+                                    size: 20),
+                              ),
+                              SizedBox(width: 12),
+                              Text(
+                                'Saldo Kas',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
+                          SizedBox(height: 16),
                           Text(
-                            saldoKas.isNegative
-                                ? numberFormat.format(-saldoKas)
-                                : numberFormat.format(saldoKas),
-                            style: TextStyle(
+                            'Rp ${saldoKas.isNegative ? numberFormat.format(-saldoKas) : numberFormat.format(saldoKas)}',
+                            style: GoogleFonts.plusJakartaSans(
                               color: Colors.white,
-                              fontSize: 50,
+                              fontSize: 32,
                               fontWeight: FontWeight.bold,
+                              letterSpacing: -1,
                             ),
-                            textAlign: TextAlign.left,
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              // Baris ketiga
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TombolWidget(
-                        icon: Icons.list,
-                        text: 'Lap. Penjualan',
-                        onTap: lapPenjualanFunction,
-                      ),
-                      SizedBox(width: 10),
-                      TombolWidget(
-                        icon: Icons.checklist,
-                        text: 'Stock',
-                        onTap: stockFunction,
-                      ),
-                      SizedBox(width: 10),
-                      TombolWidget(
-                        icon: Icons.price_check_sharp,
-                        text: 'Daftar Harga',
-                        onTap: daftarHargaFunction,
-                      ),
-                      SizedBox(width: 10),
-                      TombolWidget(
-                        icon: CupertinoIcons.cart_fill_badge_minus,
-                        text: 'Retur Penjualan',
-                        onTap: returjual,
-                      ),
-                      SizedBox(width: 10),
-                    ],
-                  ),
-                ),
-              ),
-              // Baris keempat
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: GestureDetector(
-                  onTap: () async {
-                    final updatedSaldo = await Navigator.pushNamed(
-                      context,
-                      '/jual',
-                      arguments: [
-                        widget.varpbuser,
-                        widget.varbagian,
-                        widget.varlks,
-                        widget.varnmlok,
-                        saldoKas.toString(),
-                      ],
-                    );
-                    // print('update saldo $updatedSaldo');
-                    // if (updatedSaldo != null) {
-                    //   setState(() {
-                    //     widget.varsaldokas = updatedSaldo as String;
-                    //     // Update saldo kas dengan nilai yang diterima
-                    //     saldokasku = double.tryParse(widget.varsaldokas
-                    //             .replaceAll(',', '')
-                    //             .replaceAll('-', '')) ??
-                    //         0.0;
-                    //   });
-                    // }
-                  },
-                  child: Container(
-                    padding:
-                        EdgeInsets.all(15), // Ukuran besar padding untuk icon
-                    decoration: BoxDecoration(
-                      color: Colors.blue[700], // Warna latar belakang ikon
-                      shape: BoxShape.circle, // Bentuk ikon
-                    ),
-                    child: Icon(
-                      CupertinoIcons
-                          .cart_fill_badge_plus, // Ganti dengan ikon yang diinginkan
-                      color: Colors.white, // Warna ikon
-                      size: 80, // Ukuran ikon
-                    ),
-                  ),
-                ),
-              ),
 
-              // Baris kelima
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    SizedBox(height: 32),
+
+                    // Quick Action Button
+                    Center(
+                      child: GestureDetector(
+                        onTap: () async {
+                          await Navigator.pushNamed(
+                            context,
+                            '/jual',
+                            arguments: [
+                              widget.varpbuser,
+                              widget.varbagian,
+                              widget.varlks,
+                              widget.varnmlok,
+                              saldoKas.toString(),
+                            ],
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(28),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF10B981), Color(0xFF059669)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF10B981).withOpacity(0.4),
+                                blurRadius: 24,
+                                offset: Offset(0, 12),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            CupertinoIcons.cart_fill_badge_plus,
+                            color: Colors.white,
+                            size: 48,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 32),
+
+                    // Menu Grid
+                    Text(
+                      'Menu Utama',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Color(0xFF1A1A1A),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    GridView.count(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 0.95,
                       children: [
-                        TombolWidget(
-                          icon: Icons.monetization_on,
-                          text: 'Setor',
+                        _buildMenuCard(
+                          icon: Icons.receipt_long_outlined,
+                          label: 'Lap.\nPenjualan',
+                          onTap: lapPenjualanFunction,
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.inventory_2_outlined,
+                          label: 'Lap. \nStock',
+                          onTap: stockFunction,
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.sell_outlined,
+                          label: 'Daftar\nHarga',
+                          onTap: daftarHargaFunction,
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.assignment_return_outlined,
+                          label: 'Retur\nPenjualan',
+                          onTap: returjual,
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.paid_outlined,
+                          label: 'Setor',
                           onTap: setorFunction,
                         ),
-                        SizedBox(width: 10),
-                        TombolWidget(
-                          icon: Icons.emoji_people,
-                          text: 'Penj. Karyawan',
+                        _buildMenuCard(
+                          icon: Icons.person_outline,
+                          label: ' Lap. \nPenj.\nKaryawan',
                           onTap: penjKaryawanFunction,
                         ),
-                        SizedBox(width: 10),
-                        TombolWidget(
-                          icon: Icons.library_books,
-                          text: 'Laporan Kas',
+                        _buildMenuCard(
+                          icon: Icons.description_outlined,
+                          label: 'Laporan\nKas',
                           onTap: laporanFunction,
                         ),
-                        SizedBox(width: 10),
-                        TombolWidget(
-                          icon: Icons.list_alt_sharp,
-                          text: 'Daftar Setoran',
+                        _buildMenuCard(
+                          icon: Icons.list_alt_outlined,
+                          label: 'Daftar\nSetoran',
                           onTap: lapsetor,
                         ),
-                        SizedBox(width: 10),
-                        TombolWidget(
-                          icon: Icons.question_mark,
-                          text: 'Penjualan blm Lunas',
+                        _buildMenuCard(
+                          icon: Icons.pending_actions_outlined,
+                          label: 'Belum\nLunas',
                           onTap: julablmlunas,
                         ),
                       ],
-                    )),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuCard({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFF1A1A1A).withOpacity(0.04),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Color(0xFF3B82F6).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: Color(0xFF3B82F6),
+                size: 28,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                color: Color(0xFF1A1A1A),
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                height: 1.3,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

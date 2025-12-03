@@ -497,7 +497,8 @@ class _JualPageState extends State<JualPage> {
       builder: (BuildContext context) {
         return ItemSearchPopup(
           varpbuser: widget.varpbuser,
-          onItemSelected: (kode, nama, nhargajual, lmatang, nhargamatang) {
+          onItemSelected: (kode, nama, nhargajual, lmatang, nhargamatang,
+              kodebarcode, ndpp, nppn) {
             setState(() {
               final formatter = NumberFormat("#,###");
               barcodeController.text = kode;

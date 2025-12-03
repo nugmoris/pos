@@ -18,13 +18,18 @@ import 'service.dart';
 import 'setor.dart';
 
 // Define myversion variable
-String myversion1 = 'POS30';
+String myversion1 = 'POS31';
 String currentVersion = '';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // currentVersion = await getCurrentVersion(); // Dihapus agar tidak error timeout
-  // await checkAndUpdateApp(); // Dihapus agar tidak error timeout
+  // Panggil getCurrentVersion() dengan error handling
+  try {
+    await getCurrentVersion();
+  } catch (e) {
+    print('Error mendapatkan versi: $e');
+    // currentVersion tetap kosong jika error, akan dicek di LoginPage
+  }
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -32,7 +37,8 @@ Future<String> getCurrentVersion() async {
   final result1 = await ApiService.cekversi();
 
   final version = result1['versiku'] ?? ''; // Access the 'versiku' key directly
-
+  print('versi database: $version');
+  currentVersion = version;
   return version;
 }
 

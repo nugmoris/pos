@@ -29,7 +29,8 @@ class _DaftarHargaState extends State<DaftarHarga> {
 
   Future<void> _fetchJenisBarang() async {
     try {
-      final List<Map<String, dynamic>> data = await ApiService.jenisbarang(widget.varpbuser);
+      final List<Map<String, dynamic>> data =
+          await ApiService.jenisbarang(widget.varpbuser);
       setState(() {
         jenisBarangList = data;
       });
@@ -74,90 +75,252 @@ class _DaftarHargaState extends State<DaftarHarga> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Harga'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            DropdownButton<String>(
-              hint: Text('Pilih Jenis Barang'),
-              value: selectedJenis,
-              isExpanded: true,
-              items: jenisBarangList.map((item) {
-                return DropdownMenuItem<String>(
-                  value: item['kode'],
-                  child: Text(item['nama']),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedJenis = value;
-                });
-              },
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: cariController,
-                    decoration: InputDecoration(
-                      labelText: 'Cari',
-                      border: OutlineInputBorder(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFEEF2FF), Color(0xFFE0EAFC)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(28),
+                      topRight: Radius.circular(28),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 20,
+                        offset: Offset(0, -8),
+                      )
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        _buildFilterCard(),
+                        SizedBox(height: 20),
+                        Expanded(child: _buildResultArea()),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: _fetchDaftarHarga,
-                  child: Text('Tampilkan'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.local_offer_rounded, color: Color(0xFF4C1D95)),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Daftar Harga',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1F2937),
+                  ),
+                ),
+                Text(
+                  widget.varnmlok,
+                  style: TextStyle(color: Color(0xFF6B7280)),
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Expanded(
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: DataTable(
-                          columnSpacing: 10.0, // Set column spacing
-                          columns: const [
-                            DataColumn(label: Text('Jenis Barang')),
-                            DataColumn(label: Text('Nama Barang')),
-                            DataColumn(label: Text('Harga')),
-                          ],
-                          rows: DaftarHargaList.map((item) {
-                            return DataRow(cells: [
-                              DataCell(
-                                Container(
-                                  width: 100, // Adjust the width as needed
-                                  child: Text(item['nmjenis'] ?? ''),
-                                ),
-                              ),
-                              DataCell(
-                                Container(
-                                  width: 150, // Adjust the width as needed
-                                  child: Text(item['nama'] ?? ''),
-                                ),
-                              ),
-                              DataCell(
-                                Container(
-                                  width: 80, // Adjust the width as needed
-                                  child: Text(formatCurrency(item['nhargajual'] ?? 0)),
-                                ),
-                              ),
-                            ]);
-                          }).toList(),
-                        ),
-                      ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              widget.varpbuser,
+              style: TextStyle(
+                color: Color(0xFF4338CA),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterCard() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Color(0xFFF9FAFB),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Color(0xFFE5E7EB)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Filter Data',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF111827),
+            ),
+          ),
+          SizedBox(height: 16),
+          DropdownButtonFormField<String>(
+            value: selectedJenis,
+            decoration: InputDecoration(
+              labelText: 'Jenis Barang',
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            items: jenisBarangList.map((item) {
+              return DropdownMenuItem<String>(
+                value: item['kode'],
+                child: Text(item['nama']),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedJenis = value;
+              });
+            },
+          ),
+          SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: cariController,
+                  decoration: InputDecoration(
+                    hintText: 'Cari nama barang...',
+                    prefixIcon: Icon(Icons.search, color: Color(0xFF9CA3AF)),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
                     ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: _fetchDaftarHarga,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF4338CA),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Text(
+                  'Tampilkan',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultArea() {
+    if (isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (DaftarHargaList.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.inventory_2_outlined,
+                size: 56, color: Color(0xFFCBD5F5)),
+            SizedBox(height: 12),
+            Text(
+              'Belum ada data',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF6B7280),
+              ),
             ),
           ],
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Color(0xFFE5E7EB)),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SingleChildScrollView(
+            child: DataTable(
+              headingRowColor: MaterialStateProperty.all(Color(0xFFF3F4F6)),
+              columnSpacing: 32,
+              columns: const [
+                DataColumn(label: Text('Jenis Barang')),
+                DataColumn(label: Text('Nama Barang')),
+                DataColumn(label: Text('Harga')),
+              ],
+              rows: DaftarHargaList.map((item) {
+                return DataRow(cells: [
+                  DataCell(Text(item['nmjenis'] ?? '')),
+                  DataCell(
+                    SizedBox(
+                      width: 180,
+                      child: Text(
+                        item['nama'] ?? '',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      'Rp ${formatCurrency(item['nhargajual'] ?? 0)}',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ]);
+              }).toList(),
+            ),
+          ),
         ),
       ),
     );

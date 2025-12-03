@@ -101,9 +101,9 @@ class _LapPageState extends State<LapPage> {
         currentPage,
         itemsPerPage,
       );
-      print('Fetched detail data: ${fetchedData['data'].length} rows');
-      print('Page Total: ${fetchedData['total']}');
-      print('Grand Total All Pages: ${fetchedData['grandTotal']}');
+      // print('Fetched detail data: ${fetchedData['data'].length} rows');
+      // print('Page Total: ${fetchedData['total']}');
+      // print('Grand Total All Pages: ${fetchedData['grandTotal']}');
 
       setState(() {
         if (reset) {
@@ -192,127 +192,319 @@ class _LapPageState extends State<LapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Laporan'),
-        actions: [
-          ToggleButtons(
-            isSelected: [
-              selectedViewMode == 'summary',
-              selectedViewMode == 'detail'
-            ],
-            onPressed: (index) {
-              setState(() {
-                selectedViewMode = index == 0 ? 'summary' : 'detail';
-              });
-            },
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFEEF2FF), Color(0xFFE0EAFC)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text('Ringkasan'),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text('Detail'),
+              _buildHeader(),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(28),
+                      topRight: Radius.circular(28),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 20,
+                        offset: Offset(0, -8),
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      _buildViewSwitcher(),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          child: Column(
+                            children: [
+                              _buildFilterSection(),
+                              SizedBox(height: 16),
+                              Expanded(
+                                child: AnimatedSwitcher(
+                                  duration: Duration(milliseconds: 300),
+                                  child: selectedViewMode == 'summary'
+                                      ? _buildSummaryView()
+                                      : _buildDetailView(),
+                                ),
+                              ),
+                              if (selectedViewMode == 'summary' &&
+                                  summaryData != null)
+                                _buildSummaryFooter(),
+                              if (selectedViewMode == 'detail' &&
+                                  data.isNotEmpty)
+                                _buildDetailFooter(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
-        ],
+        ),
       ),
-      body: Column(
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Row(
         children: [
-          _buildFilterSection(),
-          Expanded(
-            child: selectedViewMode == 'summary'
-                ? _buildSummaryView()
-                : _buildDetailView(),
+          CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.bar_chart_rounded, color: Color(0xFF4C1D95)),
           ),
-          if (selectedViewMode == 'summary' && summaryData != null)
-            _buildSummaryFooter(),
-          if (selectedViewMode == 'detail' && data.isNotEmpty)
-            _buildDetailFooter(),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Dashboard Laporan',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1F2937),
+                  ),
+                ),
+                Text(
+                  widget.varnmlok,
+                  style: TextStyle(
+                    color: Color(0xFF4B5563),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              widget.varpbuser,
+              style: TextStyle(
+                color: Color(0xFF4338CA),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildFilterSection() {
+  Widget _buildViewSwitcher() {
     return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Text(
-            widget.varnmlok,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFFF3F4F6),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            _buildSwitcherButton('Ringkasan', selectedViewMode == 'summary',
+                () {
+              setState(() => selectedViewMode = 'summary');
+            }),
+            _buildSwitcherButton('Detail', selectedViewMode == 'detail', () {
+              setState(() => selectedViewMode = 'detail');
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildSwitcherButton(
+      String label, bool isActive, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isActive ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 12,
+                      offset: Offset(0, 6),
+                    )
+                  ]
+                : [],
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: isActive ? Color(0xFF4338CA) : Color(0xFF9CA3AF),
+              ),
             ),
           ),
-          SizedBox(height: 10),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterSection() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Color(0xFFF9FAFB),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Color(0xFFE5E7EB)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Filter Periode',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF374151),
+            ),
+          ),
+          SizedBox(height: 12),
           Row(
             children: [
               Expanded(
-                child: GestureDetector(
+                child: _buildDateField(
+                  label: 'Dari',
+                  value: selectedDate1,
                   onTap: () => _selectDate1(context),
-                  child: AbsorbPointer(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Dari Tgl',
-                        suffixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(),
-                      ),
-                      controller: TextEditingController(
-                        text: selectedDate1?.toString().split(' ')[0] ?? '',
-                      ),
-                    ),
-                  ),
                 ),
               ),
-              SizedBox(width: 10),
+              SizedBox(width: 12),
               Expanded(
-                child: GestureDetector(
+                child: _buildDateField(
+                  label: 'Sampai',
+                  value: selectedDate2,
                   onTap: () => _selectDate2(context),
-                  child: AbsorbPointer(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Sampai Tgl',
-                        suffixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(),
-                      ),
-                      controller: TextEditingController(
-                        text: selectedDate2?.toString().split(' ')[0] ?? '',
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 16),
           Row(
             children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  _showDateRangeWarning();
-                  if (selectedViewMode == 'summary') {
-                    _fetchSummary();
-                  } else {
-                    _fetchData();
-                  }
-                },
-                icon: Icon(Icons.search),
-                label: Text('Tampilkan'),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    _showDateRangeWarning();
+                    if (selectedViewMode == 'summary') {
+                      _fetchSummary();
+                    } else {
+                      _fetchData();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: Color(0xFF4338CA),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.bar_chart_rounded,
+                    size: 18,
+                    color: Colors.white,
+                  ),
+                  label:
+                      Text('Tampilkan', style: TextStyle(color: Colors.white)),
+                ),
               ),
-              SizedBox(width: 10),
-              // ElevatedButton.icon(
-              //   onPressed: () {
-              //     // Export functionality
-              //   },
-              //   icon: Icon(Icons.download),
-              //   label: Text('Export'),
-              // ),
+              SizedBox(width: 12),
+              OutlinedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedDate1 = DateTime.now();
+                    selectedDate2 = DateTime.now();
+                  });
+                },
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  side: BorderSide(color: Color(0xFF4338CA)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: Text(
+                  'Reset',
+                  style: TextStyle(color: Color(0xFF4338CA)),
+                ),
+              ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDateField({
+    required String label,
+    required DateTime? value,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Color(0xFFE5E7EB)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.calendar_today_rounded,
+                size: 18, color: Color(0xFF9CA3AF)),
+            SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 0.8,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                  ),
+                  Text(
+                    value != null ? dateFormat.format(value) : '-',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1F2937),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -327,71 +519,113 @@ class _LapPageState extends State<LapPage> {
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.only(bottom: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Card(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Ringkasan Penjualan',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  _buildSummaryItem(
-                    'Total Transaksi',
-                    summaryData!['total_transaksi'].toString(),
-                  ),
-                  _buildSummaryItem(
-                    'Total Penjualan',
-                    //   'Rp ${numberFormat.format(summaryData!['total_penjualan'])}',
-                    'Rp ${numberFormat.format(num.tryParse(summaryData!['total_penjualan'].toString()) ?? 0)}',
-                  ),
-                  _buildSummaryItem(
-                    'Rata-rata per Transaksi',
-                    // 'Rp ${numberFormat.format(summaryData!['rata_rata'])}',
-                    'Rp ${numberFormat.format(num.tryParse(summaryData!['rata_rata'].toString()) ?? 0)}',
-                  ),
-                  _buildSummaryItem(
-                    'Customer Terbanyak',
-                    summaryData!['top_customer'] ?? '',
-                  ),
-                ],
+          GridView.count(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            childAspectRatio: 1.6,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+            children: [
+              _buildStatCard(
+                label: 'Total Transaksi',
+                value: summaryData!['total_transaksi'].toString(),
+                icon: Icons.receipt_long,
+                color: Color(0xFF4C1D95),
               ),
-            ),
+              _buildStatCard(
+                label: 'Total Penjualan',
+                value:
+                    'Rp ${numberFormat.format(num.tryParse(summaryData!['total_penjualan'].toString()) ?? 0)}',
+                icon: Icons.payments_rounded,
+                color: Color(0xFF2563EB),
+              ),
+              _buildStatCard(
+                label: 'Rata-rata/Transaksi',
+                value:
+                    'Rp ${numberFormat.format(num.tryParse(summaryData!['rata_rata'].toString()) ?? 0)}',
+                icon: Icons.trending_up,
+                color: Color(0xFF059669),
+              ),
+              _buildStatCard(
+                label: 'Customer Terbanyak',
+                value: summaryData!['top_customer'] ?? '-',
+                icon: Icons.people_alt_rounded,
+                color: Color(0xFFF97316),
+              ),
+            ],
           ),
           SizedBox(height: 16),
-          Card(
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Color(0xFFE5E7EB)),
+            ),
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Top 10 Barang Terlaris',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Top 10 Barang Terlaris',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF1F2937),
+                        ),
+                      ),
+                      Icon(Icons.bar_chart, color: Color(0xFF4338CA)),
+                    ],
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 12),
                   ...summaryData!['top_barang'].map<Widget>((item) {
-                    return ListTile(
-                      title: Text(item['nama']),
-                      subtitle: Text('Qty: ${item['qty']}'),
-                      // trailing:
-                      //Text('Rp ${numberFormat.format(item['total'])}'),
-                      //  Text(
-                      //      'Rp ${numberFormat.format(num.tryParse(summaryData!['total'].toString()) ?? 0)}'),
-                      trailing: Text(
-                        'Rp ${numberFormat.format(num.tryParse(item['total'].toString()) ?? 0)}',
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF9FAFB),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['nama'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF111827),
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Qty: ${item['qty']}',
+                                  style: TextStyle(
+                                    color: Color(0xFF6B7280),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            'Rp ${numberFormat.format(num.tryParse(item['total'].toString()) ?? 0)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF111827),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }).toList(),
@@ -404,16 +638,46 @@ class _LapPageState extends State<LapPage> {
     );
   }
 
-  Widget _buildSummaryItem(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildStatCard({
+    required String label,
+    required String value,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Color(0xFFE5E7EB)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label),
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: color),
+          ),
+          Spacer(),
+          Text(
+            label,
+            style: TextStyle(
+              color: Color(0xFF6B7280),
+              fontSize: 12,
+            ),
+          ),
+          SizedBox(height: 4),
           Text(
             value,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF111827),
+            ),
           ),
         ],
       ),
@@ -432,24 +696,38 @@ class _LapPageState extends State<LapPage> {
     return Column(
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            child: SingleChildScrollView(
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('No Trans')),
-                  DataColumn(label: Text('Tanggal')),
-                  DataColumn(label: Text('Customer')),
-                  DataColumn(label: Text('Barang')),
-                  DataColumn(label: Text('Qty')),
-                  DataColumn(label: Text('Harga')),
-                  DataColumn(label: Text('Subtotal')),
-                  DataColumn(label: Text('Total')),
-                  DataColumn(label: Text('Waktu')),
-                  DataColumn(label: Text('Ket')),
-                ],
-                rows: _buildDataRows(),
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Color(0xFFE5E7EB)),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: DataTable(
+                    headingRowColor: MaterialStateProperty.all(
+                      Color(0xFFF3F4F6),
+                    ),
+                    columns: [
+                      DataColumn(label: Text('No Trans')),
+                      DataColumn(label: Text('Tanggal')),
+                      DataColumn(label: Text('Customer')),
+                      DataColumn(label: Text('Barang')),
+                      DataColumn(label: Text('Qty')),
+                      DataColumn(label: Text('Harga')),
+                      DataColumn(label: Text('Subtotal')),
+                      DataColumn(label: Text('Total')),
+                      DataColumn(label: Text('Waktu Input')),
+                      DataColumn(label: Text('Ket')),
+                    ],
+                    rows: _buildDataRows(),
+                  ),
+                ),
               ),
             ),
           ),
@@ -540,7 +818,7 @@ class _LapPageState extends State<LapPage> {
             style: textStyle)),
         DataCell(Text(isNewTransaction ? numberFormat.format(subttlTotal) : '',
             style: textStyle)),
-        DataCell(Text(item['tgl'] ?? '', style: textStyle)),
+        DataCell(Text(item['waktuinput'] ?? '', style: textStyle)),
         DataCell(Text(item['lretur'] == '1' ? 'Retur' : '', style: textStyle)),
       ]));
 
