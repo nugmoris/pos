@@ -551,7 +551,7 @@ class _JualPage2State extends State<JualPage2> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+              headingRowColor: WidgetStateProperty.all(Colors.grey.shade100),
               columns: const [
                 DataColumn(
                     label: Text('Nama Barang',
@@ -639,7 +639,7 @@ class _JualPage2State extends State<JualPage2> {
               scrollDirection: Axis.vertical,
               child: DataTable(
                 headingRowColor:
-                    MaterialStateProperty.all(Colors.grey.shade100),
+                    WidgetStateProperty.all(Colors.grey.shade100),
                 columns: const [
                   DataColumn(
                       label: Text('Nama Barang',

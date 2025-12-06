@@ -386,7 +386,7 @@ class _PenjkaryState extends State<Penjkary> {
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: DataTable(
-                                  headingRowColor: MaterialStateProperty.all(
+                                  headingRowColor: WidgetStateProperty.all(
                                       Color(0xFFF3F4F6)),
                                   headingTextStyle: GoogleFonts.plusJakartaSans(
                                     color: Color(0xFF1A1A1A),

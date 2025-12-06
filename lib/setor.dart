@@ -98,7 +98,7 @@ class _SetorState extends State<Setor> {
       );
 
       String notrans = "";
-      if (fastResponse is List && fastResponse.isNotEmpty) {
+      if (fastResponse.isNotEmpty) {
         notrans = fastResponse[0]['notrans'] ?? "";
       }
 
@@ -482,7 +482,7 @@ class _SetorState extends State<Setor> {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
-                headingRowColor: MaterialStateProperty.all(Color(0xFFF3F4F6)),
+                headingRowColor: WidgetStateProperty.all(Color(0xFFF3F4F6)),
                 headingRowHeight: 48,
                 dataRowHeight: 56,
                 columnSpacing: 24,
@@ -571,7 +571,7 @@ class _SetorState extends State<Setor> {
 
                   try {
                     return DataRow(
-                      color: MaterialStateProperty.all(
+                      color: WidgetStateProperty.all(
                         index % 2 == 0 ? Colors.white : Color(0xFFFAFAFA),
                       ),
                       cells: [

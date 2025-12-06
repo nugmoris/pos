@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
               args?.isNotEmpty == true ? args![4] as String? : null;
 
           return HomeSalesPage(varpbuser!, varbagian!, varlks!, varnmlok!,
-              myversion1!, currentVersion!);
+              myversion1, currentVersion);
         },
         '/jual': (context) {
           final args =

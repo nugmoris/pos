@@ -184,7 +184,7 @@ class _LapStokState extends State<LapStok> {
           ),
           SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: selectedJenis,
+            initialValue: selectedJenis,
             decoration: InputDecoration(
               labelText: 'Jenis Barang',
               filled: true,
@@ -339,7 +339,7 @@ class _LapStokState extends State<LapStok> {
           scrollDirection: Axis.horizontal,
           child: SingleChildScrollView(
             child: DataTable(
-              headingRowColor: MaterialStateProperty.all(Color(0xFFF8FAFC)),
+              headingRowColor: WidgetStateProperty.all(Color(0xFFF8FAFC)),
               columns: const [
                 DataColumn(label: Text('Jenis Barang')),
                 DataColumn(label: Text('Nama Barang')),

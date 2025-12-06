@@ -191,7 +191,7 @@ class _DaftarHargaState extends State<DaftarHarga> {
           ),
           SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: selectedJenis,
+            initialValue: selectedJenis,
             decoration: InputDecoration(
               labelText: 'Jenis Barang',
               filled: true,
@@ -292,7 +292,7 @@ class _DaftarHargaState extends State<DaftarHarga> {
           scrollDirection: Axis.horizontal,
           child: SingleChildScrollView(
             child: DataTable(
-              headingRowColor: MaterialStateProperty.all(Color(0xFFF3F4F6)),
+              headingRowColor: WidgetStateProperty.all(Color(0xFFF3F4F6)),
               columnSpacing: 32,
               columns: const [
                 DataColumn(label: Text('Jenis Barang')),

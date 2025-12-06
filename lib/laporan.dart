@@ -710,7 +710,7 @@ class _LapPageState extends State<LapPage> {
                 scrollDirection: Axis.horizontal,
                 child: SingleChildScrollView(
                   child: DataTable(
-                    headingRowColor: MaterialStateProperty.all(
+                    headingRowColor: WidgetStateProperty.all(
                       Color(0xFFF3F4F6),
                     ),
                     columns: [

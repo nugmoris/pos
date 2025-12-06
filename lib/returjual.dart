@@ -747,7 +747,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
                           scrollDirection: Axis.horizontal,
                           child: DataTable(
                             headingRowColor:
-                                MaterialStateProperty.all(Color(0xFFF3F4F6)),
+                                WidgetStateProperty.all(Color(0xFFF3F4F6)),
                             headingRowHeight: 48,
                             dataRowHeight: 56,
                             columnSpacing: 16,
@@ -833,7 +833,7 @@ class _ReturJualPageState extends State<ReturJualPage> {
                               Map<String, dynamic> detail = entry.value;
 
                               return DataRow(
-                                color: MaterialStateProperty.all(
+                                color: WidgetStateProperty.all(
                                   index % 2 == 0
                                       ? Colors.white
                                       : Color(0xFFFAFAFA),

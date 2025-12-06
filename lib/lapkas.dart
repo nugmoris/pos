@@ -252,7 +252,7 @@ class _LapKasState extends State<LapKas> {
                 Container(
                   width: 250,
                   child: DropdownButtonFormField<String>(
-                    value: selectedKdgl,
+                    initialValue: selectedKdgl,
                     decoration: InputDecoration(
                       labelText: 'Kode GL',
                       filled: true,
@@ -406,7 +406,7 @@ class _LapKasState extends State<LapKas> {
           scrollDirection: Axis.horizontal,
           child: SingleChildScrollView(
             child: DataTable(
-              headingRowColor: MaterialStateProperty.all(Color(0xFFF3F4F6)),
+              headingRowColor: WidgetStateProperty.all(Color(0xFFF3F4F6)),
               columns: const [
                 DataColumn(label: Text('No Trans')),
                 DataColumn(label: Text('Tanggal')),
